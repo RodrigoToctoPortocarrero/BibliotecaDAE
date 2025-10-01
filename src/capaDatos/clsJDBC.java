@@ -15,8 +15,8 @@ public class clsJDBC {
     
     
     private String url = "jdbc:postgresql://localhost:5432/BD_BIBLIOTECA_DAE";
-    private String username = "postgres";
-    private String password = "var112299";
+    private String username = "usuario1";
+    private String password = "usuario1";
     private Connection con = null;
     public Connection conectar() throws Exception{
         try{
