@@ -4,11 +4,18 @@
  */
 package viewsBibliotecario;
 
+import capaLogica.Libro;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Percy Alexander
  */
 public class MantenimientoLibro extends javax.swing.JPanel {
+
+    Libro Libro = new Libro();
 
     /**
      * Creates new form MantenimientoLibro
@@ -249,12 +256,12 @@ public class MantenimientoLibro extends javax.swing.JPanel {
             } else {
                 btnnuevo.setText("Nuevo");
                 Libro.registrar(
-                    Integer.parseInt(txtcodigo.getText().toString()),
-                    txttitulo.getText(),
-                    txtautor.getText(),
-                    txtcategoria.getText(),
-                    Integer.parseInt(txtanio.getText().toString()),
-                    chkvigente.isSelected());
+                        Integer.parseInt(txtcodigo.getText().toString()),
+                        txttitulo.getText(),
+                        txtautor.getText(),
+                        txtcategoria.getText(),
+                        Integer.parseInt(txtanio.getText().toString()),
+                        chkvigente.isSelected());
                 limpiarControles();
                 listarLibros();
             }
@@ -262,6 +269,56 @@ public class MantenimientoLibro extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error al Procesar Libro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnnuevoActionPerformed
+
+    private void listarLibros() {
+        ResultSet rsLibro = null;
+        Integer cont = 0;
+        String Vigencia = "";
+        DefaultTableModel modeloC = new DefaultTableModel();
+        modeloC.addColumn("Código");
+        modeloC.addColumn("Título");
+        modeloC.addColumn("Autor");
+        modeloC.addColumn("Categoría");
+        modeloC.addColumn("Año");
+        modeloC.addColumn("Estado"); // Total: 6 columnas
+
+        tbllibros.setModel(modeloC);
+        try {
+            rsLibro = Libro.listarLibros();
+            while (rsLibro.next()) {
+                // La columna de estado en PostgreSQL/SQL es BOOLEAN (True/False o t/f)
+                if (rsLibro.getString("estado_vigencia").equals("t")) {
+                    Vigencia = "Si";
+                } else {
+                    Vigencia = "No";
+                }
+
+                // AGREGANDO SOLO 6 VALORES (ELIMINANDO EL rsLibro.getString("estado_vigencia"))
+                modeloC.addRow(new Object[]{
+                    rsLibro.getInt("id_libro"),
+                    rsLibro.getString("titulo"),
+                    rsLibro.getString("autor_completo"),
+                    rsLibro.getString("categoria"),
+                    rsLibro.getInt("anio_publicacion"),
+                    Vigencia // Solo usa la variable 'Vigencia' que contiene "Si" o "No"
+                });
+                cont += 1;
+            }
+        } catch (Exception e) {
+            // CORREGIDO: Usar el mensaje correcto de error para esta pantalla
+            JOptionPane.showMessageDialog(this, "Error al consultar libros: " + e.getMessage(), "Error de Datos", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limpiarControles() {
+        txtcodigo.setText("");
+        txtautor.setText("");
+        txtanio.setText("");
+        txtcategoria.setText("");
+        txttitulo.setText("");
+        chkvigente.setSelected(false);
+        txtcodigo.requestFocus();
+    }
 
     private void btnmodificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarActionPerformed
         try {
