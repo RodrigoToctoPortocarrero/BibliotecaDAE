@@ -186,7 +186,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
                         this.dispose();
                     } else {
                         // Abrir el de bibliotecario
-                        frmPrincipalBibliotecario biblio = new frmPrincipalBibliotecario();
+                        frmPrincipalBibliotecario biblio = new frmPrincipalBibliotecario(txtNombre.getText());
                         biblio.setVisible(true);
                         biblio.setLocationRelativeTo(null);
                         this.dispose();
