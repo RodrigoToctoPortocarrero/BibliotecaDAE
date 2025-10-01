@@ -102,4 +102,18 @@ public class Libro {
             throw new Exception("Error al eliminar libro");
         }
     }
+       public ResultSet buscarLibrosPorTitulo(String titulo) throws Exception {
+        // Usamos LIKE y el comodín % para buscar coincidencias parciales.
+        // Usamos ILIKE o LOWER para una búsqueda que no distinga mayúsculas y minúsculas (PostgreSQL).
+        // Si usas MySQL/SQL Server, solo usa LIKE.
+        // Asumo PostgreSQL por el "t" de booleano:
+        strSQL = "SELECT * FROM Libros WHERE LOWER(titulo) LIKE '%" + titulo.toLowerCase() + "%'";
+        
+        try {
+            rs = objConectar.consultarBD(strSQL);
+            return rs;
+        } catch (Exception e) {
+            throw new Exception("Error al buscar libros por título: " + e.getMessage());
+        }
+    }
 }

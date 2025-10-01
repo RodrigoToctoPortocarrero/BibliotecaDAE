@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.time.LocalDate;
 import java.util.Locale;
 import viewsBibliotecario.MantenimientoLibro;
+import viewsBibliotecario.PrincipalBibliotecario;
 import viewsUsuario.PrestamosUsuario;
 import viewsUsuario.PrincipalUsuario;
 
@@ -18,6 +19,7 @@ import viewsUsuario.PrincipalUsuario;
 public class frmPrincipalBibliotecario extends javax.swing.JFrame {
 
     private String nombreUsuario;
+
     // Constructor con el nombre del usuario
     public frmPrincipalBibliotecario(String nombreUsuario) {
         initComponents();
@@ -26,7 +28,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         InitContent();
         // Mostrar el nombre del usuario en el label
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
-        this.setResizable(false); 
+        this.setResizable(false);
     }
 
     /**
@@ -328,12 +330,12 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGestionarlibroActionPerformed
 
     private void InitContent() {
-        PrincipalUsuario psu = new PrincipalUsuario();
-        psu.setSize(750, 430);
-        psu.setLocation(0, 0);
+        PrincipalBibliotecario pbl = new PrincipalBibliotecario();
+        pbl.setSize(750, 430);
+        pbl.setLocation(0, 0);
 
         content.removeAll();
-        content.add(psu, BorderLayout.CENTER);
+        content.add(pbl, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
     }

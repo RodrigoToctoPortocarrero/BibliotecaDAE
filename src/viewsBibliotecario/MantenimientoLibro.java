@@ -64,7 +64,6 @@ public class MantenimientoLibro extends javax.swing.JPanel {
         content.setPreferredSize(new java.awt.Dimension(750, 430));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Código:");
 
         tbllibros.setModel(new javax.swing.table.DefaultTableModel(
@@ -83,23 +82,18 @@ public class MantenimientoLibro extends javax.swing.JPanel {
         txtcodigo.setEditable(false);
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("Título:");
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Autor:");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Categoría:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
         jLabel11.setText("Vigencia:");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setText("Año:");
 
         btnnuevo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -131,7 +125,6 @@ public class MantenimientoLibro extends javax.swing.JPanel {
         btnsalir.setText("Salir");
 
         chkvigente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        chkvigente.setForeground(new java.awt.Color(0, 0, 0));
         chkvigente.setText("Vigente");
 
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
