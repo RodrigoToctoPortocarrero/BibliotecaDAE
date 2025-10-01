@@ -4,13 +4,20 @@
  */
 package capaPrincipal;
 
+import capaLogica.Libro;
+import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Percy Alexander
  */
 public class jdmantenimientolibro extends javax.swing.JDialog {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(jdmantenimientolibro.class.getName());
+
+    Libro Libro = new Libro();
 
     /**
      * Creates new form jdmantenimientolibro
@@ -41,7 +48,6 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         txtcategoria = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        rbtvigencia = new javax.swing.JRadioButton();
         jLabel12 = new javax.swing.JLabel();
         txtanio = new javax.swing.JTextField();
         btnnuevo = new javax.swing.JButton();
@@ -50,6 +56,7 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
         btnmodificar = new javax.swing.JButton();
         btndarbaja = new javax.swing.JButton();
         btnsalir = new javax.swing.JButton();
+        chkvigente = new javax.swing.JCheckBox();
         menu = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -100,29 +107,21 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Categoría:");
 
-        txtcategoria.setEditable(false);
-
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 0, 0));
         jLabel11.setText("Vigencia:");
-
-        rbtvigencia.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        rbtvigencia.setForeground(new java.awt.Color(0, 0, 0));
-        rbtvigencia.setText("Vigente");
-        rbtvigencia.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbtvigenciaActionPerformed(evt);
-            }
-        });
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setText("Año:");
 
-        txtanio.setEditable(false);
-
         btnnuevo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnnuevo.setText("Nuevo");
+        btnnuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnnuevoActionPerformed(evt);
+            }
+        });
 
         btneliminar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btneliminar.setText("Eliminar");
@@ -132,12 +131,21 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
 
         btnmodificar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnmodificar.setText("Modificar");
+        btnmodificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnmodificarActionPerformed(evt);
+            }
+        });
 
         btndarbaja.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btndarbaja.setText("Dar baja");
 
         btnsalir.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnsalir.setText("Salir");
+
+        chkvigente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        chkvigente.setForeground(new java.awt.Color(0, 0, 0));
+        chkvigente.setText("Vigente");
 
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
         content.setLayout(contentLayout);
@@ -170,7 +178,7 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
                         .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtanio, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtcategoria, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rbtvigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(chkvigente, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
                         .addGap(86, 86, 86)
                         .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btneliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -207,9 +215,9 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
                     .addComponent(jLabel9)
                     .addComponent(txtautor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(rbtvigencia)
                     .addComponent(btnlimpiar)
-                    .addComponent(btnsalir))
+                    .addComponent(btnsalir)
+                    .addComponent(chkvigente))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
@@ -407,9 +415,111 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
 
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void rbtvigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtvigenciaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rbtvigenciaActionPerformed
+    private void btnnuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevoActionPerformed
+        try {
+            if (btnnuevo.getText().equals("Nuevo")) {
+
+                btnnuevo.setText("Guardar");
+                limpiarControles();
+
+                txtcodigo.setText(Libro.generarCodigoLibro().toString());
+            } else {
+                btnnuevo.setText("Nuevo");
+                Libro.registrar(
+                        Integer.parseInt(txtcodigo.getText().toString()),
+                        txttitulo.getText(),
+                        txtautor.getText(),
+                        txtcategoria.getText(),
+                        Integer.parseInt(txtanio.getText().toString()),
+                        chkvigente.isSelected());
+                limpiarControles();
+                listarLibros();
+            }
+        } catch (Exception e) {
+            // Captura cualquier otro error (ej. error de base de datos)
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error al Procesar Libro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnnuevoActionPerformed
+
+    private void btnmodificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarActionPerformed
+        try {
+            // Validación básica de campos (opcional, pero recomendada)
+            if (txtcodigo.getText().isEmpty() || txttitulo.getText().isEmpty() || txtautor.getText().isEmpty() || txtanio.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un libro de la tabla y llenar todos los campos.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 1. Obtiene los valores de los controles
+            Integer idLibro = Integer.parseInt(txtcodigo.getText());
+            String titulo = txttitulo.getText();
+            String autor = txtautor.getText();
+            String categoria = txtcategoria.getText();
+            // Se asegura de convertir el año a Integer
+            Integer anio = Integer.parseInt(txtanio.getText());
+            Boolean vigente = chkvigente.isSelected();
+
+            // 2. Llama al método modificar de la clase Libro
+            Libro.modificar(idLibro, titulo, autor, categoria, anio, vigente);
+
+            // 3. Informa el éxito y actualiza la interfaz
+            JOptionPane.showMessageDialog(this, "Libro modificado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            limpiarControles();
+            listarLibros();
+    } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al modificar el libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnmodificarActionPerformed
+
+    private void listarLibros() {
+        ResultSet rsLibro = null;
+        Integer cont = 0;
+        String Vigencia = "";
+        DefaultTableModel modeloC = new DefaultTableModel();
+        modeloC.addColumn("Código");
+        modeloC.addColumn("Título");
+        modeloC.addColumn("Autor");
+        modeloC.addColumn("Categoría");
+        modeloC.addColumn("Año");
+        modeloC.addColumn("Estado"); // Total: 6 columnas
+
+        tbllibros.setModel(modeloC);
+        try {
+            rsLibro = Libro.listarLibros();
+            while (rsLibro.next()) {
+                // La columna de estado en PostgreSQL/SQL es BOOLEAN (True/False o t/f)
+                if (rsLibro.getString("estado_vigencia").equals("t")) {
+                    Vigencia = "Si";
+                } else {
+                    Vigencia = "No";
+                }
+
+                // AGREGANDO SOLO 6 VALORES (ELIMINANDO EL rsLibro.getString("estado_vigencia"))
+                modeloC.addRow(new Object[]{
+                    rsLibro.getInt("id_libro"),
+                    rsLibro.getString("titulo"),
+                    rsLibro.getString("autor_completo"),
+                    rsLibro.getString("categoria"),
+                    rsLibro.getInt("anio_publicacion"),
+                    Vigencia // Solo usa la variable 'Vigencia' que contiene "Si" o "No"
+                });
+                cont += 1;
+            }
+        } catch (Exception e) {
+            // CORREGIDO: Usar el mensaje correcto de error para esta pantalla
+            JOptionPane.showMessageDialog(this, "Error al consultar libros: " + e.getMessage(), "Error de Datos", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limpiarControles() {
+        txtcodigo.setText("");
+        txtautor.setText("");
+        txtanio.setText("");
+        txtcategoria.setText("");
+        txttitulo.setText("");
+        chkvigente.setSelected(false);
+        txtcodigo.requestFocus();
+    }
 
     /**
      * @param args the command line arguments
@@ -458,6 +568,7 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
     private javax.swing.JButton btnmodificar;
     private javax.swing.JButton btnnuevo;
     private javax.swing.JButton btnsalir;
+    private javax.swing.JCheckBox chkvigente;
     private javax.swing.JPanel content;
     private javax.swing.JPanel header;
     private javax.swing.JLabel jLabel1;
@@ -476,7 +587,6 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblNombreUsuarioPrincipal;
     private javax.swing.JPanel menu;
-    private javax.swing.JRadioButton rbtvigencia;
     private javax.swing.JTable tbllibros;
     private javax.swing.JTextField txtanio;
     private javax.swing.JTextField txtautor;
