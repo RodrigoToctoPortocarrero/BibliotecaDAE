@@ -7,7 +7,7 @@ package capaPrincipal;
 import java.awt.BorderLayout;
 import java.time.LocalDate;
 import java.util.Locale;
-import viewsBibliotecario.MantenimientoLibro;
+import viewsBibliotecario.ManLibro;
 import viewsBibliotecario.PrincipalBibliotecario;
 import viewsUsuario.PrestamosUsuario;
 import viewsUsuario.PrincipalUsuario;
@@ -25,6 +25,9 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         initComponents();
         this.nombreUsuario = nombreUsuario.toUpperCase();
         SetDate();
+        content.setBackground(new java.awt.Color(255, 255, 255));
+        content.setPreferredSize(new java.awt.Dimension(750, 430));
+        content.setLayout(new java.awt.BorderLayout());
         InitContent();
         // Mostrar el nombre del usuario en el label
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
@@ -310,15 +313,12 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnGestionarlibroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionarlibroActionPerformed
-        MantenimientoLibro nuevoPanel = new MantenimientoLibro();
+        ManLibro pres = new ManLibro();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
 
-        nuevoPanel.setBounds(0, 0, 750, 430);
-
-        // 2. Limpia el panel de contenido principal y añade el nuevo panel
         content.removeAll();
-        content.add(nuevoPanel); // No se requiere el constraint de BorderLayout
-
-        // 3. Asegura que el contenedor se actualice y se repinte
+        content.add(pres, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
     }//GEN-LAST:event_btnGestionarlibroActionPerformed
