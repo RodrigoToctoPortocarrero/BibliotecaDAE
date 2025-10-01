@@ -20,8 +20,9 @@ public class clsJDBC {
     private String username = "usuario1";
     private String password = "usuario1";
     private Connection con = null;
-    private Statement sent = null;
 
+    // Eliminamos 'sent' como variable de clase, es mejor usarlo localmente.
+    // private Statement sent = null; 
     public Connection getCon() {
         return con;
     }
@@ -32,7 +33,10 @@ public class clsJDBC {
 
     public Connection conectar() throws Exception {
         try {
-            con = DriverManager.getConnection(url, username, password);
+            // Asegúrate de que la conexión solo se crea si es nula o está cerrada
+            if (con == null || con.isClosed()) {
+                con = DriverManager.getConnection(url, username, password);
+            }
             return con;
         } catch (Exception e) {
             throw new Exception("Ocurrio un error al conectar a la BD: " + e.getMessage());
@@ -41,29 +45,44 @@ public class clsJDBC {
 
     public void desconectar() throws Exception {
         try {
-            con.close();
+            if (con != null && !con.isClosed()) {
+                con.close();
+                con = null; // Establecer a null para indicar que ya no existe
+            }
         } catch (SQLException ex) {
-            throw new Exception("Error al desconectar de la BD!" + ex.getMessage());
+            throw new Exception("Error al desconectar de la BD! " + ex.getMessage());
         }
     }
 
+    /**
+     * MODIFICADO: Se elimina la desconexión en el bloque finally. La conexión
+     * permanece abierta para que el ResultSet pueda ser leído. El método que
+     * llama a consultarBD es responsable de llamar a desconectar.
+     */
     public ResultSet consultarBD(String strSQL) throws Exception {
         ResultSet rs = null;
+        Statement sent = null; // Declarado localmente
         try {
             conectar();
             sent = con.createStatement();
             rs = sent.executeQuery(strSQL);
             return rs;
         } catch (Exception e) {
-            throw new Exception("Error al ejecutar consulta" + e.getMessage());
-        } finally {
+            // Si hay un error, cerramos la conexión y lanzamos la excepción.
             if (con != null) {
                 desconectar();
             }
+            throw new Exception("Error al ejecutar consulta: " + e.getMessage());
         }
+        // ¡SIN BLOQUE FINALLY CON DESCONEXIÓN!
     }
 
+    /**
+     * CORRECTO: Se mantiene la desconexión en el bloque finally después de
+     * ejecutar.
+     */
     public void ejecutarBD(String strSQL) throws Exception {
+        Statement sent = null; // Declarado localmente
         try {
             conectar();
             sent = con.createStatement();
@@ -71,6 +90,14 @@ public class clsJDBC {
         } catch (Exception e) {
             throw new Exception("Error al ejecutar Update --> " + e.getMessage());
         } finally {
+            // Cierra el Statement para liberar recursos
+            if (sent != null) {
+                try {
+                    sent.close();
+                } catch (SQLException e) {
+                    /* Ignorar */ }
+            }
+            // Desconecta la conexión
             if (con != null) {
                 desconectar();
             }
