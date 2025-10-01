@@ -12,17 +12,23 @@ import java.sql.ResultSet;
  * @author Percy Alexander
  */
 public class Libro {
-    clsJDBC objConectar = new clsJDBC();
-    String strSQL;
-    ResultSet rs = null;
 
+    private clsJDBC objConectar = new clsJDBC();
+    private String strSQL;
+    private ResultSet rs = null;
 
     public ResultSet listarLibros() throws Exception {
-        strSQL = "SELECT * FROM Libros";
+        strSQL = "SELECT id_libro, titulo, autor_completo, categoria, anio_publicacion, estado_vigencia FROM Libros";
         try {
+            // Se llama a consultarBD, que ahora solo abre y ejecuta.
             rs = objConectar.consultarBD(strSQL);
+            // IMPORTANTE: El ResultSet aún está activo, PERO la conexión sí fue abierta.
             return rs;
         } catch (Exception e) {
+            // Si falla la consulta, intentamos desconectar, aunque ya se maneja en clsJDBC
+            if (objConectar.getCon() != null) {
+                objConectar.desconectar();
+            }
             throw new Exception("Error al listar libros: " + e.getMessage());
         }
     }
@@ -40,6 +46,15 @@ public class Libro {
         return 0;
     }
 
+    public ResultSet buscarLibro(Integer id) throws Exception {
+        strSQL = "SELECT * FROM Libros WHERE id_libro = " + id;
+        try {
+            rs = objConectar.consultarBD(strSQL);
+            return rs;
+        } catch (Exception e) {
+            throw new Exception("Error al buscar libro: " + e.getMessage());
+        }
+    }
 
     public void registrar(Integer id, String titulo, String autor, String categoria,
             Integer anioPublicacion, Boolean estadoVigencia) throws Exception {
@@ -55,25 +70,17 @@ public class Libro {
         }
     }
 
-    public ResultSet buscarLibro(Integer id) throws Exception {
-        strSQL = "SELECT * FROM Libros WHERE id_libro = " + id;
-        try {
-            rs = objConectar.consultarBD(strSQL);
-            return rs;
-        } catch (Exception e) {
-            throw new Exception("Error al buscar libro");
-        }
-    }
-
     public void modificar(Integer id, String titulo, String autor, String categoria,
             Integer anioPublicacion, Boolean estadoVigencia) throws Exception {
 
+        String estado = estadoVigencia ? "TRUE" : "FALSE";
+
         strSQL = "UPDATE Libros SET "
-                + "titulo = '" + titulo + "', "
-                + "autor_completo = '" + autor + "', "
-                + "categoria = '" + categoria + "', "
+                + "titulo = '" + titulo.replace("'", "''") + "', " // Protección de comillas
+                + "autor_completo = '" + autor.replace("'", "''") + "', " // Protección de comillas
+                + "categoria = '" + categoria.replace("'", "''") + "', " // Protección de comillas
                 + "anio_publicacion = " + anioPublicacion + ", "
-                + "estado_vigencia = " + estadoVigencia
+                + "estado_vigencia = " + estado
                 + " WHERE id_libro = " + id;
 
         try {
@@ -93,13 +100,25 @@ public class Libro {
         }
     }
 
-
     public void eliminarLibro(Integer id) throws Exception {
         String strSQL = "DELETE FROM Libros WHERE id_libro = " + id;
         try {
             objConectar.ejecutarBD(strSQL);
         } catch (Exception e) {
-            throw new Exception("Error al eliminar libro");
+            throw new Exception("Error al eliminar libro: " + e.getMessage());
+        }
+    }
+
+    public void modificarVigencia(Integer id, Boolean nuevoEstadoVigencia) throws Exception {
+        // Convierte el booleano de Java al valor que espera la BD ('TRUE' o 'FALSE')
+        String estado = nuevoEstadoVigencia ? "TRUE" : "FALSE";
+
+        String strSQL = "UPDATE Libros SET estado_vigencia = " + estado + " WHERE id_libro = " + id;
+
+        try {
+            objConectar.ejecutarBD(strSQL);
+        } catch (Exception e) {
+            throw new Exception("Error al modificar la vigencia del libro: " + e.getMessage());
         }
     }
 }

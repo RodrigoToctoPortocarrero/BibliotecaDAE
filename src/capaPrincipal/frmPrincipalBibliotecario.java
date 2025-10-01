@@ -18,6 +18,7 @@ import viewsUsuario.PrincipalUsuario;
 public class frmPrincipalBibliotecario extends javax.swing.JFrame {
 
     private String nombreUsuario;
+
     // Constructor con el nombre del usuario
     public frmPrincipalBibliotecario(String nombreUsuario) {
         initComponents();
@@ -26,7 +27,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         InitContent();
         // Mostrar el nombre del usuario en el label
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
-        this.setResizable(false); 
+        this.setResizable(false);
     }
 
     /**
@@ -203,17 +204,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
 
         content.setBackground(new java.awt.Color(255, 255, 255));
         content.setPreferredSize(new java.awt.Dimension(750, 430));
-
-        javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
-        content.setLayout(contentLayout);
-        contentLayout.setHorizontalGroup(
-            contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
-        );
-        contentLayout.setVerticalGroup(
-            contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 430, Short.MAX_VALUE)
-        );
+        content.setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("SISTEMA DE BIBLIOTECA-BIBLIOTECARIO");
@@ -242,8 +233,8 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE))
                         .addGap(56, 56, 56))))
         );
         backgroundLayout.setVerticalGroup(
@@ -257,7 +248,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
         );
@@ -279,6 +270,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
 
     private void btnPrincipalUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrincipalUsuarioActionPerformed
         InitContent();
+
     }//GEN-LAST:event_btnPrincipalUsuarioActionPerformed
 
     private void btnPrestamosUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuarioActionPerformed
@@ -317,12 +309,15 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnGestionarlibroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionarlibroActionPerformed
-        MantenimientoLibro pres = new MantenimientoLibro();
-        pres.setSize(750, 430);
-        pres.setLocation(0, 0);
+        MantenimientoLibro nuevoPanel = new MantenimientoLibro();
 
+        nuevoPanel.setBounds(0, 0, 750, 430);
+
+        // 2. Limpia el panel de contenido principal y añade el nuevo panel
         content.removeAll();
-        content.add(pres, BorderLayout.CENTER);
+        content.add(nuevoPanel); // No se requiere el constraint de BorderLayout
+
+        // 3. Asegura que el contenedor se actualice y se repinte
         content.revalidate();
         content.repaint();
     }//GEN-LAST:event_btnGestionarlibroActionPerformed
@@ -336,6 +331,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(psu, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
+
     }
 
     private void SetDate() {
