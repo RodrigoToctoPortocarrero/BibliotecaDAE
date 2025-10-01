@@ -405,6 +405,7 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPrincipalUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrincipalUsuarioActionPerformed
+        
     }//GEN-LAST:event_btnPrincipalUsuarioActionPerformed
 
     private void btnPrestamosUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuarioActionPerformed
@@ -436,32 +437,28 @@ public class jdmantenimientolibro extends javax.swing.JDialog {
                 listarLibros();
             }
         } catch (Exception e) {
-            // Captura cualquier otro error (ej. error de base de datos)
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error al Procesar Libro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnnuevoActionPerformed
 
     private void btnmodificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarActionPerformed
         try {
-            // Validación básica de campos (opcional, pero recomendada)
+
             if (txtcodigo.getText().isEmpty() || txttitulo.getText().isEmpty() || txtautor.getText().isEmpty() || txtanio.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe seleccionar un libro de la tabla y llenar todos los campos.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // 1. Obtiene los valores de los controles
+
             Integer idLibro = Integer.parseInt(txtcodigo.getText());
             String titulo = txttitulo.getText();
             String autor = txtautor.getText();
             String categoria = txtcategoria.getText();
-            // Se asegura de convertir el año a Integer
+
             Integer anio = Integer.parseInt(txtanio.getText());
             Boolean vigente = chkvigente.isSelected();
 
-            // 2. Llama al método modificar de la clase Libro
             Libro.modificar(idLibro, titulo, autor, categoria, anio, vigente);
-
-            // 3. Informa el éxito y actualiza la interfaz
             JOptionPane.showMessageDialog(this, "Libro modificado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             limpiarControles();
