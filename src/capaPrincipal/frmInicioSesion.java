@@ -19,10 +19,11 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
     Usuario usu = new Usuario();
     int contador = 3;
+
     public frmInicioSesion() {
         initComponents();
         this.setResizable(false);
-        
+
     }
 
     /**
@@ -43,6 +44,8 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        lblCambiarContra = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -92,6 +95,18 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/acceso.png"))); // NOI18N
 
+        lblCambiarContra.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblCambiarContra.setForeground(new java.awt.Color(255, 255, 255));
+        lblCambiarContra.setText("¿Olvidaste tu contraseña?");
+        lblCambiarContra.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCambiarContraMouseClicked(evt);
+            }
+        });
+
+        jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -122,6 +137,12 @@ public class frmInicioSesion extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                                 .addComponent(txtContra, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(32, 32, 32))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(88, 88, 88)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jSeparator1)
+                    .addComponent(lblCambiarContra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,10 +159,14 @@ public class frmInicioSesion extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtContra, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(54, 54, 54)
+                .addGap(32, 32, 32)
                 .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblCambiarContra)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -159,9 +184,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -169,6 +192,11 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         try {
+            if(txtNombre.getText().trim().equals("") || String.valueOf(txtContra.getPassword()).equals("")){
+                JOptionPane.showMessageDialog(this, "Se debe completar ambos campos");
+                return;
+            }
+            
             Boolean verificarNombre = usu.verificarUsuario(txtNombre.getText());
             if (verificarNombre) {
                 String verificarTodo = usu.verificarUsuContra(txtNombre.getText(), String.valueOf(txtContra.getPassword()));
@@ -213,6 +241,32 @@ public class frmInicioSesion extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void lblCambiarContraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCambiarContraMouseClicked
+        String nombreusuario = txtNombre.getText();
+        try {
+            Boolean existe = usu.verificarUsuario(nombreusuario);
+            String tipo = usu.tipoUsuario(nombreusuario);
+            
+            if(txtNombre.getText().equals("")){
+                JOptionPane.showMessageDialog(this, "Indique su nombre de usuario");
+                 return;
+            }
+                
+            if(!existe){
+                JOptionPane.showMessageDialog(this, "El usuario no existe en la BD");
+                return;
+            }
+           
+            frmCambiarContrasenia obj = new frmCambiarContrasenia(txtNombre.getText(),tipo);
+            obj.setVisible(true);
+            this.dispose();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error");
+        }
+
+    }//GEN-LAST:event_lblCambiarContraMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -226,6 +280,8 @@ public class frmInicioSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblCambiarContra;
     private javax.swing.JPasswordField txtContra;
     private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables

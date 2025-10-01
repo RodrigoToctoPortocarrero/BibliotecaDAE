@@ -85,6 +85,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         btnPrincipalUsuario.setBorder(null);
         btnPrincipalUsuario.setBorderPainted(false);
         btnPrincipalUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrincipalUsuario.setFocusPainted(false);
         btnPrincipalUsuario.setIconTextGap(10);
         btnPrincipalUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,6 +100,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         btnPrestamosUsuario.setText("PRESTAMOS");
         btnPrestamosUsuario.setBorder(null);
         btnPrestamosUsuario.setBorderPainted(false);
+        btnPrestamosUsuario.setFocusPainted(false);
         btnPrestamosUsuario.setIconTextGap(10);
         btnPrestamosUsuario.setMaximumSize(new java.awt.Dimension(108, 32));
         btnPrestamosUsuario.setMinimumSize(new java.awt.Dimension(108, 32));
@@ -120,8 +122,8 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        btnGestionarlibro.setBackground(new java.awt.Color(102, 153, 255));
-        btnGestionarlibro.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGestionarlibro.setBackground(new java.awt.Color(0, 153, 255));
+        btnGestionarlibro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnGestionarlibro.setForeground(new java.awt.Color(255, 255, 255));
         btnGestionarlibro.setText("GESTIONAR LIBRO");
         btnGestionarlibro.setBorder(null);
@@ -164,11 +166,11 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(63, 63, 63)
-                .addComponent(btnPrincipalUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnPrestamosUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnGestionarlibro, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnPrincipalUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnPrestamosUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(btnGestionarlibro, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
@@ -194,7 +196,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dateText, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,12 +236,11 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblNombreUsuarioPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(90, 90, 90))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(backgroundLayout.createSequentialGroup()
                         .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE))
-                        .addGap(56, 56, 56))))
+                            .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 755, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

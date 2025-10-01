@@ -24,6 +24,7 @@ public class ManLibro extends javax.swing.JPanel {
      */
     public ManLibro() {
         initComponents();
+        listarLibros();
     }
 
     /**

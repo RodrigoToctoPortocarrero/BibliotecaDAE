@@ -70,4 +70,21 @@ public class Usuario {
         return "";
     }
     
+    //Necesito un metodo que me permita actualizar la contraseña
+    
+    public void cambiarContrasenia(String contraseniaNueva, String nombreusuario) throws Exception{
+        try{
+            sql = "UPDATE USUARIO set contrasenia = ? where nomusuario= ?";
+            PreparedStatement pst = con.conectar().prepareStatement(sql);
+            pst.setString(1, contraseniaNueva);
+            pst.setString(2, nombreusuario);
+            
+            pst.executeUpdate();
+        }catch(Exception e){
+            throw new Exception("Ocurrio un error al cambiar contrasenia: "+e.getMessage());
+        }
+    }
+    
+    
+    
 }

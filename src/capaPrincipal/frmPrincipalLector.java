@@ -78,6 +78,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         btnPrincipalUsuario.setBorder(null);
         btnPrincipalUsuario.setBorderPainted(false);
         btnPrincipalUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrincipalUsuario.setFocusPainted(false);
         btnPrincipalUsuario.setIconTextGap(10);
         btnPrincipalUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -92,6 +93,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         btnPrestamosUsuario.setText("PRESTAMOS");
         btnPrestamosUsuario.setBorder(null);
         btnPrestamosUsuario.setBorderPainted(false);
+        btnPrestamosUsuario.setFocusPainted(false);
         btnPrestamosUsuario.setIconTextGap(10);
         btnPrestamosUsuario.setMaximumSize(new java.awt.Dimension(108, 32));
         btnPrestamosUsuario.setMinimumSize(new java.awt.Dimension(108, 32));
@@ -171,7 +173,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dateText, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,7 +192,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 745, Short.MAX_VALUE)
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,12 +223,13 @@ public class frmPrincipalLector extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblNombreUsuarioPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(90, 90, 90))
+                    .addGroup(backgroundLayout.createSequentialGroup()
+                        .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 756, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
-                            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE))
-                        .addGap(56, 56, 56))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))))
         );
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
