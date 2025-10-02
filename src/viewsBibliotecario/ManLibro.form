@@ -83,17 +83,23 @@
                                   <Component id="txtcategoria" alignment="0" min="-2" pref="87" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="btneliminar" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnlimpiar" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnnuevo" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="btnsalir" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btndarbaja" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnmodificar" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="btneliminar" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="btnnuevo" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Component id="btndarbaja" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="btnmodificar" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="71" max="-2" attributes="0"/>
+                                  <Component id="btnlimpiar" min="-2" pref="81" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -129,7 +135,6 @@
                       <Component id="txtautor" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnlimpiar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnsalir" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="chkvigente" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -159,9 +164,6 @@
         <Component class="javax.swing.JTextField" name="txttitulo">
         </Component>
         <Component class="javax.swing.JTextField" name="txtcodigo">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnBuscar">
           <Properties>
@@ -261,14 +263,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btndarbajaActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="btnsalir">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="13" style="1"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Salir"/>
-          </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <AuxValues>

@@ -53,7 +53,6 @@ public class ManLibro extends javax.swing.JPanel {
         btnnuevo = new javax.swing.JButton();
         btnmodificar = new javax.swing.JButton();
         btndarbaja = new javax.swing.JButton();
-        btnsalir = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbllibros = new javax.swing.JTable();
         txtautor = new javax.swing.JTextField();
@@ -62,14 +61,10 @@ public class ManLibro extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Código:");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("Título:");
-
-        txtcodigo.setEditable(false);
 
         btnBuscar.setText("...");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -79,19 +74,15 @@ public class ManLibro extends javax.swing.JPanel {
         });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Categoría:");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setText("Año:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
         jLabel11.setText("Vigencia:");
 
         chkvigente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        chkvigente.setForeground(new java.awt.Color(0, 0, 0));
         chkvigente.setText("Vigente");
 
         btnlimpiar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -134,9 +125,6 @@ public class ManLibro extends javax.swing.JPanel {
             }
         });
 
-        btnsalir.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btnsalir.setText("Salir");
-
         tbllibros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
@@ -156,7 +144,6 @@ public class ManLibro extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tbllibros);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Autor:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -197,16 +184,19 @@ public class ManLibro extends javax.swing.JPanel {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(txtanio, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(txtcategoria, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btneliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnlimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnsalir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btndarbaja, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnmodificar, javax.swing.GroupLayout.Alignment.LEADING))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btneliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(30, 30, 30)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btndarbaja, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnmodificar, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(71, 71, 71)
+                                .addComponent(btnlimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(64, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -235,7 +225,6 @@ public class ManLibro extends javax.swing.JPanel {
                     .addComponent(txtautor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
                     .addComponent(btnlimpiar)
-                    .addComponent(btnsalir)
                     .addComponent(chkvigente))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -554,7 +543,6 @@ public class ManLibro extends javax.swing.JPanel {
     private javax.swing.JButton btnlimpiar;
     private javax.swing.JButton btnmodificar;
     private javax.swing.JButton btnnuevo;
-    private javax.swing.JButton btnsalir;
     private javax.swing.JCheckBox chkvigente;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
