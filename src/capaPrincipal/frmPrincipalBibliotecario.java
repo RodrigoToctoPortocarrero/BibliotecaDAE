@@ -7,6 +7,7 @@ package capaPrincipal;
 import java.awt.BorderLayout;
 import java.time.LocalDate;
 import java.util.Locale;
+import viewsBibliotecario.ManEditorial;
 import viewsBibliotecario.ManLibro;
 import viewsBibliotecario.PrincipalBibliotecario;
 import viewsUsuario.PrestamosUsuario;
@@ -52,6 +53,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         btnPrestamosUsuario = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnGestionarlibro = new javax.swing.JButton();
+        btnGestionareditorial = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         dateText = new javax.swing.JLabel();
@@ -135,12 +137,28 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
+        btnGestionareditorial.setBackground(new java.awt.Color(0, 153, 255));
+        btnGestionareditorial.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnGestionareditorial.setForeground(new java.awt.Color(255, 255, 255));
+        btnGestionareditorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/icons8-editorial-32 (1).png"))); // NOI18N
+        btnGestionareditorial.setText("  GESTIONAR EDITORIAL");
+        btnGestionareditorial.setBorder(null);
+        btnGestionareditorial.setBorderPainted(false);
+        btnGestionareditorial.setFocusPainted(false);
+        btnGestionareditorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionareditorialActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout menuLayout = new javax.swing.GroupLayout(menu);
         menu.setLayout(menuLayout);
         menuLayout.setHorizontalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btnPrincipalUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnPrestamosUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnGestionarlibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(menuLayout.createSequentialGroup()
                 .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(menuLayout.createSequentialGroup()
@@ -153,8 +171,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                         .addGap(94, 94, 94)
                         .addComponent(jLabel5)))
                 .addContainerGap(43, Short.MAX_VALUE))
-            .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnGestionarlibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnGestionareditorial, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,6 +188,8 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addComponent(btnPrestamosUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(btnGestionarlibro, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnGestionareditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
@@ -324,6 +343,18 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.repaint();
     }//GEN-LAST:event_btnGestionarlibroActionPerformed
 
+    private void btnGestionareditorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionareditorialActionPerformed
+        //Realizado por Valentino
+        ManEditorial pres = new ManEditorial();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+
+        content.removeAll();
+        content.add(pres, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+    }//GEN-LAST:event_btnGestionareditorialActionPerformed
+
     private void InitContent() {
         PrincipalBibliotecario pbl = new PrincipalBibliotecario();
         pbl.setSize(750, 430);
@@ -368,6 +399,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
+    private javax.swing.JButton btnGestionareditorial;
     private javax.swing.JButton btnGestionarlibro;
     private javax.swing.JButton btnPrestamosUsuario;
     private javax.swing.JButton btnPrincipalUsuario;

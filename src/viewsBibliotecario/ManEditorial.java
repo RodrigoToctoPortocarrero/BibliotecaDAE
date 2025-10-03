@@ -59,9 +59,9 @@ public class ManEditorial extends javax.swing.JPanel {
         jPanel1.add(jLabel8);
         jLabel8.setBounds(44, 86, 60, 20);
         jPanel1.add(txttitulo);
-        txttitulo.setBounds(116, 86, 206, 22);
+        txttitulo.setBounds(116, 86, 206, 26);
         jPanel1.add(txtcodigo);
-        txtcodigo.setBounds(116, 36, 100, 22);
+        txtcodigo.setBounds(116, 36, 100, 26);
 
         btnBuscar.setText("...");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -70,14 +70,14 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnBuscar);
-        btnBuscar.setBounds(234, 36, 33, 23);
+        btnBuscar.setBounds(234, 36, 33, 27);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setText("Correo:");
         jPanel1.add(jLabel10);
         jLabel10.setBounds(340, 40, 87, 20);
         jPanel1.add(txtcategoria);
-        txtcategoria.setBounds(400, 40, 210, 22);
+        txtcategoria.setBounds(400, 40, 210, 26);
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel12.setText("Vigencia:");
@@ -92,7 +92,7 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnlimpiar);
-        btnlimpiar.setBounds(320, 180, 81, 25);
+        btnlimpiar.setBounds(320, 180, 81, 29);
 
         btneliminar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btneliminar.setText("Eliminar");
@@ -102,7 +102,7 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btneliminar);
-        btneliminar.setBounds(210, 180, 81, 25);
+        btneliminar.setBounds(210, 180, 85, 29);
 
         btnnuevo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnnuevo.setText("Nuevo");
@@ -112,7 +112,7 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnnuevo);
-        btnnuevo.setBounds(100, 180, 81, 25);
+        btnnuevo.setBounds(100, 180, 81, 29);
 
         btnmodificar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnmodificar.setText("Modificar");
@@ -122,7 +122,7 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnmodificar);
-        btnmodificar.setBounds(550, 180, 89, 25);
+        btnmodificar.setBounds(550, 180, 110, 29);
 
         btndarbaja.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btndarbaja.setText("Dar baja");
@@ -132,7 +132,7 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btndarbaja);
-        btndarbaja.setBounds(430, 180, 89, 25);
+        btndarbaja.setBounds(430, 180, 89, 29);
 
         tbllibros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -158,7 +158,7 @@ public class ManEditorial extends javax.swing.JPanel {
         jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(50, 230, 650, 203);
         jPanel1.add(txtautor);
-        txtautor.setBounds(119, 138, 203, 22);
+        txtautor.setBounds(119, 138, 203, 26);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setText("Telefono:");
