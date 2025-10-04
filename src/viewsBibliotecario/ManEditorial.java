@@ -3,20 +3,121 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package viewsBibliotecario;
-
+import capaLogica.Editorial;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List; // Necesario para trabajar con la lista de editoriales
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel; // Necesario para manipular la tabla
+import javax.swing.table.TableColumnModel;
 /**
  *
  * @author laboratorio_computo
  */
 public class ManEditorial extends javax.swing.JPanel {
 
+    // 1. Declaración de la capa lógica y el modelo de tabla
+    private Editorial objEditorial = new Editorial();
+    private DefaultTableModel modeloTabla;
+    
+    // Nombres de las columnas del JTable
+    private final String[] titulos = {"Código", "Nombre", "Teléfono", "Correo", "Vigencia"};
+
+
     /**
      * Creates new form ManEditorial
      */
     public ManEditorial() {
-        initComponents();
+    initComponents();
+    inicializarModeloTabla();
+    cargarTabla(); // Llama al método para poblar la tabla al iniciar
     }
+    
+    
+    private void inicializarModeloTabla() {
+    // 1. Crear un DefaultTableModel que NO PERMITA la edición directa de celdas
+    modeloTabla = new DefaultTableModel(null, titulos) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Todas las celdas son NO editables
+        }
+    };
+    tbllibros.setModel(modeloTabla);
+    
+    // 2. Desactivar el auto-ajuste de columnas de la tabla (CLAVE para respetar el ancho)
+    tbllibros.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
 
+    // 3. Asignar anchos específicos a las columnas
+    TableColumnModel columnModel = tbllibros.getColumnModel();
+    
+    // Anchos que suman 750 (ajusta el ancho de jScrollPane1 en NetBeans a al menos 750)
+    columnModel.getColumn(0).setPreferredWidth(80);  // Código
+    columnModel.getColumn(1).setPreferredWidth(250); // Nombre (Más ancho)
+    columnModel.getColumn(2).setPreferredWidth(120); // Teléfono
+    columnModel.getColumn(3).setPreferredWidth(200); // Correo
+    columnModel.getColumn(4).setPreferredWidth(100); // Vigencia (para ver el texto completo)
+    
+    // Opcional: Centrar el texto en las cabeceras
+    tbllibros.getTableHeader().setFont(new java.awt.Font("Segoe UI", 1, 12));
+}
+    private void cargarTabla() {
+        // Limpiar filas anteriores
+        modeloTabla.setRowCount(0);
+
+        try {
+            // Llama al método de la capa lógica para obtener todos los registros
+            List<Editorial> listaEditoriales = objEditorial.obtenerTodos();
+            
+            for (Editorial e : listaEditoriales) {
+                // Crear una fila con los datos de la editorial
+                Object[] fila = new Object[5];
+                fila[0] = e.getIdEditorial();
+                fila[1] = e.getNombre();
+                fila[2] = e.getTelefono();
+                fila[3] = e.getCorreo();
+                fila[4] = e.isEstado() ? "Vigente" : "Inactivo"; 
+                
+                modeloTabla.addRow(fila);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void accionLimpiar() {
+        txtcodigo.setText("");
+        txtnombre.setText("");
+        txttelefono.setText("");
+        txtcorreo.setText("");
+        cbxVigencia.setSelected(true); // Siempre dejar marcado como Vigente
+        txtnombre.requestFocus();
+    }
+    
+    private void setearObjetoDesdeUI() {
+        // El ID solo se setea si el campo no está vacío (para Modificar/Eliminar/Dar Baja)
+        if (!txtcodigo.getText().isEmpty()) {
+            try {
+                objEditorial.setIdEditorial(Integer.parseInt(txtcodigo.getText()));
+            } catch (NumberFormatException ex) {
+                // Si el código no es un número, se manejará en el método de acción
+                objEditorial.setIdEditorial(0); 
+            }
+        } else {
+            objEditorial.setIdEditorial(0);
+        }
+        
+        // Seteo de los demás campos
+        objEditorial.setNombre(txtnombre.getText().trim());
+        objEditorial.setTelefono(txttelefono.getText().trim());
+        objEditorial.setCorreo(txtcorreo.getText().trim());
+        objEditorial.setEstado(cbxVigencia.isSelected());
+    }
+    
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,12 +130,11 @@ public class ManEditorial extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        txttitulo = new javax.swing.JTextField();
+        txtnombre = new javax.swing.JTextField();
         txtcodigo = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        txtcategoria = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
+        txtcorreo = new javax.swing.JTextField();
         btnlimpiar = new javax.swing.JButton();
         btneliminar = new javax.swing.JButton();
         btnnuevo = new javax.swing.JButton();
@@ -42,9 +142,10 @@ public class ManEditorial extends javax.swing.JPanel {
         btndarbaja = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbllibros = new javax.swing.JTable();
-        txtautor = new javax.swing.JTextField();
+        txttelefono = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        cbxVigencia = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(null);
@@ -52,16 +153,16 @@ public class ManEditorial extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setText("Código:");
         jPanel1.add(jLabel7);
-        jLabel7.setBounds(44, 36, 53, 20);
+        jLabel7.setBounds(50, 40, 53, 20);
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel8.setText("Nombre:");
         jPanel1.add(jLabel8);
         jLabel8.setBounds(44, 86, 60, 20);
-        jPanel1.add(txttitulo);
-        txttitulo.setBounds(116, 86, 206, 26);
+        jPanel1.add(txtnombre);
+        txtnombre.setBounds(112, 86, 210, 26);
         jPanel1.add(txtcodigo);
-        txtcodigo.setBounds(116, 36, 100, 26);
+        txtcodigo.setBounds(110, 40, 110, 26);
 
         btnBuscar.setText("...");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -76,13 +177,8 @@ public class ManEditorial extends javax.swing.JPanel {
         jLabel10.setText("Correo:");
         jPanel1.add(jLabel10);
         jLabel10.setBounds(340, 40, 87, 20);
-        jPanel1.add(txtcategoria);
-        txtcategoria.setBounds(400, 40, 210, 26);
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel12.setText("Vigencia:");
-        jPanel1.add(jLabel12);
-        jLabel12.setBounds(340, 90, 87, 20);
+        jPanel1.add(txtcorreo);
+        txtcorreo.setBounds(400, 40, 210, 26);
 
         btnlimpiar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnlimpiar.setText("Limpiar");
@@ -157,17 +253,28 @@ public class ManEditorial extends javax.swing.JPanel {
 
         jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(50, 230, 650, 203);
-        jPanel1.add(txtautor);
-        txtautor.setBounds(119, 138, 203, 26);
+        jPanel1.add(txttelefono);
+        txttelefono.setBounds(112, 138, 210, 26);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setText("Telefono:");
         jPanel1.add(jLabel9);
-        jLabel9.setBounds(44, 138, 63, 20);
+        jLabel9.setBounds(44, 138, 80, 20);
 
-        jCheckBox1.setText("Vigente");
-        jPanel1.add(jCheckBox1);
-        jCheckBox1.setBounds(410, 90, 80, 20);
+        cbxVigencia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbxVigencia.setText("Vigente");
+        cbxVigencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxVigenciaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cbxVigencia);
+        cbxVigencia.setBounds(410, 100, 86, 20);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Vigencia:");
+        jPanel1.add(jLabel1);
+        jLabel1.setBounds(340, 100, 80, 20);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -177,38 +284,188 @@ public class ManEditorial extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        
+        // 1. Validar que el campo Código no esté vacío
+        if (txtcodigo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese un Código para buscar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            txtcodigo.requestFocus();
+            return;
+        }
+
+        try {
+            // 2. Obtener el ID y llamar al método de búsqueda
+            int idBuscado = Integer.parseInt(txtcodigo.getText().trim());
+
+            // Nota: usamos una nueva instancia local para no sobrescribir el objEditorial de la clase
+            Editorial editorialBuscada = new Editorial().obtenerPorId(idBuscado);
+
+            // 3. Evaluar el resultado
+            if (editorialBuscada != null) {
+                // Editorial encontrada: Llenar los campos de la interfaz
+                txtnombre.setText(editorialBuscada.getNombre());
+                txttelefono.setText(editorialBuscada.getTelefono());
+                txtcorreo.setText(editorialBuscada.getCorreo());
+                cbxVigencia.setSelected(editorialBuscada.isEstado());
+                JOptionPane.showMessageDialog(this, "Editorial encontrada.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Editorial no encontrada: Mostrar mensaje y limpiar los campos principales
+                JOptionPane.showMessageDialog(this, "No se encontró ninguna editorial con el código " + idBuscado, "No encontrado", JOptionPane.INFORMATION_MESSAGE);
+                // Limpiar solo los campos de datos (mantener el código para que el usuario pueda corregir)
+                txtnombre.setText("");
+                txttelefono.setText("");
+                txtcorreo.setText("");
+                cbxVigencia.setSelected(true);
+                txtcodigo.requestFocus();
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El Código debe ser un valor numérico entero.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            txtcodigo.requestFocus();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al ejecutar la búsqueda: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnlimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlimpiarActionPerformed
+    
+    accionLimpiar();
+
     }//GEN-LAST:event_btnlimpiarActionPerformed
 
     private void btneliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btneliminarActionPerformed
+        if (txtcodigo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro de la tabla o ingresar el Código para ELIMINAR.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea ELIMINAR DEFINITIVAMENTE este registro?", 
+                                                    "Confirmar Eliminación Física", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+             try {
+                // Seteamos solo el ID que vamos a eliminar
+                objEditorial.setIdEditorial(Integer.parseInt(txtcodigo.getText()));
+                
+                if (objEditorial.eliminar()) {
+                    JOptionPane.showMessageDialog(this, "Editorial eliminada definitivamente.");
+                    accionLimpiar();
+                    cargarTabla(); // Recargar la tabla
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error: Falló la eliminación.", "Error BD", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                 JOptionPane.showMessageDialog(this, "El Código debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                 JOptionPane.showMessageDialog(this, "Error en la eliminación: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btneliminarActionPerformed
 
     private void btnnuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevoActionPerformed
-       
+       if (txtnombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // 1. Cargar datos desde la interfaz al objeto
+        setearObjetoDesdeUI();
+        
+        try {
+            // 2. Llamar al método INSERTAR de la capa lógica
+            if (objEditorial.insertar()) {
+                JOptionPane.showMessageDialog(this, "Editorial guardada exitosamente.");
+                accionLimpiar();
+                cargarTabla(); // Recargar la tabla
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnnuevoActionPerformed
 
     private void btnmodificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarActionPerformed
+       if (txtcodigo.getText().isEmpty() || txtnombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un Código y rellenar el Nombre para modificar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 1. Cargar datos desde la interfaz al objeto
+        setearObjetoDesdeUI();
         
+        try {
+            // 2. Llamar al método ACTUALIZAR
+            if (objEditorial.actualizar()) {
+                JOptionPane.showMessageDialog(this, "Editorial modificada exitosamente.");
+                accionLimpiar();
+                cargarTabla(); // Recargar la tabla
+            } else {
+                JOptionPane.showMessageDialog(this, "La modificación no afectó ningún registro.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El Código debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al modificar: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        }  
     }//GEN-LAST:event_btnmodificarActionPerformed
 
     private void btndarbajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndarbajaActionPerformed
+          if (txtcodigo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un Código para dar de baja.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Cambiar el estado de la editorial a INACTIVO?", 
+                                                    "Confirmar Baja Lógica", JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                // Solo necesitamos el ID para la baja lógica
+                objEditorial.setIdEditorial(Integer.parseInt(txtcodigo.getText()));
+
+                // Llamar al método DAR BAJA (UPDATE estado = FALSE)
+                if (objEditorial.darBaja()) {
+                    JOptionPane.showMessageDialog(this, "Editorial dada de baja (Estado: Inactivo).");
+                    accionLimpiar();
+                    cargarTabla(); // Recargar la tabla
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error: Falló el cambio de estado.", "Error BD", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                 JOptionPane.showMessageDialog(this, "El Código debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                 JOptionPane.showMessageDialog(this, "Error en la baja: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btndarbajaActionPerformed
 
     private void tbllibrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbllibrosMouseClicked
-        
+        // Se ejecuta cuando el usuario hace clic en una fila de la tabla.
+        int fila = tbllibros.getSelectedRow();
+        if (fila >= 0) {
+            // Obtener los datos de la fila seleccionada
+            String codigo = modeloTabla.getValueAt(fila, 0).toString();
+            String nombre = modeloTabla.getValueAt(fila, 1).toString();
+            String telefono = modeloTabla.getValueAt(fila, 2) != null ? modeloTabla.getValueAt(fila, 2).toString() : "";
+            String correo = modeloTabla.getValueAt(fila, 3) != null ? modeloTabla.getValueAt(fila, 3).toString() : "";
+            String vigencia = modeloTabla.getValueAt(fila, 4).toString();
+
+            // Cargar los datos a los campos de texto y checkbox
+            txtcodigo.setText(codigo);
+            txtnombre.setText(nombre);
+            txttelefono.setText(telefono);
+            txtcorreo.setText(correo);
+            
+            // Vigencia: TRUE si dice "Vigente", FALSE si dice "Inactivo" (o cualquier otra cosa)
+            cbxVigencia.setSelected(vigencia.equalsIgnoreCase("Vigente"));
+        }
     }//GEN-LAST:event_tbllibrosMouseClicked
+
+    private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxVigenciaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -218,18 +475,18 @@ public class ManEditorial extends javax.swing.JPanel {
     private javax.swing.JButton btnlimpiar;
     private javax.swing.JButton btnmodificar;
     private javax.swing.JButton btnnuevo;
-    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox cbxVigencia;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbllibros;
-    private javax.swing.JTextField txtautor;
-    private javax.swing.JTextField txtcategoria;
     private javax.swing.JTextField txtcodigo;
-    private javax.swing.JTextField txttitulo;
+    private javax.swing.JTextField txtcorreo;
+    private javax.swing.JTextField txtnombre;
+    private javax.swing.JTextField txttelefono;
     // End of variables declaration//GEN-END:variables
 }
