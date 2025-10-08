@@ -8,7 +8,7 @@ import capaDatos.clsJDBC;
 
 /**
  *
- * @author rodri
+ * @author Tocto Portocarrero Rodrigo Jesús
  */
 public class main {
 
