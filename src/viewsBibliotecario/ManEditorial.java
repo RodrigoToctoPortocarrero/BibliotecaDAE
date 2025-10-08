@@ -3,121 +3,122 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package viewsBibliotecario;
-import capaLogica.Editorial;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List; // Necesario para trabajar con la lista de editoriales
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import capaLogica.Editorial; 
+import java.util.List;
+import java.sql.ResultSet; 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel; // Necesario para manipular la tabla
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author laboratorio_computo
  */
 public class ManEditorial extends javax.swing.JPanel {
 
-    // 1. Declaración de la capa lógica y el modelo de tabla
-    private Editorial objEditorial = new Editorial();
-    private DefaultTableModel modeloTabla;
-    
-    // Nombres de las columnas del JTable
-    private final String[] titulos = {"Código", "Nombre", "Teléfono", "Correo", "Vigencia"};
-
+   Editorial objEditorial = new Editorial();
+   DefaultTableModel modeloTabla = new DefaultTableModel();
 
     /**
      * Creates new form ManEditorial
      */
     public ManEditorial() {
     initComponents();
-    inicializarModeloTabla();
-    cargarTabla(); // Llama al método para poblar la tabla al iniciar
+    inicializarTabla();
+    cargarTabla();
     }
     
-    
-    private void inicializarModeloTabla() {
-    // 1. Crear un DefaultTableModel que NO PERMITA la edición directa de celdas
-    modeloTabla = new DefaultTableModel(null, titulos) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Todas las celdas son NO editables
-        }
-    };
-    tbllibros.setModel(modeloTabla);
-    
-    // 2. Desactivar el auto-ajuste de columnas de la tabla (CLAVE para respetar el ancho)
-    tbllibros.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
 
-    // 3. Asignar anchos específicos a las columnas
-    TableColumnModel columnModel = tbllibros.getColumnModel();
+    private void inicializarTabla() {
+        String[] titulos = {"Código", "Nombre", "Teléfono", "Correo", "Vigencia"};
+        modeloTabla.setColumnIdentifiers(titulos);
+        tbllibros.setModel(modeloTabla);
+    }
     
-    // Anchos que suman 750 (ajusta el ancho de jScrollPane1 en NetBeans a al menos 750)
-    columnModel.getColumn(0).setPreferredWidth(80);  // Código
-    columnModel.getColumn(1).setPreferredWidth(250); // Nombre (Más ancho)
-    columnModel.getColumn(2).setPreferredWidth(120); // Teléfono
-    columnModel.getColumn(3).setPreferredWidth(200); // Correo
-    columnModel.getColumn(4).setPreferredWidth(100); // Vigencia (para ver el texto completo)
-    
-    // Opcional: Centrar el texto en las cabeceras
-    tbllibros.getTableHeader().setFont(new java.awt.Font("Segoe UI", 1, 12));
-}
     private void cargarTabla() {
-        // Limpiar filas anteriores
-        modeloTabla.setRowCount(0);
+    modeloTabla.setRowCount(0); // Limpiar filas anteriores
+    ResultSet rs = null;
 
-        try {
-            // Llama al método de la capa lógica para obtener todos los registros
-            List<Editorial> listaEditoriales = objEditorial.obtenerTodos();
+    try {
+        // 1. Obtener el ResultSet
+        // Nota: asumo que la clase Editorial tiene un método llamado listarEditorial()
+        rs = objEditorial.listarEditorial(); 
+
+        // 2. Iterar sobre el ResultSet
+        while (rs.next()) {
+            // Leer los datos del ResultSet (usa nombres de columnas de la BD)
+            int id = rs.getInt("ideditorial");
+            String nombre = rs.getString("nombre");
+            String telefono = rs.getString("telefono");
+            String correo = rs.getString("correo");
+            boolean estado = rs.getBoolean("estado");
             
-            for (Editorial e : listaEditoriales) {
-                // Crear una fila con los datos de la editorial
-                Object[] fila = new Object[5];
-                fila[0] = e.getIdEditorial();
-                fila[1] = e.getNombre();
-                fila[2] = e.getTelefono();
-                fila[3] = e.getCorreo();
-                fila[4] = e.isEstado() ? "Vigente" : "Inactivo"; 
-                
-                modeloTabla.addRow(fila);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+            String vigencia = estado ? "Vigente" : "No Vigente";
+
+            Object[] fila = {id, nombre, telefono, correo, vigencia};
+            modeloTabla.addRow(fila);
         }
-    }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al cargar la tabla: " + e.getMessage(), "Error de Sistema", JOptionPane.ERROR_MESSAGE);
+    } 
+    /* IMPORTANTE: En la estructura de Categoria.java que me pasaste, la conexión 
+    se cierra al final del método DAO (listarCategoria). Si tu Editorial.java hace 
+    lo mismo, no necesitas un finally aquí, pero es buena práctica si no lo hace.
+    */
+}
     
-    private void accionLimpiar() {
+    private void limpiarCampos() {
         txtcodigo.setText("");
         txtnombre.setText("");
         txttelefono.setText("");
         txtcorreo.setText("");
-        cbxVigencia.setSelected(true); // Siempre dejar marcado como Vigente
-        txtnombre.requestFocus();
+        cbxVigencia.setSelected(false);
+        txtcodigo.setEnabled(true); 
+        btnBuscar.setEnabled(true);
     }
     
-    private void setearObjetoDesdeUI() {
-        // El ID solo se setea si el campo no está vacío (para Modificar/Eliminar/Dar Baja)
-        if (!txtcodigo.getText().isEmpty()) {
-            try {
-                objEditorial.setIdEditorial(Integer.parseInt(txtcodigo.getText()));
-            } catch (NumberFormatException ex) {
-                // Si el código no es un número, se manejará en el método de acción
-                objEditorial.setIdEditorial(0); 
+    // Obtiene los datos de la interfaz y los asigna al objeto Editorial
+   
+    private Editorial obtenerEditorialDesdeCampos() {
+        Editorial editorial = new Editorial();
+
+        try {
+            String codigoStr = txtcodigo.getText().trim();
+
+            // 🚨 CRÍTICO: Si la cadena está vacía, no se intenta nada y se detiene.
+            if (codigoStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El campo Código es obligatorio.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                return null;
             }
-        } else {
-            objEditorial.setIdEditorial(0);
+
+            // Asignar el ID solo después de verificar que no está vacío
+            int id = Integer.parseInt(codigoStr);
+            editorial.setIdeditorial(id);
+
+            // (Validaciones de otros campos... se asume que pasan o están correctamente implementadas)
+            if (txtnombre.getText().trim().isEmpty()
+                    || txttelefono.getText().trim().isEmpty()
+                    || txtcorreo.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(this, "Todos los campos de texto son obligatorios.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+
+            editorial.setNombre(txtnombre.getText().trim());
+            editorial.setTelefono(txttelefono.getText().trim());
+            editorial.setCorreo(txtcorreo.getText().trim());
+            editorial.setEstado(cbxVigencia.isSelected());
+
+            return editorial;
+
+        } catch (NumberFormatException e) {
+            // Captura si el usuario puso letras en el campo de código
+            JOptionPane.showMessageDialog(this, "El Código debe ser un número entero válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } catch (Exception e) {
+            // Para cualquier otro error durante la captura de datos
+            JOptionPane.showMessageDialog(this, "Error al obtener datos de los campos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
-        
-        // Seteo de los demás campos
-        objEditorial.setNombre(txtnombre.getText().trim());
-        objEditorial.setTelefono(txttelefono.getText().trim());
-        objEditorial.setCorreo(txtcorreo.getText().trim());
-        objEditorial.setEstado(cbxVigencia.isSelected());
     }
-    
-  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -164,14 +165,14 @@ public class ManEditorial extends javax.swing.JPanel {
         jPanel1.add(txtcodigo);
         txtcodigo.setBounds(110, 40, 110, 26);
 
-        btnBuscar.setText("...");
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/buscar2.png"))); // NOI18N
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
             }
         });
         jPanel1.add(btnBuscar);
-        btnBuscar.setBounds(234, 36, 33, 27);
+        btnBuscar.setBounds(230, 30, 50, 43);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setText("Correo:");
@@ -181,6 +182,7 @@ public class ManEditorial extends javax.swing.JPanel {
         txtcorreo.setBounds(400, 40, 210, 26);
 
         btnlimpiar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnlimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/limpiarMarca.png"))); // NOI18N
         btnlimpiar.setText("Limpiar");
         btnlimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -188,9 +190,10 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnlimpiar);
-        btnlimpiar.setBounds(320, 180, 81, 29);
+        btnlimpiar.setBounds(330, 180, 130, 43);
 
         btneliminar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btneliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/eliminarMarca.png"))); // NOI18N
         btneliminar.setText("Eliminar");
         btneliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,9 +201,10 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btneliminar);
-        btneliminar.setBounds(210, 180, 85, 29);
+        btneliminar.setBounds(180, 180, 130, 43);
 
         btnnuevo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnnuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/registrarMarca.png"))); // NOI18N
         btnnuevo.setText("Nuevo");
         btnnuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -208,9 +212,10 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnnuevo);
-        btnnuevo.setBounds(100, 180, 81, 29);
+        btnnuevo.setBounds(40, 180, 120, 40);
 
         btnmodificar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnmodificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/modificarMarca.png"))); // NOI18N
         btnmodificar.setText("Modificar");
         btnmodificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,9 +223,10 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btnmodificar);
-        btnmodificar.setBounds(550, 180, 110, 29);
+        btnmodificar.setBounds(610, 180, 129, 43);
 
         btndarbaja.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btndarbaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/darBajaMarca.png"))); // NOI18N
         btndarbaja.setText("Dar baja");
         btndarbaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,7 +234,7 @@ public class ManEditorial extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btndarbaja);
-        btndarbaja.setBounds(430, 180, 89, 29);
+        btndarbaja.setBounds(470, 180, 130, 43);
 
         tbllibros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -252,7 +258,7 @@ public class ManEditorial extends javax.swing.JPanel {
         }
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(50, 230, 650, 203);
+        jScrollPane1.setBounds(50, 250, 650, 203);
         jPanel1.add(txttelefono);
         txttelefono.setBounds(112, 138, 210, 26);
 
@@ -289,182 +295,207 @@ public class ManEditorial extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // 1. Validar que el campo Código no esté vacío
-        if (txtcodigo.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese un Código para buscar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            txtcodigo.requestFocus();
+        String codigoStr = txtcodigo.getText().trim();
+        if (codigoStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese un código para buscar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
+        ResultSet rs = null;
+
         try {
-            // 2. Obtener el ID y llamar al método de búsqueda
-            int idBuscado = Integer.parseInt(txtcodigo.getText().trim());
+            int id = Integer.parseInt(codigoStr);
+            // Usamos el método que devuelve ResultSet
+            rs = objEditorial.buscarPorCodigo(id);
 
-            // Nota: usamos una nueva instancia local para no sobrescribir el objEditorial de la clase
-            Editorial editorialBuscada = new Editorial().obtenerPorId(idBuscado);
+            if (rs.next()) {
+                // Rellenar campos usando los datos del ResultSet
+                txtnombre.setText(rs.getString("nombre"));
+                txttelefono.setText(rs.getString("telefono"));
+                txtcorreo.setText(rs.getString("correo"));
+                cbxVigencia.setSelected(rs.getBoolean("estado"));
 
-            // 3. Evaluar el resultado
-            if (editorialBuscada != null) {
-                // Editorial encontrada: Llenar los campos de la interfaz
-                txtnombre.setText(editorialBuscada.getNombre());
-                txttelefono.setText(editorialBuscada.getTelefono());
-                txtcorreo.setText(editorialBuscada.getCorreo());
-                cbxVigencia.setSelected(editorialBuscada.isEstado());
+                txtcodigo.setEnabled(false);
+                btnBuscar.setEnabled(false);
                 JOptionPane.showMessageDialog(this, "Editorial encontrada.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Editorial no encontrada: Mostrar mensaje y limpiar los campos principales
-                JOptionPane.showMessageDialog(this, "No se encontró ninguna editorial con el código " + idBuscado, "No encontrado", JOptionPane.INFORMATION_MESSAGE);
-                // Limpiar solo los campos de datos (mantener el código para que el usuario pueda corregir)
-                txtnombre.setText("");
-                txttelefono.setText("");
-                txtcorreo.setText("");
-                cbxVigencia.setSelected(true);
-                txtcodigo.requestFocus();
+                limpiarCampos();
+                txtcodigo.setText(codigoStr); // Mantiene el código ingresado
+                JOptionPane.showMessageDialog(this, "Editorial con código " + id + " no encontrada.", "Búsqueda", JOptionPane.INFORMATION_MESSAGE);
             }
-
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El Código debe ser un valor numérico entero.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-            txtcodigo.requestFocus();
+            JOptionPane.showMessageDialog(this, "El Código debe ser un número entero.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al ejecutar la búsqueda: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error de búsqueda: " + e.getMessage(), "Error de Sistema", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnlimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlimpiarActionPerformed
     
-    accionLimpiar();
-
+        limpiarCampos();
     }//GEN-LAST:event_btnlimpiarActionPerformed
 
     private void btneliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btneliminarActionPerformed
-        if (txtcodigo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro de la tabla o ingresar el Código para ELIMINAR.", "Error", JOptionPane.ERROR_MESSAGE);
+        String codigoStr = txtcodigo.getText().trim();
+        if (codigoStr.isEmpty() || txtnombre.getText().trim().isEmpty() || txtcodigo.isEnabled()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro para eliminar permanentemente.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea ELIMINAR DEFINITIVAMENTE este registro?", 
-                                                    "Confirmar Eliminación Física", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        
-        if (confirm == JOptionPane.YES_OPTION) {
-             try {
-                // Seteamos solo el ID que vamos a eliminar
-                objEditorial.setIdEditorial(Integer.parseInt(txtcodigo.getText()));
-                
-                if (objEditorial.eliminar()) {
-                    JOptionPane.showMessageDialog(this, "Editorial eliminada definitivamente.");
-                    accionLimpiar();
-                    cargarTabla(); // Recargar la tabla
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error: Falló la eliminación.", "Error BD", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException e) {
-                 JOptionPane.showMessageDialog(this, "El Código debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¡ADVERTENCIA! ¿Desea ELIMINAR PERMANENTEMENTE la Editorial: " + txtnombre.getText() + "?",
+                "Confirmar Eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                int id = Integer.parseInt(codigoStr);
+                objEditorial.eliminar(id);
+                JOptionPane.showMessageDialog(this, "Editorial eliminada permanentemente.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                cargarTabla();
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(this, "Error en la eliminación: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+                // Aquí capturamos errores de FK si hay libros asociados
+                JOptionPane.showMessageDialog(this, "Error al eliminar. Verifique que no haya libros asociados: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
             }
-        }
+        }  
     }//GEN-LAST:event_btneliminarActionPerformed
 
     private void btnnuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevoActionPerformed
-       if (txtnombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre es obligatorio.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // 1. Cargar datos desde la interfaz al objeto
-        setearObjetoDesdeUI();
-        
         try {
-            // 2. Llamar al método INSERTAR de la capa lógica
-            if (objEditorial.insertar()) {
-                JOptionPane.showMessageDialog(this, "Editorial guardada exitosamente.");
-                accionLimpiar();
-                cargarTabla(); // Recargar la tabla
+            // FASE 1: Preparar para la inserción (Botón dice NUEVO)
+            if (btnnuevo.getText().equals("NUEVO")) {
+                limpiarCampos();
+                txtcodigo.setEnabled(true); // Permitir que el usuario ingrese el ID
+                btnnuevo.setText("GUARDAR");
+
+                // FASE 2: Insertar la Editorial (Botón dice GUARDAR)
+            } else {
+
+                // 🚨 1. VALIDACIÓN CRÍTICA DEL CÓDIGO Y OTROS CAMPOS (Evita Error NULL)
+                String codigoStr = txtcodigo.getText().trim();
+
+                if (codigoStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar un Código (ID) para la Editorial antes de guardar.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Validar que sea un número (para evitar NumberFormatException)
+                int idEditorial;
+                try {
+                    idEditorial = Integer.parseInt(codigoStr);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "El Código debe ser un número entero válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Validar campos de texto restantes
+                if (txtnombre.getText().trim().isEmpty()
+                        || txttelefono.getText().trim().isEmpty()
+                        || txtcorreo.getText().trim().isEmpty()) {
+
+                    JOptionPane.showMessageDialog(this, "Nombre, Teléfono y Correo son obligatorios.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 2. Obtener el objeto Editorial (ya validado)
+                Editorial nuevaEditorial = obtenerEditorialDesdeCampos();
+                if (nuevaEditorial == null) {
+                    return;
+                }
+
+                // 3. Verificación de existencia (Maneja el error de "Ya existe...")
+                // Usamos .next() para ver si el ResultSet tiene datos.
+                if (objEditorial.buscarPorCodigo(nuevaEditorial.getIdeditorial()).next()) {
+                    JOptionPane.showMessageDialog(this, "Ya existe una Editorial con este Código (" + nuevaEditorial.getIdeditorial() + "). Debe ingresar un ID diferente.", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 4. Insertamos
+                objEditorial.registrar(nuevaEditorial);
+
+                JOptionPane.showMessageDialog(this, "Editorial registrada con éxito.", "Registro", JOptionPane.INFORMATION_MESSAGE);
+
+                // 5. Volver a la normalidad
+                btnnuevo.setText("NUEVO");
+                limpiarCampos();
+                cargarTabla();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+            // Capturamos cualquier error de BD restante.
+            JOptionPane.showMessageDialog(this, "Error al insertar Editorial: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+
+            // Dejar el botón en modo NUEVO después de la falla.
+            btnnuevo.setText("NUEVO");
+            txtcodigo.setEnabled(true);
         }
     }//GEN-LAST:event_btnnuevoActionPerformed
 
     private void btnmodificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarActionPerformed
-       if (txtcodigo.getText().isEmpty() || txtnombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un Código y rellenar el Nombre para modificar.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // 1. Cargar datos desde la interfaz al objeto
-        setearObjetoDesdeUI();
+          Editorial editorialModificada = obtenerEditorialDesdeCampos();
+        if (editorialModificada == null) return; 
         
         try {
-            // 2. Llamar al método ACTUALIZAR
-            if (objEditorial.actualizar()) {
-                JOptionPane.showMessageDialog(this, "Editorial modificada exitosamente.");
-                accionLimpiar();
-                cargarTabla(); // Recargar la tabla
-            } else {
-                JOptionPane.showMessageDialog(this, "La modificación no afectó ningún registro.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El Código debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+            objEditorial.modificar(editorialModificada);
+            JOptionPane.showMessageDialog(this, "Editorial modificada con éxito.", "Modificación", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+            cargarTabla();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al modificar: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
-        }  
+             JOptionPane.showMessageDialog(this, "Error al modificar: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnmodificarActionPerformed
 
     private void btndarbajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndarbajaActionPerformed
-          if (txtcodigo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un Código para dar de baja.", "Error", JOptionPane.ERROR_MESSAGE);
+         String codigoStr = txtcodigo.getText().trim();
+        if (codigoStr.isEmpty() || txtnombre.getText().trim().isEmpty() || txtcodigo.isEnabled()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro para dar de baja.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Cambiar el estado de la editorial a INACTIVO?", 
-                                                    "Confirmar Baja Lógica", JOptionPane.YES_NO_OPTION);
+        int confirmacion = JOptionPane.showConfirmDialog(this, 
+                "¿Desea dar de BAJA la Editorial: " + txtnombre.getText() + "? (Estado = No Vigente)", 
+                "Confirmar Baja", JOptionPane.YES_NO_OPTION);
         
-        if (confirm == JOptionPane.YES_OPTION) {
+        if (confirmacion == JOptionPane.YES_OPTION) {
             try {
-                // Solo necesitamos el ID para la baja lógica
-                objEditorial.setIdEditorial(Integer.parseInt(txtcodigo.getText()));
-
-                // Llamar al método DAR BAJA (UPDATE estado = FALSE)
-                if (objEditorial.darBaja()) {
-                    JOptionPane.showMessageDialog(this, "Editorial dada de baja (Estado: Inactivo).");
-                    accionLimpiar();
-                    cargarTabla(); // Recargar la tabla
-                } else {
-                    JOptionPane.showMessageDialog(this, "Error: Falló el cambio de estado.", "Error BD", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException e) {
-                 JOptionPane.showMessageDialog(this, "El Código debe ser numérico.", "Error", JOptionPane.ERROR_MESSAGE);
+                int id = Integer.parseInt(codigoStr);
+                objEditorial.darBaja(id);
+                JOptionPane.showMessageDialog(this, "Editorial dada de BAJA con éxito.", "Baja Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                cargarTabla();
             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(this, "Error en la baja: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al dar de baja: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btndarbajaActionPerformed
 
     private void tbllibrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbllibrosMouseClicked
-        // Se ejecuta cuando el usuario hace clic en una fila de la tabla.
-        int fila = tbllibros.getSelectedRow();
-        if (fila >= 0) {
-            // Obtener los datos de la fila seleccionada
-            String codigo = modeloTabla.getValueAt(fila, 0).toString();
-            String nombre = modeloTabla.getValueAt(fila, 1).toString();
-            String telefono = modeloTabla.getValueAt(fila, 2) != null ? modeloTabla.getValueAt(fila, 2).toString() : "";
-            String correo = modeloTabla.getValueAt(fila, 3) != null ? modeloTabla.getValueAt(fila, 3).toString() : "";
-            String vigencia = modeloTabla.getValueAt(fila, 4).toString();
-
-            // Cargar los datos a los campos de texto y checkbox
-            txtcodigo.setText(codigo);
-            txtnombre.setText(nombre);
-            txttelefono.setText(telefono);
-            txtcorreo.setText(correo);
-            
-            // Vigencia: TRUE si dice "Vigente", FALSE si dice "Inactivo" (o cualquier otra cosa)
-            cbxVigencia.setSelected(vigencia.equalsIgnoreCase("Vigente"));
-        }
+    int fila = tbllibros.getSelectedRow();
+        if (fila == -1) return;
+        
+        // Obtener datos de la fila
+        String codigoStr = modeloTabla.getValueAt(fila, 0).toString();
+        String nombre = modeloTabla.getValueAt(fila, 1).toString();
+        String telefono = modeloTabla.getValueAt(fila, 2).toString();
+        String correo = modeloTabla.getValueAt(fila, 3).toString();
+        String vigenciaStr = modeloTabla.getValueAt(fila, 4).toString();
+        
+        // Rellenar campos de texto
+        txtcodigo.setText(codigoStr);
+        txtnombre.setText(nombre);
+        txttelefono.setText(telefono);
+        txtcorreo.setText(correo);
+        
+        // Rellenar CheckBox
+        cbxVigencia.setSelected(vigenciaStr.equals("Vigente"));
+        
+        // Deshabilitar código para Modificar o Dar Baja
+        txtcodigo.setEnabled(false);
+        btnBuscar.setEnabled(false);
     }//GEN-LAST:event_tbllibrosMouseClicked
 
     private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_cbxVigenciaActionPerformed
 
 

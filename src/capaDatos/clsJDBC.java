@@ -1,11 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package capaDatos;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement; 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,8 +18,6 @@ public class clsJDBC {
     private String password = "usuario1";
     private Connection con = null;
 
-    // Eliminamos 'sent' como variable de clase, es mejor usarlo localmente.
-    // private Statement sent = null; 
     public Connection getCon() {
         return con;
     }
@@ -33,7 +28,6 @@ public class clsJDBC {
 
     public Connection conectar() throws Exception {
         try {
-            // Asegúrate de que la conexión solo se crea si es nula o está cerrada
             if (con == null || con.isClosed()) {
                 con = DriverManager.getConnection(url, username, password);
             }
@@ -55,9 +49,7 @@ public class clsJDBC {
     }
 
     /**
-     * MODIFICADO: Se elimina la desconexión en el bloque finally. La conexión
-     * permanece abierta para que el ResultSet pueda ser leído. El método que
-     * llama a consultarBD es responsable de llamar a desconectar.
+     * MODIFICADO: Retorna un ResultSet y deja la conexión abierta.
      */
     public ResultSet consultarBD(String strSQL) throws Exception {
         ResultSet rs = null;
@@ -74,12 +66,10 @@ public class clsJDBC {
             }
             throw new Exception("Error al ejecutar consulta: " + e.getMessage());
         }
-        // ¡SIN BLOQUE FINALLY CON DESCONEXIÓN!
     }
 
     /**
-     * CORRECTO: Se mantiene la desconexión en el bloque finally después de
-     * ejecutar.
+     * CORRECTO: Ejecuta DML (UPDATE, DELETE) usando Statement.
      */
     public void ejecutarBD(String strSQL) throws Exception {
         Statement sent = null; // Declarado localmente
@@ -94,13 +84,53 @@ public class clsJDBC {
             if (sent != null) {
                 try {
                     sent.close();
-                } catch (SQLException e) {
-                    /* Ignorar */ }
+                } catch (SQLException e) { /* Ignorar */ }
             }
             // Desconecta la conexión
             if (con != null) {
                 desconectar();
             }
         }
+    }
+    
+    // =========================================================
+    // NUEVO MÉTODO PARA USAR CONSULTAS PREPARADAS (INSERT/UPDATE)
+    // =========================================================
+
+    /**
+     * NUEVO: Ejecuta una sentencia DML (INSERT, UPDATE, DELETE) usando PreparedStatement.
+     * Este método es crucial para manejar IDs enteros y booleanos de forma segura.
+     * @param strSQL La sentencia SQL con placeholders (?).
+     * @param params Los parámetros a establecer en los placeholders.
+     */
+    public int ejecutarBDPreparada(String strSQL, Object... params) throws Exception {
+        PreparedStatement ps = null; // Usamos PreparedStatement
+        int filasAfectadas = 0;
+        try {
+            conectar(); 
+            ps = con.prepareStatement(strSQL);
+            
+            // Establecer los parámetros dinámicamente, manteniendo los tipos
+            for (int i = 0; i < params.length; i++) {
+                // ps.setObject(index, value) maneja la conversión de tipos
+                ps.setObject(i + 1, params[i]); 
+            }
+            
+            filasAfectadas = ps.executeUpdate();
+        } catch (Exception e) {
+            throw new Exception("Error al ejecutar Update preparado --> " + e.getMessage());
+        } finally {
+            // Cierra el PreparedStatement
+            if (ps != null) {
+                try { 
+                    ps.close(); 
+                } catch (SQLException ex) { /* Ignorar */ }
+            }
+            // Desconecta la conexión
+            if (con != null) {
+                 desconectar(); 
+            }
+        }
+        return filasAfectadas;
     }
 }

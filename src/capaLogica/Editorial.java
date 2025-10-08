@@ -1,57 +1,33 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package capaLogica;
 
 import capaDatos.clsJDBC;
-import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List; // Necesario para retornar listas
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  *
- * @author VALENTINO
+ * @author Valentino Lopez
  */
 public class Editorial {
+
+    private clsJDBC objJDBC = new clsJDBC(); // Instancia de la clase de conexión
     
-    // ATRIBUTOS DE ACCESO A DATOS
-    private clsJDBC objConectar = new clsJDBC();
-    private String strSQL;
-    private ResultSet rs = null;
-    
-    // ATRIBUTOS DE LA ENTIDAD EDITORIAL (MODELO)
-    private int idEditorial;
+    // Propiedades de la Editorial (Modelo de datos)
+    private int ideditorial;
     private String nombre;
     private String telefono;
     private String correo;
-    private boolean estado; // Representa el campo 'vigencia' (activo/inactivo)
+    private boolean estado;
 
-    // Constructor vacío
-    public Editorial() {
-    }
+    // Constructores y Getters/Setters (omitiendo por brevedad, asume que existen)
 
-    // Constructor para inserciones (sin idEditorial)
-    public Editorial(String nombre, String telefono, String correo, boolean estado) {
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.correo = correo;
-        this.estado = estado;
-    }
+    public Editorial() { }
 
-    // Constructor para consultas y actualizaciones (con idEditorial)
-    public Editorial(int idEditorial, String nombre, String telefono, String correo, boolean estado) {
-        this.idEditorial = idEditorial;
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.correo = correo;
-        this.estado = estado;
-    }
-
-    // --- MÉTODOS GETTERS Y SETTERS (Ya estaban correctos) ---
-    public int getIdEditorial() { return idEditorial; }
-    public void setIdEditorial(int idEditorial) { this.idEditorial = idEditorial; }
+    public int getIdeditorial() { return ideditorial; }
+    public void setIdeditorial(int ideditorial) { this.ideditorial = ideditorial; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getTelefono() { return telefono; }
@@ -60,153 +36,150 @@ public class Editorial {
     public void setCorreo(String correo) { this.correo = correo; }
     public boolean isEstado() { return estado; }
     public void setEstado(boolean estado) { this.estado = estado; }
+    
+    // ------------------------------------
+    // LÓGICA DE ACCESO A DATOS
+    // ------------------------------------
 
-    
-    // =========================================================================
-    // LÓGICA DE NEGOCIO (Métodos CRUD para los botones de la interfaz)
-    // =========================================================================
-    
-    /**
-     * Corresponde al botón 'Nuevo'. Inserta un nuevo registro en la BD.
-     */
-    public boolean insertar() throws Exception {
-        // PostgreSQL requiere que el booleano se escriba como TRUE o FALSE en la consulta
-        String estadoSQL = this.estado ? "TRUE" : "FALSE";
-        
-        // Construcción de la consulta con interpolación de String (¡cuidado con las comillas simples!)
-        strSQL = String.format(
-            "INSERT INTO EDITORIAL (nombre, telefono, correo, estado) VALUES ('%s', '%s', '%s', %s)",
-            this.nombre,
-            this.telefono,
-            this.correo,
-            estadoSQL
-        );
-        
+    // Listar Editorial
+    public ResultSet listarEditorial() throws Exception {
+        Connection con = null;
         try {
-            objConectar.ejecutarBD(strSQL);
-            return true;
+            con = objJDBC.conectar();
+            String sql = "SELECT ideditorial, nombre, telefono, correo, estado FROM EDITORIAL ORDER BY ideditorial";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            return rs; // La desconexión debe hacerse después de leer el ResultSet
         } catch (Exception e) {
-            throw new Exception("Error al insertar editorial: " + e.getMessage());
+            // Manejo de la conexión en caso de error (similar a tu Categoria.java)
+            if (con != null) {
+                objJDBC.desconectar();
+            }
+            throw new Exception("Error al listar editoriales: " + e.getMessage());
         }
     }
 
-    /**
-     * Corresponde al botón 'Modificar'. Actualiza un registro existente en la BD.
-     */
-    public boolean actualizar() throws Exception {
-        String estadoSQL = this.estado ? "TRUE" : "FALSE";
-        
-        strSQL = String.format(
-            "UPDATE EDITORIAL SET nombre = '%s', telefono = '%s', correo = '%s', estado = %s WHERE idEditorial = %d",
-            this.nombre,
-            this.telefono,
-            this.correo,
-            estadoSQL,
-            this.idEditorial
-        );
-        
+    // Buscar Editorial
+    public ResultSet buscarPorCodigo(int ideditorial) throws Exception {
+        Connection con = null;
+        PreparedStatement pst = null;
         try {
-            objConectar.ejecutarBD(strSQL);
-            return true;
-        } catch (Exception e) {
-            throw new Exception("Error al actualizar editorial: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Corresponde al botón 'Dar baja'. Realiza una BAJA LÓGICA (estado = FALSE).
-     */
-    public boolean darBaja() throws Exception {
-        // Baja lógica: actualiza solo el campo 'estado' a FALSE.
-        strSQL = "UPDATE EDITORIAL SET estado = FALSE WHERE idEditorial = " + this.idEditorial;
-        
-        try {
-            objConectar.ejecutarBD(strSQL);
-            return true;
-        } catch (Exception e) {
-            throw new Exception("Error al dar de baja editorial: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Corresponde al botón 'Eliminar'. Realiza una ELIMINACIÓN FÍSICA (DELETE).
-     */
-    public boolean eliminar() throws Exception {
-        strSQL = "DELETE FROM EDITORIAL WHERE idEditorial = " + this.idEditorial;
-        
-        try {
-            objConectar.ejecutarBD(strSQL);
-            return true;
-        } catch (Exception e) {
-            throw new Exception("Error al eliminar editorial: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Obtiene todos los registros de la tabla para llenar el JTable.
-     * Retorna una lista de objetos Editorial.
-     */
-    public List<Editorial> obtenerTodos() throws Exception {
-        strSQL = "SELECT idEditorial, nombre, telefono, correo, estado FROM EDITORIAL ORDER BY nombre";
-        ResultSet rsLocal = null;
-        List<Editorial> lista = new ArrayList<>();
-        
-        try {
-            rsLocal = objConectar.consultarBD(strSQL);
+            con = objJDBC.conectar();
+            String sql = "SELECT ideditorial, nombre, telefono, correo, estado FROM EDITORIAL WHERE ideditorial = ?";
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, ideditorial);
             
-            while (rsLocal.next()) {
-                // Se crea una nueva instancia de Editorial para cada fila de la BD
-                Editorial e = new Editorial(); 
-                e.setIdEditorial(rsLocal.getInt("idEditorial"));
-                e.setNombre(rsLocal.getString("nombre"));
-                e.setTelefono(rsLocal.getString("telefono"));
-                e.setCorreo(rsLocal.getString("correo"));
-                e.setEstado(rsLocal.getBoolean("estado"));
-                lista.add(e);
+            return pst.executeQuery(); // La desconexión debe hacerse después de leer el ResultSet
+        } catch (Exception e) {
+            if (con != null) {
+                objJDBC.desconectar();
             }
-        } catch (SQLException ex) {
-            throw new Exception("Error al listar editoriales: " + ex.getMessage());
-        } finally {
-            // CRÍTICO: Debemos cerrar el ResultSet y la conexión que dejó abierta consultarBD
-            if (rsLocal != null) {
-                try {
-                    rsLocal.close();
-                } catch (SQLException ex) { /* Ignorar error al cerrar */ }
-            }
-            objConectar.desconectar();
+            throw new Exception("Error al buscar editorial: " + e.getMessage());
         }
-        return lista;
     }
+
     
+    public void registrar(Editorial editorial) throws Exception {
+    // 1. Definimos la SQL con placeholders (?) para todas las columnas
+    String sql = "INSERT INTO EDITORIAL (ideditorial, nombre, telefono, correo, estado) " +
+                 "VALUES (?, ?, ?, ?, ?)";
     
-    public Editorial obtenerPorId(int id) throws Exception {
-    strSQL = "SELECT idEditorial, nombre, telefono, correo, estado FROM EDITORIAL WHERE idEditorial = " + id;
-    ResultSet rsLocal = null;
-    Editorial editorialEncontrada = null;
+    Connection con = null;
+    PreparedStatement pst = null;
 
     try {
-        rsLocal = objConectar.consultarBD(strSQL);
+        // Asumo que 'objJDBC' es tu instancia de la clase de conexión/utilidad
+        con = objJDBC.conectar(); 
+        pst = con.prepareStatement(sql);
         
-        // Si encuentra una fila (solo puede ser una)
-        if (rsLocal.next()) {
-            editorialEncontrada = new Editorial(); 
-            editorialEncontrada.setIdEditorial(rsLocal.getInt("idEditorial"));
-            editorialEncontrada.setNombre(rsLocal.getString("nombre"));
-            editorialEncontrada.setTelefono(rsLocal.getString("telefono"));
-            editorialEncontrada.setCorreo(rsLocal.getString("correo"));
-            editorialEncontrada.setEstado(rsLocal.getBoolean("estado"));
+        // 2. Asignamos los valores a los placeholders
+        pst.setInt(1, editorial.getIdeditorial()); // CLAVE PRIMARIA
+        pst.setString(2, editorial.getNombre());
+        pst.setString(3, editorial.getTelefono());
+        pst.setString(4, editorial.getCorreo());
+        pst.setBoolean(5, editorial.isEstado());
+        
+        // 3. Ejecutamos la inserción
+        int filasAfectadas = pst.executeUpdate();
+        
+        if (filasAfectadas == 0) {
+            throw new Exception("No se insertó la Editorial. Verifique que el ID no exista y que la conexión sea válida.");
         }
-    } catch (SQLException ex) {
-        throw new Exception("Error al buscar editorial por ID: " + ex.getMessage());
+        
+    } catch (SQLException e) {
+        // Esto es lo que captura el error de clave duplicada o de valor NULL
+        throw new Exception("Error de base de datos al registrar editorial: " + e.getMessage());
+    } catch (Exception e) {
+        // Capturamos cualquier otro error
+        throw new Exception("Error al registrar editorial: " + e.getMessage());
     } finally {
-        // CRÍTICO: Debemos cerrar el ResultSet y la conexión que dejó abierta consultarBD
-        if (rsLocal != null) {
-            try {
-                rsLocal.close();
-            } catch (SQLException ex) { /* Ignorar error al cerrar */ }
-        }
-        objConectar.desconectar();
+        // 4. Cerramos recursos
+        if (pst != null) pst.close();
+        if (con != null) objJDBC.desconectar();
     }
-    return editorialEncontrada;
 }
+
+    // Modificar Editorial (Actualizar)
+    public void modificar(Editorial editorial) throws Exception {
+        Connection con = null;
+        PreparedStatement pst = null;
+        try {
+            con = objJDBC.conectar();
+            String sql = "UPDATE EDITORIAL SET nombre=?, telefono=?, correo=?, estado=? WHERE ideditorial=?";
+            
+            pst = con.prepareStatement(sql);
+            
+            pst.setString(1, editorial.getNombre());
+            pst.setString(2, editorial.getTelefono());
+            pst.setString(3, editorial.getCorreo());
+            pst.setBoolean(4, editorial.isEstado());
+            pst.setInt(5, editorial.getIdeditorial()); // Condición WHERE
+            
+            pst.executeUpdate();
+            
+        } catch (Exception e) {
+            throw new Exception("Error al modificar editorial: " + e.getMessage());
+        } finally {
+            if (pst != null) pst.close();
+            if (con != null) objJDBC.desconectar(); // Cierre de recursos
+        }
+    }
+    
+    // Dar Baja Editorial (Cambiar estado a FALSE)
+    public void darBaja(int ideditorial) throws Exception {
+        Connection con = null;
+        PreparedStatement pst = null;
+        try {
+            con = objJDBC.conectar();
+            String sql = "UPDATE EDITORIAL SET estado=FALSE WHERE ideditorial= ?";
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, ideditorial);
+            pst.executeUpdate();
+            
+        } catch (Exception e) {
+            throw new Exception("Error al dar de baja editorial: " + e.getMessage());
+        } finally {
+            if (pst != null) pst.close();
+            if (con != null) objJDBC.desconectar(); 
+        }
+    }
+    
+    // Eliminar Editorial (Físicamente)
+    public void eliminar(int ideditorial) throws Exception {
+        Connection con = null;
+        PreparedStatement pst = null;
+        try {
+            con = objJDBC.conectar();
+            String sql = "DELETE FROM EDITORIAL WHERE ideditorial = ?";
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, ideditorial);
+            pst.executeUpdate();
+            
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar editorial: " + e.getMessage());
+        } finally {
+            if (pst != null) pst.close();
+            if (con != null) objJDBC.desconectar(); 
+        }
+    }
 }
