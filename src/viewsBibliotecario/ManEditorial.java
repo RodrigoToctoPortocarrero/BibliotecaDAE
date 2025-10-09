@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package viewsBibliotecario;
+
+
 import capaLogica.Editorial; 
-import java.util.List;
 import java.sql.ResultSet; 
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 /**
  *
  * @author laboratorio_computo
@@ -22,48 +24,83 @@ public class ManEditorial extends javax.swing.JPanel {
      */
     public ManEditorial() {
     initComponents();
+    tblEditorial.setFillsViewportHeight(false); 
     inicializarTabla();
     cargarTabla();
+  
+    
+    int anchoFijo = 800;  // EJEMPLO: Ajusta este ancho
+    int altoFijo = 600;   // EJEMPLO: Ajusta esta altura
+    this.setPreferredSize(new java.awt.Dimension(anchoFijo, altoFijo));
+    this.setMinimumSize(new java.awt.Dimension(anchoFijo, altoFijo));
+    Border bordeExterior = BorderFactory.createLineBorder(java.awt.Color.DARK_GRAY, 1);
+    Border bordeInterior = new EmptyBorder(2, 2, 2, 2);
+    Border bordeFinal = new CompoundBorder(bordeExterior, bordeInterior);
+    jScrollPane1.setBorder(bordeFinal); 
+    tblEditorial.setBorder(null);
+    tblEditorial.setFillsViewportHeight(false); 
+    
     }
     
 
     private void inicializarTabla() {
         String[] titulos = {"Código", "Nombre", "Teléfono", "Correo", "Vigencia"};
         modeloTabla.setColumnIdentifiers(titulos);
-        tbllibros.setModel(modeloTabla);
+        tblEditorial.setModel(modeloTabla);
+
+        // --- 🚨 AJUSTE DE ANCHO DE COLUMNAS (NUEVO CÓDIGO) 🚨 ---
+        // 1. Obtener el modelo de columnas
+        // JTable.getColumnModel() devuelve la estructura de las columnas.
+        TableColumn columna = null;
+
+        // 2. Establecer el ancho de las columnas (en píxeles)
+        // Columna 0: Código (Ancho pequeño, 70px)
+        columna = tblEditorial.getColumnModel().getColumn(0);
+        columna.setPreferredWidth(70);
+        columna.setResizable(false); // Opcional: El usuario no puede arrastrar el ancho
+
+        // Columna 1: Nombre (Ancho mediano, 150px)
+        columna = tblEditorial.getColumnModel().getColumn(1);
+        columna.setPreferredWidth(180);
+
+        // Columna 2: Teléfono (Ancho pequeño, 100px)
+        columna = tblEditorial.getColumnModel().getColumn(2);
+        columna.setPreferredWidth(100);
+
+        // Columna 3: Correo (Ancho amplio, 200px) 👈 TU SOLICITUD
+        columna = tblEditorial.getColumnModel().getColumn(3);
+        columna.setPreferredWidth(200);
+
+        // Columna 4: Vigencia (Ancho pequeño, 90px)
+        columna = tblEditorial.getColumnModel().getColumn(4);
+        columna.setPreferredWidth(90);
     }
     
     private void cargarTabla() {
-    modeloTabla.setRowCount(0); // Limpiar filas anteriores
-    ResultSet rs = null;
+        modeloTabla.setRowCount(0); // Limpiar filas anteriores
+        ResultSet rs = null;
 
-    try {
-        // 1. Obtener el ResultSet
-        // Nota: asumo que la clase Editorial tiene un método llamado listarEditorial()
-        rs = objEditorial.listarEditorial(); 
+        try {
+            rs = objEditorial.listarEditorial();
 
-        // 2. Iterar sobre el ResultSet
-        while (rs.next()) {
-            // Leer los datos del ResultSet (usa nombres de columnas de la BD)
-            int id = rs.getInt("ideditorial");
-            String nombre = rs.getString("nombre");
-            String telefono = rs.getString("telefono");
-            String correo = rs.getString("correo");
-            boolean estado = rs.getBoolean("estado");
-            
-            String vigencia = estado ? "Vigente" : "No Vigente";
+            while (rs.next()) {
+                // Usa nombres de columna de la BD
+                int id = rs.getInt("ideditorial");
+                String nombre = rs.getString("nombre");
+                String telefono = rs.getString("telefono");
+                String correo = rs.getString("correo");
+                boolean estado = rs.getBoolean("estado");
 
-            Object[] fila = {id, nombre, telefono, correo, vigencia};
-            modeloTabla.addRow(fila);
+                String vigencia = estado ? "Vigente" : "No Vigente";
+
+                Object[] fila = {id, nombre, telefono, correo, vigencia};
+                modeloTabla.addRow(fila);
+            }
+        } catch (Exception e) {
+            // Si hay un error aquí, la tabla estará vacía y verás la ventana de error.
+            JOptionPane.showMessageDialog(this, "Error al cargar la tabla: " + e.getMessage(), "Error de Sistema", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar la tabla: " + e.getMessage(), "Error de Sistema", JOptionPane.ERROR_MESSAGE);
-    } 
-    /* IMPORTANTE: En la estructura de Categoria.java que me pasaste, la conexión 
-    se cierra al final del método DAO (listarCategoria). Si tu Editorial.java hace 
-    lo mismo, no necesitas un finally aquí, pero es buena práctica si no lo hace.
-    */
-}
+    }
     
     private void limpiarCampos() {
         txtcodigo.setText("");
@@ -128,6 +165,8 @@ public class ManEditorial extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -142,28 +181,32 @@ public class ManEditorial extends javax.swing.JPanel {
         btnmodificar = new javax.swing.JButton();
         btndarbaja = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbllibros = new javax.swing.JTable();
+        tblEditorial = new javax.swing.JTable();
         txttelefono = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         cbxVigencia = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setLayout(null);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setText("Código:");
-        jPanel1.add(jLabel7);
-        jLabel7.setBounds(50, 40, 53, 20);
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel8.setText("Nombre:");
-        jPanel1.add(jLabel8);
-        jLabel8.setBounds(44, 86, 60, 20);
-        jPanel1.add(txtnombre);
-        txtnombre.setBounds(112, 86, 210, 26);
-        jPanel1.add(txtcodigo);
-        txtcodigo.setBounds(110, 40, 110, 26);
 
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/buscar2.png"))); // NOI18N
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -171,15 +214,9 @@ public class ManEditorial extends javax.swing.JPanel {
                 btnBuscarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnBuscar);
-        btnBuscar.setBounds(230, 30, 50, 43);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setText("Correo:");
-        jPanel1.add(jLabel10);
-        jLabel10.setBounds(340, 40, 87, 20);
-        jPanel1.add(txtcorreo);
-        txtcorreo.setBounds(400, 40, 210, 26);
 
         btnlimpiar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnlimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/limpiarMarca.png"))); // NOI18N
@@ -189,8 +226,6 @@ public class ManEditorial extends javax.swing.JPanel {
                 btnlimpiarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnlimpiar);
-        btnlimpiar.setBounds(330, 180, 130, 43);
 
         btneliminar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btneliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/eliminarMarca.png"))); // NOI18N
@@ -200,8 +235,6 @@ public class ManEditorial extends javax.swing.JPanel {
                 btneliminarActionPerformed(evt);
             }
         });
-        jPanel1.add(btneliminar);
-        btneliminar.setBounds(180, 180, 130, 43);
 
         btnnuevo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnnuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/registrarMarca.png"))); // NOI18N
@@ -211,8 +244,6 @@ public class ManEditorial extends javax.swing.JPanel {
                 btnnuevoActionPerformed(evt);
             }
         });
-        jPanel1.add(btnnuevo);
-        btnnuevo.setBounds(40, 180, 120, 40);
 
         btnmodificar.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnmodificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/modificarMarca.png"))); // NOI18N
@@ -222,8 +253,6 @@ public class ManEditorial extends javax.swing.JPanel {
                 btnmodificarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnmodificar);
-        btnmodificar.setBounds(610, 180, 129, 43);
 
         btndarbaja.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btndarbaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/darBajaMarca.png"))); // NOI18N
@@ -233,10 +262,8 @@ public class ManEditorial extends javax.swing.JPanel {
                 btndarbajaActionPerformed(evt);
             }
         });
-        jPanel1.add(btndarbaja);
-        btndarbaja.setBounds(470, 180, 130, 43);
 
-        tbllibros.setModel(new javax.swing.table.DefaultTableModel(
+        tblEditorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -247,25 +274,20 @@ public class ManEditorial extends javax.swing.JPanel {
                 "Código", "Nombre", "Telefono", "Correo", "VIgencia"
             }
         ));
-        tbllibros.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblEditorial.setMaximumSize(new java.awt.Dimension(600, 250));
+        tblEditorial.setPreferredSize(new java.awt.Dimension(600, 250));
+        tblEditorial.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbllibrosMouseClicked(evt);
+                tblEditorialMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tbllibros);
-        if (tbllibros.getColumnModel().getColumnCount() > 0) {
-            tbllibros.getColumnModel().getColumn(4).setResizable(false);
+        jScrollPane1.setViewportView(tblEditorial);
+        if (tblEditorial.getColumnModel().getColumnCount() > 0) {
+            tblEditorial.getColumnModel().getColumn(4).setResizable(false);
         }
-
-        jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(50, 250, 650, 203);
-        jPanel1.add(txttelefono);
-        txttelefono.setBounds(112, 138, 210, 26);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setText("Telefono:");
-        jPanel1.add(jLabel9);
-        jLabel9.setBounds(44, 138, 80, 20);
 
         cbxVigencia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         cbxVigencia.setText("Vigente");
@@ -274,23 +296,110 @@ public class ManEditorial extends javax.swing.JPanel {
                 cbxVigenciaActionPerformed(evt);
             }
         });
-        jPanel1.add(cbxVigencia);
-        cbxVigencia.setBounds(410, 100, 86, 20);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Vigencia:");
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(340, 100, 80, 20);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7)
+                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(60, 60, 60)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(60, 60, 60)
+                                .addComponent(txtcorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(txtnombre, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(70, 70, 70)
+                                .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(68, 68, 68)
+                                .addComponent(txttelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(btnnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btneliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(btnlimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btndarbaja, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnmodificar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBuscar)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10)
+                            .addComponent(txtcorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(13, 13, 13)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(txtnombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addComponent(txttelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnnuevo)
+                    .addComponent(btneliminar)
+                    .addComponent(btnlimpiar)
+                    .addComponent(btndarbaja)
+                    .addComponent(btnmodificar))
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -468,8 +577,8 @@ public class ManEditorial extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btndarbajaActionPerformed
 
-    private void tbllibrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbllibrosMouseClicked
-    int fila = tbllibros.getSelectedRow();
+    private void tblEditorialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEditorialMouseClicked
+    int fila = tblEditorial.getSelectedRow();
         if (fila == -1) return;
         
         // Obtener datos de la fila
@@ -491,7 +600,7 @@ public class ManEditorial extends javax.swing.JPanel {
         // Deshabilitar código para Modificar o Dar Baja
         txtcodigo.setEnabled(false);
         btnBuscar.setEnabled(false);
-    }//GEN-LAST:event_tbllibrosMouseClicked
+    }//GEN-LAST:event_tblEditorialMouseClicked
 
     private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
         // TODO add your handling code here:
@@ -514,7 +623,9 @@ public class ManEditorial extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tbllibros;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblEditorial;
     private javax.swing.JTextField txtcodigo;
     private javax.swing.JTextField txtcorreo;
     private javax.swing.JTextField txtnombre;
