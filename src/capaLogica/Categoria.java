@@ -8,6 +8,9 @@ import capaDatos.clsJDBC;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+
 
 /**
  *
@@ -250,6 +253,23 @@ public class Categoria {
         } catch (Exception e) {
             // Relanzar la excepción con un mensaje específico
             throw new Exception("Error al insertar la categoría: " + e.getMessage());
+        }
+    }
+    
+    public ResultSet listarCategoriasActivas() throws Exception {
+        Statement st = null;
+        try {
+            sql = "SELECT idcategoria, nombrecategoria FROM CATEGORIA WHERE estado = TRUE ORDER BY nombrecategoria";
+            st = con.conectar().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            // La desconexión y cierre de Statement se manejan donde se consume el ResultSet
+            return rs;
+        } catch (Exception e) {
+            // Intentar cerrar el Statement si se abrió
+            if (st != null) {
+                 try { st.close(); } catch (SQLException ex) { /* ignorar */ }
+            }
+            throw new Exception("Error al listar categorías activas: " + e.getMessage());
         }
     }
 

@@ -182,4 +182,26 @@ public class Editorial {
             if (con != null) objJDBC.desconectar(); 
         }
     }
+    
+    public ResultSet listarEditorialesActivas() throws Exception {
+        Connection con = null;
+        Statement st = null;
+        try {
+            con = objJDBC.conectar();
+            String sql = "SELECT ideditorial, nombre FROM EDITORIAL WHERE estado = TRUE ORDER BY nombre";
+            st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            return rs; 
+        } catch (Exception e) {
+            // Cierra la conexión si hay error, ya que el ResultSet no se generó.
+            if (con != null) {
+                objJDBC.desconectar();
+            }
+            // Intenta cerrar el Statement si se abrió
+            if (st != null) {
+                 try { st.close(); } catch (SQLException ex) { /* ignorar */ }
+            }
+            throw new Exception("Error al listar editoriales activas: " + e.getMessage());
+        }
+    }
 }

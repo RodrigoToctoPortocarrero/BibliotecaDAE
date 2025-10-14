@@ -19,6 +19,7 @@ public class ManEditorial extends javax.swing.JPanel {
    Editorial objEditorial = new Editorial();
    DefaultTableModel modeloTabla = new DefaultTableModel();
 
+   
     /**
      * Creates new form ManEditorial
      */

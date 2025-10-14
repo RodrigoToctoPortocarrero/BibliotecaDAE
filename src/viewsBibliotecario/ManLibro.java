@@ -4,10 +4,16 @@
  */
 package viewsBibliotecario;
 
+import capaLogica.Autor;
+import capaLogica.Editorial;
+import capaLogica.Categoria;
 import capaLogica.Libro;
+import capaPrincipal.frmPrincipalBibliotecario;
 import java.awt.BorderLayout;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
+import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -18,6 +24,13 @@ import javax.swing.table.DefaultTableModel;
 public class ManLibro extends javax.swing.JPanel {
 
     Libro Libro = new Libro();
+    Editorial editorial = new Editorial();
+    Categoria categoria = new Categoria();
+    Autor autor = new Autor();
+
+    private HashMap<String, Integer> mapCategorias = new HashMap<>();
+    private HashMap<String, Integer> mapEditoriales = new HashMap<>();
+    private HashMap<String, Integer> mapAutores = new HashMap<>();
 
     /**
      * Creates new form ManLibro
@@ -25,6 +38,13 @@ public class ManLibro extends javax.swing.JPanel {
     public ManLibro() {
         initComponents();
         listarLibros();
+        inicializarComponentesPersonalizados();
+        btnMas.addActionListener(this::btnMasActionPerformed);
+        btnMas.setEnabled(false);
+        if (btnMas != null) {
+            btnMas.setEnabled(false);
+        }
+        
     }
 
     /**
@@ -43,7 +63,6 @@ public class ManLibro extends javax.swing.JPanel {
         txtcodigo = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        txtcategoria = new javax.swing.JTextField();
         txtanio = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -55,8 +74,14 @@ public class ManLibro extends javax.swing.JPanel {
         btndarbaja = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbllibros = new javax.swing.JTable();
-        txtautor = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
+        cmbEditorial = new javax.swing.JComboBox<>();
+        cmbCategoria = new javax.swing.JComboBox<>();
+        btnEditorial = new javax.swing.JButton();
+        btnCategoria = new javax.swing.JButton();
+        cmbAutores = new javax.swing.JComboBox<>();
+        btnAutor = new javax.swing.JButton();
+        btnMas = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -80,7 +105,7 @@ public class ManLibro extends javax.swing.JPanel {
         jLabel12.setText("Año:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel11.setText("Vigencia:");
+        jLabel11.setText("Autor:");
 
         chkvigente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         chkvigente.setText("Vigente");
@@ -127,13 +152,13 @@ public class ManLibro extends javax.swing.JPanel {
 
         tbllibros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Título", "Autor", "Categoría", "Año", "Vigencia"
+                "Código", "Título", "Autor", "Editorial", "Categoría", "Año", "Vigencia"
             }
         ));
         tbllibros.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -144,7 +169,41 @@ public class ManLibro extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tbllibros);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel9.setText("Autor:");
+        jLabel9.setText("Editorial:");
+
+        cmbCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCategoriaActionPerformed(evt);
+            }
+        });
+
+        btnEditorial.setText("...");
+        btnEditorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditorialActionPerformed(evt);
+            }
+        });
+
+        btnCategoria.setText("...");
+        btnCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCategoriaActionPerformed(evt);
+            }
+        });
+
+        btnAutor.setText("...");
+        btnAutor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAutorActionPerformed(evt);
+            }
+        });
+
+        btnMas.setText("+");
+        btnMas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -153,82 +212,107 @@ public class ManLibro extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel7)
-                                    .addGap(32, 32, 32))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel8)
-                                    .addGap(43, 43, 43)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(43, 43, 43)))
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txttitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtautor, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txttitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(cmbEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(9, 9, 9)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chkvigente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtanio, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtcategoria, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(34, 34, 34)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel11)
+                                        .addGap(16, 16, 16)
+                                        .addComponent(cmbAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btneliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(30, 30, 30)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(btndarbaja, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnmodificar, javax.swing.GroupLayout.Alignment.LEADING)))
+                                    .addComponent(btnMas, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                                    .addComponent(btnAutor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(71, 71, 71)
-                                .addComponent(btnlimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(64, Short.MAX_VALUE))
+                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtanio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btneliminar)
+                            .addComponent(btnnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chkvigente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnmodificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btndarbaja, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnlimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 6, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10)
-                    .addComponent(txtcategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnnuevo)
-                    .addComponent(btnmodificar)
-                    .addComponent(btnBuscar))
-                .addGap(25, 25, 25)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(txttitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12)
-                    .addComponent(txtanio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btneliminar)
-                    .addComponent(btndarbaja))
-                .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtautor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11)
-                    .addComponent(btnlimpiar)
-                    .addComponent(chkvigente))
-                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(34, 34, 34)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnBuscar)
+                                    .addComponent(chkvigente)
+                                    .addComponent(jLabel11)
+                                    .addComponent(cmbAutores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(26, 26, 26))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(btnAutor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMas)
+                                .addGap(12, 12, 12)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(txttitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnnuevo)
+                            .addComponent(jLabel10)
+                            .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCategoria))
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(cmbEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btneliminar)
+                            .addComponent(jLabel12)
+                            .addComponent(txtanio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEditorial)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnmodificar)
+                        .addGap(25, 25, 25)
+                        .addComponent(btndarbaja)
+                        .addGap(27, 27, 27)
+                        .addComponent(btnlimpiar)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -245,50 +329,151 @@ public class ManLibro extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+    private void inicializarComponentesPersonalizados() {
         try {
-            // 1. Validar que el campo de código no esté vacío
-            if (txtcodigo.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar el Código del Libro para buscar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return; // Salir del método
+            // 1. Cargar Editoriales
+            ResultSet rsEdit = editorial.listarEditorialesActivas();
+            cargarComboBox(rsEdit, cmbEditorial, mapEditoriales, "ideditorial", "nombre", "-- Seleccione Editorial --");
+
+            // 2. Cargar Categorías
+            ResultSet rsCat = categoria.listarCategoriasActivas();
+            cargarComboBox(rsCat, cmbCategoria, mapCategorias, "idcategoria", "nombrecategoria", "-- Seleccione Categoría --");
+
+            // 3. Cargar Autores (Nuevo)
+            ResultSet rsAut = autor.listarAutoresActivos();
+            // Mostramos el nombre completo (Apellido Paterno + Nombre) en el combo
+            cargarComboBoxAutores(rsAut, cmbAutores, mapAutores, "idautor", "nombres", "apepaterno", "-- Seleccione Autor --");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar listas de FK: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        cmbAutores.addActionListener(e -> {
+            cambiarTextoBotonMas();
+        });
+
+        // Deshabilitar el botón '+' inicialmente.
+        if (btnMas != null) {
+            btnMas.setEnabled(false);
+            btnMas.setText("+");
+        }
+    }
+
+    private void cambiarTextoBotonMas() {
+        try {
+            // Si no hay un libro seleccionado o el combo está en el valor por defecto, el botón es '+'
+            if (txtcodigo.getText().isEmpty() || cmbAutores.getSelectedIndex() == 0 || btnMas == null) {
+                if (btnMas != null) {
+                    btnMas.setText("+");
+                }
+                return;
             }
 
-            // 2. Obtener el código y buscar en la capa lógica
             Integer idLibro = Integer.parseInt(txtcodigo.getText());
+            String autorNombre = (String) cmbAutores.getSelectedItem();
+            Integer idAutor = mapAutores.get(autorNombre);
 
-            // El objeto 'Libro' ya está instanciado como variable de clase: Libro Libro = new Libro();
+            // Si el ID del autor es válido, consultamos la BD.
+            if (idAutor != null) {
+                // Llama al método esAutorAsignado en tu clase Libro
+                if (Libro.esAutorAsignado(idLibro, idAutor)) {
+                    btnMas.setText("-"); // Autor ASIGNADO: Cambia a Quitar
+                } else {
+                    btnMas.setText("+"); // Autor NO asignado: Cambia a Asignar
+                }
+            }
+        } catch (NumberFormatException | NullPointerException ex) {
+            // El código del libro no es un número o falta alguna instancia
+            if (btnMas != null) {
+                btnMas.setText("+");
+            }
+        } catch (Exception ex) {
+            // Error de BD (lo mostramos y volvemos a la función de sumar)
+            JOptionPane.showMessageDialog(this, "Error al verificar asignación: " + ex.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+            if (btnMas != null) {
+                btnMas.setText("+");
+            }
+        }
+    }
+
+    private void cargarComboBox(ResultSet rs, javax.swing.JComboBox<String> cmb, HashMap<String, Integer> map,
+            String idCol, String descCol, String defaultItem) throws Exception {
+        cmb.removeAllItems();
+        map.clear();
+        cmb.addItem(defaultItem);
+
+        if (rs != null) {
+            while (rs.next()) {
+                Integer id = rs.getInt(idCol);
+                String descripcion = rs.getString(descCol);
+                cmb.addItem(descripcion);
+                map.put(descripcion, id); // Mapeamos el nombre (String) al ID (Integer)
+            }
+            rs.close();
+        }
+    }
+    
+    private void cargarComboBoxAutores(ResultSet rs, javax.swing.JComboBox<String> cmb, HashMap<String, Integer> map,
+            String idCol, String nombreCol, String apellidoCol, String defaultItem) throws Exception {
+        cmb.removeAllItems();
+        map.clear();
+        cmb.addItem(defaultItem);
+
+        if (rs != null) {
+            while (rs.next()) {
+                Integer id = rs.getInt(idCol);
+                String nombreCompleto = rs.getString(apellidoCol) + " " + rs.getString(nombreCol); // Apellido + Nombre
+                cmb.addItem(nombreCompleto);
+                map.put(nombreCompleto, id);
+            }
+            rs.close();
+        }
+    }
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        try {
+            if (txtcodigo.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar el Código del Libro para buscar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Integer idLibro = Integer.parseInt(txtcodigo.getText());
             ResultSet rs = Libro.buscarLibro(idLibro);
 
-            // 3. Procesar el resultado de la búsqueda
             if (rs.next()) {
-                // Libro encontrado: Cargar los datos en los controles
-                txtcodigo.setText(rs.getString("id_libro")); // Redundante, pero asegura consistencia
+                txtcodigo.setText(rs.getString("idlibro"));
                 txttitulo.setText(rs.getString("titulo"));
-                txtautor.setText(rs.getString("autor_completo"));
-                txtcategoria.setText(rs.getString("categoria"));
-                // Asumiendo que el campo en la BD es Integer
-                txtanio.setText(String.valueOf(rs.getInt("anio_publicacion")));
 
-                // Cargar el estado de vigencia
-                chkvigente.setSelected(rs.getBoolean("estado_vigencia"));
+                // --- Carga de Claves Foráneas (FK) ---
+                Integer idEdit = rs.getInt("ideditorial");
+                Integer idCat = rs.getInt("idcategoria");
 
-                // IMPORTANTE: Cerrar el ResultSet para liberar recursos
+                // Buscar el NOMBRE en el HashMap dado el ID
+                String nomEdit = getKeyFromValue(mapEditoriales, idEdit);
+                String nomCat = getKeyFromValue(mapCategorias, idCat);
+
+                cmbEditorial.setSelectedItem(nomEdit);
+                cmbCategoria.setSelectedItem(nomCat);
+                // -------------------------------------
+
+                txtanio.setText(rs.getString("aniopublicacion"));
+                chkvigente.setSelected(rs.getBoolean("estado"));
+
                 rs.close();
-
-                // Si el botón "Nuevo" estaba en modo "Guardar", lo devolvemos a "Nuevo"
                 btnnuevo.setText("Nuevo");
 
+                // Habilitar la asignación de autores
+                if (btnMas != null) {
+                    btnMas.setEnabled(true);
+                }
+
             } else {
-                // Libro NO encontrado
                 JOptionPane.showMessageDialog(this, "El Código de Libro " + idLibro + " no existe.", "No Encontrado", JOptionPane.INFORMATION_MESSAGE);
                 limpiarControles();
             }
         } catch (NumberFormatException e) {
-            // Manejar error si el usuario no ingresa un número válido en el código
             JOptionPane.showMessageDialog(this, "El código debe ser un número entero válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
             txtcodigo.requestFocus();
         } catch (Exception e) {
-            // Capturar errores de la base de datos o de conexión
             JOptionPane.showMessageDialog(this, "Error al buscar el libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -326,64 +511,74 @@ public class ManLibro extends javax.swing.JPanel {
     private void btnnuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnuevoActionPerformed
         try {
             if (btnnuevo.getText().equals("Nuevo")) {
-
                 btnnuevo.setText("Guardar");
                 limpiarControles();
-                // Bloquea temporalmente el código del libro para asegurar que se use el generado.
                 txtcodigo.setText(Libro.generarCodigoLibro().toString());
                 txtcodigo.setEditable(false);
+                if (btnMas != null) {
+                    btnMas.setEnabled(false); // Deshabilitar 'Más' al iniciar nuevo
+                }
             } else {
-                // Validación de campos al guardar
-                if (txttitulo.getText().isEmpty() || txtautor.getText().isEmpty() || txtanio.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Debe llenar los campos Título, Autor y Año.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+
+                // 1. Obtener IDs usando el HashMap
+                String nomEdit = (String) cmbEditorial.getSelectedItem();
+                String nomCat = (String) cmbCategoria.getSelectedItem();
+                Integer idEditorial = mapEditoriales.get(nomEdit);
+                Integer idCategoria = mapCategorias.get(nomCat);
+
+                // 2. Validación
+                if (txttitulo.getText().isEmpty() || txtanio.getText().isEmpty() || idEditorial == null || idCategoria == null) {
+                    JOptionPane.showMessageDialog(this, "Debe llenar Título, Año y seleccionar Editorial/Categoría válidas.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
-                // Validación de año como número
-                try {
-                    Integer.parseInt(txtanio.getText());
-                } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(this, "El campo Año debe ser un número válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
+                // 3. REGISTRAR el libro
                 Libro.registrar(
                         Integer.parseInt(txtcodigo.getText()),
                         txttitulo.getText(),
-                        txtautor.getText(),
-                        txtcategoria.getText(),
-                        Integer.parseInt(txtanio.getText()),
-                        chkvigente.isSelected());
+                        txtanio.getText(),
+                        chkvigente.isSelected(),
+                        idEditorial,
+                        idCategoria);
 
-                JOptionPane.showMessageDialog(this, "Libro registrado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Libro registrado exitosamente. Puede asignar autores con el botón '+'.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
                 btnnuevo.setText("Nuevo");
+                txtcodigo.setEditable(true);
+                if (btnMas != null) {
+                    btnMas.setEnabled(true); // Habilitar 'Más' después de guardar
+                }
                 limpiarControles();
                 listarLibros();
             }
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(this, "El campo Año debe ser un número válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al procesar Libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
-            // Si hay un error, el botón debería volver a Nuevo para permitir otra acción.
             btnnuevo.setText("Nuevo");
+            txtcodigo.setEditable(true);
         }
     }//GEN-LAST:event_btnnuevoActionPerformed
 
     private void btnmodificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarActionPerformed
         try {
+            // 1. Obtener IDs usando el HashMap
+            String nomEdit = (String) cmbEditorial.getSelectedItem();
+            String nomCat = (String) cmbCategoria.getSelectedItem();
+            Integer idEditorial = mapEditoriales.get(nomEdit);
+            Integer idCategoria = mapCategorias.get(nomCat);
 
-            if (txtcodigo.getText().isEmpty() || txttitulo.getText().isEmpty() || txtautor.getText().isEmpty() || txtanio.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar un libro de la tabla y llenar todos los campos.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            // 2. Validación
+            if (txtcodigo.getText().isEmpty() || txttitulo.getText().isEmpty() || txtanio.getText().isEmpty() || idEditorial == null || idCategoria == null) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un libro y llenar todos los campos.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             Integer idLibro = Integer.parseInt(txtcodigo.getText());
-            String titulo = txttitulo.getText();
-            String autor = txtautor.getText();
-            String categoria = txtcategoria.getText();
 
-            Integer anio = Integer.parseInt(txtanio.getText());
-            Boolean vigente = chkvigente.isSelected();
+            // MODIFICAR
+            Libro.modificar(idLibro, txttitulo.getText(), txtanio.getText(), chkvigente.isSelected(), idEditorial, idCategoria);
 
-            Libro.modificar(idLibro, titulo, autor, categoria, anio, vigente);
             JOptionPane.showMessageDialog(this, "Libro modificado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             limpiarControles();
@@ -400,7 +595,6 @@ public class ManLibro extends javax.swing.JPanel {
                 return;
             }
 
-            // Cambia el estado de vigencia actual
             Boolean nuevoEstado = !chkvigente.isSelected();
             String mensajeEstado = nuevoEstado ? "dar de ALTA" : "dar de BAJA";
 
@@ -411,7 +605,6 @@ public class ManLibro extends javax.swing.JPanel {
                     JOptionPane.QUESTION_MESSAGE);
 
             if (confirmacion == JOptionPane.YES_OPTION) {
-                // Utiliza la lógica de modificar solo para el estado de vigencia
                 Libro.modificarVigencia(Integer.parseInt(txtcodigo.getText()), nuevoEstado);
                 JOptionPane.showMessageDialog(this, "Estado del libro cambiado a " + (nuevoEstado ? "VIGENTE" : "NO VIGENTE") + " exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 limpiarControles();
@@ -422,80 +615,195 @@ public class ManLibro extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btndarbajaActionPerformed
 
+    public <T, E> T getKeyFromValue(HashMap<T, E> map, E value) {
+        for (Map.Entry<T, E> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     private void tbllibrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbllibrosMouseClicked
         int fila = tbllibros.getSelectedRow();
 
         if (fila != -1) {
-
-            // IMPORTANTE: Asegura que el botón vuelva a "Nuevo" para habilitar la modificación/eliminación
             btnnuevo.setText("Nuevo");
+            txtcodigo.setEditable(true);
 
-            // Asigna los valores a los campos de texto
-            String codigo = String.valueOf(tbllibros.getValueAt(fila, 0));
-            String titulo = String.valueOf(tbllibros.getValueAt(fila, 1));
-            String autor = String.valueOf(tbllibros.getValueAt(fila, 2));
-            String categoria = String.valueOf(tbllibros.getValueAt(fila, 3));
-            String anio = String.valueOf(tbllibros.getValueAt(fila, 4));
-            String estado = String.valueOf(tbllibros.getValueAt(fila, 5));
-
-            txtcodigo.setText(codigo);
-            txttitulo.setText(titulo);
-            txtautor.setText(autor);
-            txtcategoria.setText(categoria);
-            txtanio.setText(anio);
-
-            if (estado.equals("Si")) {
-                chkvigente.setSelected(true);
-            } else {
-                chkvigente.setSelected(false);
+            // ⬇️ INICIO DEL BLOQUE DE MANEJO SEGURO DE EVENTOS ⬇️
+            java.awt.event.ActionListener[] listeners = cmbAutores.getActionListeners();
+            for (java.awt.event.ActionListener al : listeners) {
+                cmbAutores.removeActionListener(al);
             }
-    }//GEN-LAST:event_tbllibrosMouseClicked
-    }
-    private void listarLibros() {
 
-        // Declaración de variables
+            try {
+                // C0:Código | ...
+                String codigo = String.valueOf(tbllibros.getValueAt(fila, 0));
+                String titulo = String.valueOf(tbllibros.getValueAt(fila, 1));
+                String editorialNombre = String.valueOf(tbllibros.getValueAt(fila, 2));
+                String categoriaNombre = String.valueOf(tbllibros.getValueAt(fila, 3));
+                String anio = String.valueOf(tbllibros.getValueAt(fila, 5));
+                String estado = String.valueOf(tbllibros.getValueAt(fila, 6));
+
+                txtcodigo.setText(codigo);
+                txttitulo.setText(titulo);
+
+                // Carga de JComboBox (Limpia la selección con setSelectedIndex(0))
+                cmbEditorial.setSelectedItem(editorialNombre);
+                cmbCategoria.setSelectedItem(categoriaNombre);
+                cmbAutores.setSelectedIndex(0); // Ejecutado SIN listener
+
+                // Habilitar el botón de asignación de autores
+                if (btnMas != null) {
+                    btnMas.setEnabled(true);
+                    btnMas.setText("+"); // Asegurar que inicie en modo '+'
+                }
+
+                // Asignación de campos restantes
+                txtanio.setText(anio);
+
+                chkvigente.setSelected(estado.equals("Si"));
+
+            } finally {
+                // Reactivar los listeners SIEMPRE
+                for (java.awt.event.ActionListener al : listeners) {
+                    cmbAutores.addActionListener(al);
+                }
+            }
+        }
+    }//GEN-LAST:event_tbllibrosMouseClicked
+
+    private void btnEditorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditorialActionPerformed
+        ManEditorial panelEditorial = new ManEditorial();
+        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Gestión de Editorial");
+        frameContenedor.setContentPane(panelEditorial);
+        frameContenedor.revalidate();
+        frameContenedor.pack();
+        frameContenedor.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        frameContenedor.setLocationRelativeTo(null);
+        frameContenedor.setVisible(true);
+    }//GEN-LAST:event_btnEditorialActionPerformed
+
+    private void btnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriaActionPerformed
+        ManCategoria panelCategoria = new ManCategoria();
+        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Gestión de Editorial");
+        frameContenedor.setContentPane(panelCategoria);
+        frameContenedor.revalidate();
+        frameContenedor.pack();
+        frameContenedor.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        frameContenedor.setLocationRelativeTo(null);
+        frameContenedor.setVisible(true);
+    }//GEN-LAST:event_btnCategoriaActionPerformed
+
+    private void btnAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorActionPerformed
+        ManAutor panelAutor = new ManAutor();
+        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Gestión de Editorial");
+        frameContenedor.setContentPane(panelAutor);
+        frameContenedor.revalidate();
+        frameContenedor.pack();
+        frameContenedor.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        frameContenedor.setLocationRelativeTo(null);
+        frameContenedor.setVisible(true);
+    }//GEN-LAST:event_btnAutorActionPerformed
+
+    private void btnMasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMasActionPerformed
+        if (txtcodigo.getText().isEmpty() || btnnuevo.getText().equals("Guardar")) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un libro o registrarlo primero.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Integer idLibro = Integer.parseInt(txtcodigo.getText());
+        String autorNombre = (String) cmbAutores.getSelectedItem();
+        Integer idAutor = mapAutores.get(autorNombre);
+
+        // 2. Validación de autor (se mantiene, es correcta para un clic de botón)
+        if (idAutor == null || cmbAutores.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un autor válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // ⬇️ INICIO DEL BLOQUE DE MANEJO SEGURO DE EVENTOS ⬇️
+        // Almacenar y remover todos los listeners del JComboBox temporalmente
+        java.awt.event.ActionListener[] listeners = cmbAutores.getActionListeners();
+        for (java.awt.event.ActionListener al : listeners) {
+            cmbAutores.removeActionListener(al);
+        }
+
+        try {
+            if (btnMas.getText().equals("+")) {
+                // MODO ASIGNAR (+)
+                Libro.asignarAutor(idLibro, idAutor, "");
+                JOptionPane.showMessageDialog(this, "Autor asignado: " + autorNombre, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            } else if (btnMas.getText().equals("-")) {
+                // MODO DESASIGNAR (-)
+                int confirmacion = JOptionPane.showConfirmDialog(this,
+                        "¿Desea quitar a '" + autorNombre + "' de este libro?",
+                        "Confirmar Desasignación", JOptionPane.YES_NO_OPTION);
+
+                if (confirmacion == JOptionPane.YES_OPTION) {
+                    Libro.removerAutor(idLibro, idAutor);
+                    JOptionPane.showMessageDialog(this, "Autor desasignado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+
+            // Finalizar y refrescar
+            cmbAutores.setSelectedIndex(0); // Ejecutado SIN listener
+            btnMas.setText("+");
+            listarLibros(); // Refresca la tabla
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error de BD: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Reactivar los listeners SIEMPRE
+            for (java.awt.event.ActionListener al : listeners) {
+                cmbAutores.addActionListener(al);
+            }
+        }
+    }//GEN-LAST:event_btnMasActionPerformed
+
+    private void cmbCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategoriaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCategoriaActionPerformed
+
+    private void listarLibros() {
         ResultSet rsLibro = null;
         String Vigencia = "";
         DefaultTableModel modeloC = new DefaultTableModel();
 
-        // 1. Configuración de columnas
-        modeloC.addColumn("Código");
-        modeloC.addColumn("Título");
-        modeloC.addColumn("Autor");
-        modeloC.addColumn("Categoría");
-        modeloC.addColumn("Año");
-        modeloC.addColumn("Estado");
+        // 1. Configuración de columnas (ORDEN SOLICITADO)
+        modeloC.addColumn("Código");        // Columna 0
+        modeloC.addColumn("Título");        // Columna 1
+        modeloC.addColumn("Editorial");     // Columna 2 (Antes Autor)
+        modeloC.addColumn("Categoría");     // Columna 3
+        modeloC.addColumn("Autores");       // Columna 4 (Nuevo campo relacional)
+        modeloC.addColumn("Año");           // Columna 5
+        modeloC.addColumn("Estado");        // Columna 6 (Antes Vigencia)
 
         tbllibros.setModel(modeloC);
 
         try {
-            // Ejecución de la consulta
-            rsLibro = Libro.listarLibros();
+            // Ejecución de la consulta (objLibro.listarLibros() debe traer los 7 campos)
+            rsLibro = Libro.listarLibros(); // Asume el método modificado
 
             // 2. Procesamiento del ResultSet
             while (rsLibro.next()) {
-                // Convierte el estado de vigencia ('t' o 'f') a "Si" o "No"
-                if (rsLibro.getString("estado_vigencia").equals("t")) {
-                    Vigencia = "Si";
-                } else {
-                    Vigencia = "No";
-                }
+                // Convierte el estado (boolean) a "Si" o "No"
+                Vigencia = rsLibro.getBoolean("estado") ? "Si" : "No";
 
-                // Añadir la fila a la tabla
+                // Añadir la fila a la tabla (usando los nombres de columnas del SELECT con JOIN)
                 modeloC.addRow(new Object[]{
-                    rsLibro.getInt("id_libro"),
-                    rsLibro.getString("titulo"),
-                    rsLibro.getString("autor_completo"),
-                    rsLibro.getString("categoria"),
-                    rsLibro.getInt("anio_publicacion"),
-                    Vigencia
+                    rsLibro.getInt("idlibro"), // 0. Código
+                    rsLibro.getString("titulo"), // 1. Título
+                    rsLibro.getString("nombre_editorial"), // 2. Editorial
+                    rsLibro.getString("nombre_categoria"), // 3. Categoría
+                    rsLibro.getString("autores_concatenados"), // 4. Autores (Concatenados)
+                    rsLibro.getString("aniopublicacion"), // 5. Año (String/Char)
+                    Vigencia // 6. Estado
                 });
-                // ⛔️ Se eliminó la línea: cont += 1;
             }
-
-            // ⛔️ Se eliminó el uso de 'cont' para actualizar un campo de texto, si lo tenías.
         } catch (Exception e) {
-            // Muestra el error específico para diagnosticar problemas
             JOptionPane.showMessageDialog(this,
                     "Error al consultar libros: " + e.getMessage(),
                     "Error de Datos",
@@ -514,18 +822,21 @@ public class ManLibro extends javax.swing.JPanel {
 
     private void limpiarControles() {
         txtcodigo.setText("");
-        txtautor.setText("");
         txtanio.setText("");
-        txtcategoria.setText("");
         txttitulo.setText("");
         chkvigente.setSelected(false);
+        cmbAutores.setSelectedIndex(0);
+
+        cmbEditorial.setSelectedIndex(0);
+        cmbCategoria.setSelectedIndex(0);
+
+        txtcodigo.setEditable(true);
         txttitulo.requestFocus();
     }
-    /*
+
     public static void main(String[] args) {
-        
+
         JFrame frame = new JFrame("Módulo de Mantenimiento de Libros");
-        
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -535,15 +846,22 @@ public class ManLibro extends javax.swing.JPanel {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-*/
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAutor;
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnCategoria;
+    private javax.swing.JButton btnEditorial;
+    private javax.swing.JButton btnMas;
     private javax.swing.JButton btndarbaja;
     private javax.swing.JButton btneliminar;
     private javax.swing.JButton btnlimpiar;
     private javax.swing.JButton btnmodificar;
     private javax.swing.JButton btnnuevo;
     private javax.swing.JCheckBox chkvigente;
+    private javax.swing.JComboBox<String> cmbAutores;
+    private javax.swing.JComboBox<String> cmbCategoria;
+    private javax.swing.JComboBox<String> cmbEditorial;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -554,8 +872,6 @@ public class ManLibro extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbllibros;
     private javax.swing.JTextField txtanio;
-    private javax.swing.JTextField txtautor;
-    private javax.swing.JTextField txtcategoria;
     private javax.swing.JTextField txtcodigo;
     private javax.swing.JTextField txttitulo;
     // End of variables declaration//GEN-END:variables

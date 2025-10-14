@@ -22,7 +22,6 @@ public class PrincipalBibliotecario extends javax.swing.JPanel {
      */
     public PrincipalBibliotecario() {
         initComponents();
-        listarLibros(null);
 
     }
 

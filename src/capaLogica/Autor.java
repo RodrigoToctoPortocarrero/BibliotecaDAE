@@ -104,4 +104,28 @@ public class Autor {
         }
         return 0;
     }
+
+    public ResultSet listarAutoresActivos() throws Exception {
+        strSQL = "SELECT idautor, nombres, apepaterno, apematerno FROM AUTOR WHERE estado = TRUE ORDER BY apepaterno, nombres";
+        try {
+            rs = objConectar.consultarBD(strSQL);
+            return rs;
+        } catch (Exception e) {
+            if (objConectar.getCon() != null) {
+                objConectar.desconectar();
+            }
+            throw new Exception("Error al listar autores activos: " + e.getMessage());
+        }
+    }
+
+    public void asignarAutor(Integer idLibro, Integer idAutor, String descripcion) throws Exception {
+        String strSQL = "INSERT INTO ASIGNAR_LIBRO_AUTOR (idlibro, idautor, descripcion) VALUES ("
+                + idLibro + ", " + idAutor + ", '" + descripcion.replace("'", "''") + "')";
+        try {
+            objConectar.ejecutarBD(strSQL);
+        } catch (Exception e) {
+            // Puede fallar si el par (idLibro, idAutor) ya existe (violación de clave primaria)
+            throw new Exception("Error al asignar autor al libro. Verifique que el autor no esté ya asignado. Mensaje: " + e.getMessage());
+        }
+    }
 }
