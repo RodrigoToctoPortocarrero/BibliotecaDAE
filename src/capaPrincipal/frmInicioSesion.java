@@ -5,6 +5,7 @@
 package capaPrincipal;
 
 import capaLogica.Usuario;
+import capaLogica.UsuarioSesion;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -191,45 +192,62 @@ public class frmInicioSesion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        // Código en el botón de login del frontend (e.g., Java Swing)
+
         try {
-            if(txtNombre.getText().trim().equals("") || String.valueOf(txtContra.getPassword()).equals("")){
-                JOptionPane.showMessageDialog(this, "Se debe completar ambos campos");
+            // 1. Obtención de Inputs: nomusuario (txtNombre) y contrasenia (txtContra)
+            String nomusuario = txtNombre.getText().trim();
+            String contrasenia = String.valueOf(txtContra.getPassword());
+
+            if (nomusuario.equals("") || contrasenia.equals("")) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar el Nombre de Usuario y la Contraseña.");
                 return;
             }
-            
-            Boolean verificarNombre = usu.verificarUsuario(txtNombre.getText());
-            if (verificarNombre) {
-                String verificarTodo = usu.verificarUsuContra(txtNombre.getText(), String.valueOf(txtContra.getPassword()));
-                if (verificarTodo.equals("")) {
-                    JOptionPane.showMessageDialog(this, "El usuario o contraseña están mal");
-                    contador--;
-                    JOptionPane.showMessageDialog(this, "Le quedan " + contador + " intentos");
-                    if (contador == 0) {
-                        JOptionPane.showMessageDialog(this, "Se acabaron sus intentos");
-                        this.dispose();
-                    }
+
+            // 2. Ejecutar la verificación segura
+            UsuarioSesion sesion = usu.loginSeguro(nomusuario, contrasenia);
+
+            if (sesion != null) {
+                // --- LOGIN EXITOSO ---
+                JOptionPane.showMessageDialog(this, "¡Bienvenido/a, " + sesion.getNombre() + "!");
+
+                // El 'usuario' que pasabas antes era el nomusuario.
+                String usuarioParaVentana = sesion.getNomusuario();
+
+                if (sesion.getTipousuario().equalsIgnoreCase("lector")) {
+                    // Abrir el formulario para Lectores, pasándole el nomusuario
+                    frmPrincipalLector lector = new frmPrincipalLector(usuarioParaVentana);
+                    lector.setVisible(true);
+                    lector.setLocationRelativeTo(null);
+
+                } else if (sesion.getTipousuario().equalsIgnoreCase("bibliotecario")) {
+                    // Abrir el formulario para Bibliotecarios, pasándole el nomusuario
+                    frmPrincipalBibliotecario biblio = new frmPrincipalBibliotecario(usuarioParaVentana);
+                    biblio.setVisible(true);
+                    biblio.setLocationRelativeTo(null);
+
                 } else {
-                    // Ahora comprobamos qué tipo de frmAbrir
-                    String tipoUsuario = usu.tipoUsuario(txtNombre.getText());
-                    if (tipoUsuario.equalsIgnoreCase("lector")) {
-                        // Abrir el de lector y pasar el nombre de usuario
-                        frmPrincipalLector lector = new frmPrincipalLector(txtNombre.getText());
-                        lector.setVisible(true);
-                        lector.setLocationRelativeTo(null);
-                        this.dispose();
-                    } else {
-                        // Abrir el de bibliotecario
-                        frmPrincipalBibliotecario biblio = new frmPrincipalBibliotecario(txtNombre.getText());
-                        biblio.setVisible(true);
-                        biblio.setLocationRelativeTo(null);
-                        this.dispose();
-                    }
+                    JOptionPane.showMessageDialog(this, "Tipo de usuario no válido. Contacte al administrador.");
+                    return;
                 }
+
+                this.dispose();
+
             } else {
-                JOptionPane.showMessageDialog(this, "El nombre no existe en la BD");
+                // --- LOGIN FALLIDO ---
+                JOptionPane.showMessageDialog(this, "Nombre de Usuario o Contraseña incorrectos.");
+
+                contador--;
+                if (contador <= 0) {
+                    JOptionPane.showMessageDialog(this, "Se acabaron sus intentos. Adiós.");
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Le quedan " + contador + " intentos.");
+                }
             }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Sucedió un error al iniciar sesión: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error crítico del sistema: " + e.getMessage());
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
 
@@ -246,21 +264,21 @@ public class frmInicioSesion extends javax.swing.JFrame {
         try {
             Boolean existe = usu.verificarUsuario(nombreusuario);
             String tipo = usu.tipoUsuario(nombreusuario);
-            
-            if(txtNombre.getText().equals("")){
+
+            if (txtNombre.getText().equals("")) {
                 JOptionPane.showMessageDialog(this, "Indique su nombre de usuario");
-                 return;
+                return;
             }
-                
-            if(!existe){
+
+            if (!existe) {
                 JOptionPane.showMessageDialog(this, "El usuario no existe en la BD");
                 return;
             }
-           
-            frmCambiarContrasenia obj = new frmCambiarContrasenia(txtNombre.getText(),tipo);
+
+            frmCambiarContrasenia obj = new frmCambiarContrasenia(txtNombre.getText(), tipo);
             obj.setVisible(true);
             this.dispose();
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error");
         }
