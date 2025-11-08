@@ -5,8 +5,10 @@
 package capaPrincipal;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
+import javax.swing.ImageIcon;
 import viewsUsuario.PrestamosUsuario;
 import viewsUsuario.PrincipalUsuario;
 
@@ -25,7 +27,19 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         InitContent();
         // Mostrar el nombre del usuario en el label
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
+        this.setTitle("Sistema de Biblioteca-Panel de Lector");
         this.setResizable(false); 
+        try {
+            // 1. Carga la imagen como un recurso del proyecto (ruta relativa)
+            Image icon = new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage();
+            
+            // 2. Establece la imagen como el icono de la ventana
+            this.setIconImage(icon);
+            
+        } catch (Exception e) {
+            System.err.println("Error al cargar el icono: " + e.getMessage());
+            // Manejo básico de error si no se encuentra la imagen
+        }
     }
 
     /**
@@ -54,6 +68,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         lblNombreUsuarioPrincipal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage());
 
         background.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -70,14 +85,13 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
         jSeparator1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
-        btnPrincipalUsuario.setBackground(new java.awt.Color(0, 153, 255));
+        btnPrincipalUsuario.setBackground(new java.awt.Color(0, 102, 255));
         btnPrincipalUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPrincipalUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        btnPrincipalUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/principal.png"))); // NOI18N
         btnPrincipalUsuario.setText("PRINCIPAL");
         btnPrincipalUsuario.setBorder(null);
         btnPrincipalUsuario.setBorderPainted(false);
-        btnPrincipalUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrincipalUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnPrincipalUsuario.setFocusPainted(false);
         btnPrincipalUsuario.setIconTextGap(10);
         btnPrincipalUsuario.addActionListener(new java.awt.event.ActionListener() {
@@ -86,10 +100,9 @@ public class frmPrincipalLector extends javax.swing.JFrame {
             }
         });
 
-        btnPrestamosUsuario.setBackground(new java.awt.Color(0, 153, 255));
+        btnPrestamosUsuario.setBackground(new java.awt.Color(0, 102, 255));
         btnPrestamosUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPrestamosUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        btnPrestamosUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/prestamo.png"))); // NOI18N
         btnPrestamosUsuario.setText("PRESTAMOS");
         btnPrestamosUsuario.setBorder(null);
         btnPrestamosUsuario.setBorderPainted(false);
@@ -173,7 +186,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dateText, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,7 +205,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 745, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,6 +227,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundLayout.createSequentialGroup()
                 .addComponent(menu, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(backgroundLayout.createSequentialGroup()
                         .addGap(46, 46, 46)
@@ -223,13 +237,8 @@ public class frmPrincipalLector extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblNombreUsuarioPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(90, 90, 90))
-                    .addGroup(backgroundLayout.createSequentialGroup()
-                        .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 756, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, 745, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14))))
+                    .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
+                    .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)))
         );
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,17 +250,20 @@ public class frmPrincipalLector extends javax.swing.JFrame {
                     .addComponent(lblNombreUsuarioPrincipal))
                 .addGap(29, 29, 29)
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
-                .addContainerGap())
-            .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+            .addComponent(menu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 1019, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 1013, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,7 +297,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         // 2. Mostrar el cuadro de diálogo de confirmación
         int resultado = javax.swing.JOptionPane.showOptionDialog(
                 this, // Componente padre (el JFrame o JDialog actual)
-                "¿De verdad quieres salir de la aplicación de la biblioteca virtual?", // Mensaje
+                "¿De verdad quieres salir del panel del lector", // Mensaje
                 "Confirmar Salida", // Título de la ventana
                 javax.swing.JOptionPane.YES_NO_OPTION, // Tipo de opciones
                 javax.swing.JOptionPane.QUESTION_MESSAGE, // Tipo de icono
@@ -297,7 +309,10 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         // 3. Evaluar la respuesta
         if (resultado == javax.swing.JOptionPane.YES_OPTION) {
             // Si el usuario elige 'Sí', cierra la aplicación.
-            System.exit(0);
+            frmInicioSesion obj = new frmInicioSesion();
+            this.dispose();
+            obj.setVisible(true);
+            obj.setLocationRelativeTo(null);
         }
     }//GEN-LAST:event_btnSalirActionPerformed
 

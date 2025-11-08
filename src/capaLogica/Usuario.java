@@ -43,7 +43,7 @@ public class Usuario {
 
         // El SQL ya es correcto, selecciona idusuario, nombre, y tipousuario.
         // Buscamos por nomusuario y contrasenia encriptada.
-         sql = "SELECT idusuario, nombre, tipousuario "
+        sql = "SELECT idusuario, nombre, tipousuario "
                 + "FROM USUARIO "
                 + "WHERE nomusuario = ? AND contrasenia = MD5(? || ? || ?) AND estado = TRUE";
 
@@ -131,17 +131,45 @@ public class Usuario {
         return "";
     }
 
-    //Necesito un metodo que me permita actualizar la contraseña
     public void cambiarContrasenia(String contraseniaNueva, String nombreusuario) throws Exception {
+
+        // Usamos el mismo SALT estático que en el login y los inserts
+        final String SAL_ESTATICO = "USAT2025";
+
+        // La nueva contraseña se encripta DENTRO del SQL, usando MD5 y el salt.
+        sql = "UPDATE USUARIO SET contrasenia = MD5(? || ? || ?) WHERE nomusuario = ?";
+
+        Connection micon = null;
+        PreparedStatement pst = null;
+
         try {
-            sql = "UPDATE USUARIO set contrasenia = ? where nomusuario= ?";
-            PreparedStatement pst = con.conectar().prepareStatement(sql);
-            pst.setString(1, contraseniaNueva);
-            pst.setString(2, nombreusuario);
+            micon = con.conectar();
+            pst = micon.prepareStatement(sql);
+
+            // Parámetros para la función MD5(ContraseñaNueva || nomusuario || SALT)
+            pst.setString(1, contraseniaNueva);  // 1. Contraseña nueva (plana)
+            pst.setString(2, nombreusuario);     // 2. nomusuario
+            pst.setString(3, SAL_ESTATICO);      // 3. SALT
+
+            // Parámetro para la cláusula WHERE
+            pst.setString(4, nombreusuario);     // 4. nomusuario para identificar la fila
 
             pst.executeUpdate();
+
         } catch (Exception e) {
-            throw new Exception("Ocurrio un error al cambiar contrasenia: " + e.getMessage());
+            throw new Exception("Ocurrió un error al cambiar la contraseña: " + e.getMessage());
+        } finally {
+            // Cierre de recursos seguro
+            try {
+                if (pst != null) {
+                    pst.close();
+                }
+                if (micon != null) {
+                    micon.close();
+                }
+            } catch (Exception e) {
+                System.err.println("Advertencia: Error al cerrar recursos de conexión: " + e.getMessage());
+            }
         }
     }
 

@@ -5,8 +5,10 @@
 package capaPrincipal;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
+import javax.swing.ImageIcon;
 import viewsBibliotecario.ManAutor;
 import viewsBibliotecario.ManCategoria;
 import viewsBibliotecario.ManEditorial;
@@ -35,6 +37,18 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         // Mostrar el nombre del usuario en el label
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
         this.setResizable(false);
+        this.setTitle("Sistema de Biblioteca-Panel de Bibliotecario");
+        try {
+            // 1. Carga la imagen como un recurso del proyecto (ruta relativa)
+            Image icon = new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage();
+            
+            // 2. Establece la imagen como el icono de la ventana
+            this.setIconImage(icon);
+            
+        } catch (Exception e) {
+            System.err.println("Error al cargar el icono: " + e.getMessage());
+            // Manejo básico de error si no se encuentra la imagen
+        }
     }
 
     /**
@@ -67,6 +81,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         lblNombreUsuarioPrincipal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage());
 
         background.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -83,14 +98,13 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
         jSeparator1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
-        btnPrincipalUsuario.setBackground(new java.awt.Color(0, 153, 255));
+        btnPrincipalUsuario.setBackground(new java.awt.Color(0, 102, 255));
         btnPrincipalUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPrincipalUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        btnPrincipalUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/principal.png"))); // NOI18N
         btnPrincipalUsuario.setText("PRINCIPAL");
         btnPrincipalUsuario.setBorder(null);
         btnPrincipalUsuario.setBorderPainted(false);
-        btnPrincipalUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrincipalUsuario.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnPrincipalUsuario.setFocusPainted(false);
         btnPrincipalUsuario.setIconTextGap(10);
         btnPrincipalUsuario.addActionListener(new java.awt.event.ActionListener() {
@@ -99,10 +113,9 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        btnPrestamosUsuario.setBackground(new java.awt.Color(0, 153, 255));
+        btnPrestamosUsuario.setBackground(new java.awt.Color(0, 102, 255));
         btnPrestamosUsuario.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPrestamosUsuario.setForeground(new java.awt.Color(255, 255, 255));
-        btnPrestamosUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/prestamo.png"))); // NOI18N
         btnPrestamosUsuario.setText("PRESTAMOS");
         btnPrestamosUsuario.setBorder(null);
         btnPrestamosUsuario.setBorderPainted(false);
@@ -128,7 +141,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        btnGestionarlibro.setBackground(new java.awt.Color(0, 153, 255));
+        btnGestionarlibro.setBackground(new java.awt.Color(0, 102, 255));
         btnGestionarlibro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnGestionarlibro.setForeground(new java.awt.Color(255, 255, 255));
         btnGestionarlibro.setText("GESTIONAR LIBRO");
@@ -141,10 +154,9 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        btnGestionareditorial.setBackground(new java.awt.Color(0, 153, 255));
+        btnGestionareditorial.setBackground(new java.awt.Color(0, 102, 255));
         btnGestionareditorial.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnGestionareditorial.setForeground(new java.awt.Color(255, 255, 255));
-        btnGestionareditorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/icons8-editorial-32 (1).png"))); // NOI18N
         btnGestionareditorial.setText("  GESTIONAR EDITORIAL");
         btnGestionareditorial.setBorder(null);
         btnGestionareditorial.setBorderPainted(false);
@@ -155,18 +167,18 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(0, 153, 255));
+        jButton1.setBackground(new java.awt.Color(0, 102, 255));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/escritor.png"))); // NOI18N
         jButton1.setText("GESTIONAR AUTOR");
+        jButton1.setBorder(null);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(0, 153, 255));
+        jButton2.setBackground(new java.awt.Color(0, 102, 255));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("GESTIONAR CATEGORIA");
@@ -187,6 +199,9 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             .addComponent(btnPrestamosUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnGestionarlibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnGestionareditorial, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(menuLayout.createSequentialGroup()
                 .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(menuLayout.createSequentialGroup()
@@ -196,19 +211,16 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                         .addGap(41, 41, 41)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(menuLayout.createSequentialGroup()
-                        .addGap(94, 94, 94)
+                        .addGap(88, 88, 88)
                         .addComponent(jLabel5)))
                 .addContainerGap(43, Short.MAX_VALUE))
-            .addComponent(btnGestionareditorial, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addGap(12, 12, 12)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -224,9 +236,9 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(22, 22, 22))
         );
 
         header.setBackground(new java.awt.Color(0, 153, 255));
@@ -249,7 +261,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dateText, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,40 +294,38 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addComponent(menu, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(backgroundLayout.createSequentialGroup()
-                        .addGap(46, 46, 46)
+                        .addGap(52, 52, 52)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblNombreUsuarioPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(90, 90, 90))
-                    .addGroup(backgroundLayout.createSequentialGroup()
-                        .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 755, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)
+                    .addComponent(content, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 758, Short.MAX_VALUE)))
         );
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel4)
                     .addComponent(lblNombreUsuarioPrincipal))
                 .addGap(29, 29, 29)
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addComponent(menu, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(menu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 1019, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,7 +360,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         // 2. Mostrar el cuadro de diálogo de confirmación
         int resultado = javax.swing.JOptionPane.showOptionDialog(
                 this, // Componente padre (el JFrame o JDialog actual)
-                "¿De verdad quieres salir de la aplicación de la biblioteca virtual?", // Mensaje
+                "¿De verdad quieres salir del panel del bibliotecario?", // Mensaje
                 "Confirmar Salida", // Título de la ventana
                 javax.swing.JOptionPane.YES_NO_OPTION, // Tipo de opciones
                 javax.swing.JOptionPane.QUESTION_MESSAGE, // Tipo de icono
@@ -362,7 +372,11 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         // 3. Evaluar la respuesta
         if (resultado == javax.swing.JOptionPane.YES_OPTION) {
             // Si el usuario elige 'Sí', cierra la aplicación.
-            System.exit(0);
+            frmInicioSesion obj = new frmInicioSesion();
+            this.dispose();
+            obj.setVisible(true);
+            obj.setLocationRelativeTo(null);
+            
         }
     }//GEN-LAST:event_btnSalirActionPerformed
 
