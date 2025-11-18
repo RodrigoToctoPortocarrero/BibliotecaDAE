@@ -4,17 +4,102 @@
  */
 package viewsBibliotecario;
 
+import capaLogica.Autor; // Asegúrate de que esta clase exista
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import javax.swing.JFrame;
+import java.sql.SQLException;
+
 /**
  *
  * @author Percy Alexander
  */
 public class BuscarAutor extends javax.swing.JPanel {
 
+    Autor objAutor = new Autor();
+    private ManLibro panelPrincipal;
+    private JFrame frameContenedor;
+
     /**
      * Creates new form BuscarAutor
      */
-    public BuscarAutor() {
+    public BuscarAutor(ManLibro principal, JFrame contenedor) {
         initComponents();
+        this.panelPrincipal = principal;
+        this.frameContenedor = contenedor;
+        llenarEstado();
+        listarAutores();
+    }
+
+    private void llenarEstado() {
+        // Rellena el JComboBox cbxEstado
+        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
+        modelo.addElement("Todos");
+        modelo.addElement("Activo");
+        modelo.addElement("Inactivo");
+        cboEstado.setModel(modelo);
+        cboEstado.setSelectedIndex(0);
+    }
+
+    private void listarAutores() {
+        ResultSet rsAutores = null;
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        // Definición de las columnas de la tabla (6 columnas)
+        modelo.addColumn("ID");
+        modelo.addColumn("NOMBRES");
+        modelo.addColumn("AP. PATERNO");
+        modelo.addColumn("AP. MATERNO");
+        modelo.addColumn("DESCRIPCIÓN");
+        modelo.addColumn("ESTADO"); // Índice 5
+
+        try {
+            // 1. Obtener los valores de los filtros
+            String nombre = txtNombre.getText();
+            String apePaterno = txtApePaterno.getText();
+            String estadoSeleccionado = cboEstado.getSelectedItem().toString();
+
+            // 2. Preparar el filtro de estado (asumiendo que TRUE = Activo)
+            String filtroEstado = "";
+            if (estadoSeleccionado.equalsIgnoreCase("Activo")) {
+                filtroEstado = "Activo";
+            } else if (estadoSeleccionado.equalsIgnoreCase("Inactivo")) {
+                filtroEstado = "Inactivo";
+            } else {
+                filtroEstado = "Todos";
+            }
+
+            // 3. Llamar al método de filtrado (Necesitas un método similar a Autor.filtrarAutores)
+            // NOTA: ApeMaterno y Descripcion no se usan como filtro según tu solicitud,
+            // pero podrías añadirlos a la llamada si lo necesitas.
+            rsAutores = objAutor.filtrarAutores(nombre, apePaterno, filtroEstado);
+
+            // 4. Llenar la tabla con los resultados
+            while (rsAutores.next()) {
+                modelo.addRow(new Object[]{
+                    rsAutores.getInt("idautor"),
+                    rsAutores.getString("nombres"),
+                    rsAutores.getString("apepaterno"),
+                    rsAutores.getString("apematerno"),
+                    rsAutores.getString("descripcion"),
+                    rsAutores.getBoolean("estado") ? "Activo" : "Inactivo" // Columna 5: ESTADO
+                });
+            }
+
+            // 5. Asignar el modelo a la JTable y actualizar el contador
+            tblListadoAutores.setModel(modelo);
+            txtTotalAutores.setText(String.valueOf(tblListadoAutores.getRowCount()));
+
+            // 6. Cerrar el ResultSet 
+            rsAutores.close();
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error de base de datos al listar autores: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            // Manejo de otras excepciones (NullPointerException, etc.)
+        }
     }
 
     /**
@@ -26,19 +111,172 @@ public class BuscarAutor extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        txtNombre = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblListadoAutores = new javax.swing.JTable();
+        txtApePaterno = new javax.swing.JTextField();
+        cboEstado = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        txtTotalAutores = new javax.swing.JLabel();
+        btnSeleccionar = new javax.swing.JButton();
+
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtNombreKeyReleased(evt);
+            }
+        });
+
+        tblListadoAutores.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblListadoAutores);
+
+        txtApePaterno.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtApePaternoKeyReleased(evt);
+            }
+        });
+
+        cboEstado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboEstadoActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Total");
+
+        txtTotalAutores.setText("Total");
+
+        btnSeleccionar.setText("Seleccionar");
+        btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 493, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(69, 69, 69)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(28, 28, 28)
+                                .addComponent(txtTotalAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(btnSeleccionar, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                .addComponent(txtApePaterno))
+                            .addGap(71, 71, 71)
+                            .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtApePaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(btnSeleccionar)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtTotalAutores))
+                .addGap(37, 37, 37))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
+        int fila = tblListadoAutores.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un Autor de la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            // 1. VALIDACIÓN: Obtener y verificar el ESTADO (Índice 5)
+            String estadoAutor = tblListadoAutores.getValueAt(fila, 5).toString(); // Columna 5 es ESTADO
+
+            if (!estadoAutor.equalsIgnoreCase("Activo")) {
+                JOptionPane.showMessageDialog(this,
+                        "Solo se pueden seleccionar Autores Activos (Estado: " + estadoAutor + ").",
+                        "Autor Inactivo",
+                        JOptionPane.WARNING_MESSAGE);
+                return; 
+            }
+
+            String idString = tblListadoAutores.getValueAt(fila, 0).toString();
+            Integer idAutor = Integer.parseInt(idString); // Columna 0: ID
+
+            // Obtenemos los campos por sus índices
+            String nombres = tblListadoAutores.getValueAt(fila, 1).toString(); // Columna 1: NOMBRES
+            String apePaterno = tblListadoAutores.getValueAt(fila, 2).toString(); // Columna 2: AP. PATERNO
+            String apeMaterno = tblListadoAutores.getValueAt(fila, 3).toString(); // Columna 3: AP. MATERNO
+
+            // 🚨 CONSTRUCCIÓN ESTANDARIZADA: NOMBRES + APE PATERNO + APE MATERNO
+            String nombreCompleto = nombres + " " + apePaterno + " " + apeMaterno;
+
+            // 3. Llamar al método delegado del panel principal (ManLibro)
+            if (panelPrincipal != null) {
+                panelPrincipal.setAutorSeleccionado(idAutor, nombreCompleto.trim()); // El método debe existir en ManLibro
+
+                // 4. Cerrar el JFrame contenedor
+                if (frameContenedor != null) {
+                    frameContenedor.dispose();
+                }
+            }
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(this,
+                    "Error de formato de ID. El código no es un número válido: " + nfe.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al seleccionar el autor: " + e.getMessage(),
+                    "Error General", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSeleccionarActionPerformed
+
+    private void txtNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyReleased
+        listarAutores();
+    }//GEN-LAST:event_txtNombreKeyReleased
+
+    private void txtApePaternoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApePaternoKeyReleased
+        listarAutores();
+    }//GEN-LAST:event_txtApePaternoKeyReleased
+
+    private void cboEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadoActionPerformed
+        listarAutores();
+    }//GEN-LAST:event_cboEstadoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSeleccionar;
+    private javax.swing.JComboBox<String> cboEstado;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblListadoAutores;
+    private javax.swing.JTextField txtApePaterno;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JLabel txtTotalAutores;
     // End of variables declaration//GEN-END:variables
 }

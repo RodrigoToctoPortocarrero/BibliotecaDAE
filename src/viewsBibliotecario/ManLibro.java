@@ -421,7 +421,8 @@ public class ManLibro extends javax.swing.JPanel {
     }
 
     private void cargarComboBoxAutores(ResultSet rs, javax.swing.JComboBox<String> cmb, HashMap<String, Integer> map,
-            String idCol, String nombreCol, String apellidoCol, String defaultItem) throws Exception {
+    String idCol, String nombreCol, String apellidoCol, String defaultItem) throws Exception {
+
         cmb.removeAllItems();
         map.clear();
         cmb.addItem(defaultItem);
@@ -429,9 +430,15 @@ public class ManLibro extends javax.swing.JPanel {
         if (rs != null) {
             while (rs.next()) {
                 Integer id = rs.getInt(idCol);
-                String nombreCompleto = rs.getString(apellidoCol) + " " + rs.getString(nombreCol); // Apellido + Nombre
-                cmb.addItem(nombreCompleto);
-                map.put(nombreCompleto, id);
+
+                String nombres = rs.getString(nombreCol);
+                String apePaterno = rs.getString(apellidoCol);
+                String apeMaterno = rs.getString("apematerno");
+
+
+                String nombreCompleto = nombres + " " + apePaterno + " " + apeMaterno;
+                cmb.addItem(nombreCompleto.trim());
+                map.put(nombreCompleto.trim(), id);
             }
             rs.close();
         }
@@ -712,8 +719,12 @@ public class ManLibro extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCategoriaActionPerformed
 
     private void btnAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorActionPerformed
-        BuscarAutor panelAutor = new BuscarAutor();
         javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Buscar Autor");
+
+        // 1. Crear la instancia de BuscarAutor, pasando la referencia del panel principal (this) y el contenedor.
+        BuscarAutor panelAutor = new BuscarAutor(this, frameContenedor);
+
+        // 2. Configurar y mostrar el frame
         frameContenedor.setContentPane(panelAutor);
         frameContenedor.revalidate();
         frameContenedor.pack();
@@ -797,6 +808,33 @@ public class ManLibro extends javax.swing.JPanel {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar la categoría seleccionada: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void setAutorSeleccionado(Integer idAutor, String nombreCompleto) {
+        try {
+            // En tu ManLibro, el cmbAutores ya está cargado con todos los autores activos.
+            // Si el autor seleccionado no existe en el mapa (por si fue creado recientemente), se añade.
+            if (!mapAutores.containsKey(nombreCompleto)) {
+                // Agregamos el nuevo item al JComboBox y al HashMap
+                cmbAutores.addItem(nombreCompleto);
+                mapAutores.put(nombreCompleto, idAutor);
+            }
+
+            // Seleccionar el autor en el combo para que el usuario pueda usar el botón '+'
+            cmbAutores.setSelectedItem(nombreCompleto);
+
+            // Llama al método para actualizar el texto del botón '+' a '+' o '-'
+            // (Esto asume que el método ya maneja el caso de selección sin buscar un libro)
+            cambiarTextoBotonMas();
+
+            // Enfocar en un campo relevante
+            txtanio.requestFocus();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar el autor seleccionado: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

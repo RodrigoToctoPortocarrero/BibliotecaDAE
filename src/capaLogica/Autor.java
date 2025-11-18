@@ -127,4 +127,53 @@ public class Autor {
             throw new Exception("Error al asignar autor al libro. Verifique que el autor no esté ya asignado. Mensaje: " + e.getMessage());
         }
     }
+
+    public ResultSet filtrarAutores(String nombres, String apePaterno, String estado) throws Exception {
+        try {
+            // 1. Consulta Base (Selecciona todos los campos)
+            StringBuilder sb = new StringBuilder(
+                    "SELECT idautor, nombres, apepaterno, apematerno, descripcion, estado FROM AUTOR WHERE 1=1"
+            );
+
+            // 2. Filtro por NOMBRES
+            if (nombres != null && !nombres.trim().isEmpty()) {
+                // Usamos concatenación directa para el LIKE, sanitizando la entrada
+                sb.append(" AND UPPER(nombres) LIKE UPPER('%")
+                        .append(nombres.trim().replace("'", "''"))
+                        .append("%')");
+            }
+
+            // 3. Filtro por APELLIDO PATERNO
+            if (apePaterno != null && !apePaterno.trim().isEmpty()) {
+                // Usamos concatenación directa para el LIKE, sanitizando la entrada
+                sb.append(" AND UPPER(apepaterno) LIKE UPPER('%")
+                        .append(apePaterno.trim().replace("'", "''"))
+                        .append("%')");
+            }
+
+            // 4. Filtro por ESTADO
+            if (estado != null && !estado.trim().equalsIgnoreCase("Todos")) {
+                // Convierte la cadena "Activo" o "Inactivo" a valor booleano o cadena SQL
+                String valorEstado = estado.trim().equalsIgnoreCase("Activo") ? "TRUE" : "FALSE";
+                sb.append(" AND estado = ")
+                        .append(valorEstado);
+            }
+
+            // 5. Agregar ordenación
+            sb.append(" ORDER BY apepaterno, nombres");
+
+            // 6. Asignar la SQL final a la variable de instancia y ejecutar
+            strSQL = sb.toString();
+            rs = objConectar.consultarBD(strSQL);
+
+            return rs;
+
+        } catch (Exception e) {
+            // Asegurar que la conexión se desconecte si falló la consulta (patrón de tu clase)
+            if (objConectar.getCon() != null) {
+                objConectar.desconectar();
+            }
+            throw new Exception("Error al filtrar autores: " + e.getMessage());
+        }
+    }
 }
