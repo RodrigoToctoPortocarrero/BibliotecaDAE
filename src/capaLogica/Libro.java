@@ -7,6 +7,7 @@ package capaLogica;
 import capaDatos.clsJDBC;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -24,24 +25,12 @@ public class Libro {
      * las columnas se han adaptado al esquema de la BD.
      */
     public ResultSet listarLibros() throws Exception {
-        strSQL = "SELECT "
-                + "L.idlibro, "
-                + "L.titulo, "
-                + "L.aniopublicacion, "
-                + "L.estado, "
+        strSQL = "SELECT L.idlibro, L.titulo, L.aniopublicacion, L.estado, "
                 + "E.nombre AS nombre_editorial, "
-                + "C.nombrecategoria AS nombre_categoria, "
-                // ⬇️ CLAVE: Agregamos STRING_AGG y COALESCE para manejar libros sin autores ⬇️
-                + "COALESCE(STRING_AGG(A.nombres || ' ' || A.apepaterno, ', ' ORDER BY A.apepaterno), '') AS autores_concatenados "
+                + "C.nombrecategoria AS nombre_categoria "
                 + "FROM LIBROS L "
-                // INNER JOIN es correcto aquí porque ideditorial e idcategoria son NOT NULL
                 + "INNER JOIN EDITORIAL E ON L.ideditorial = E.ideditorial "
                 + "INNER JOIN CATEGORIA C ON L.idcategoria = C.idcategoria "
-                // LEFT JOIN es crucial: asegura que se listen libros que AÚN NO tienen autores
-                + "LEFT JOIN ASIGNAR_LIBRO_AUTOR ALA ON L.idlibro = ALA.idlibro "
-                + "LEFT JOIN AUTOR A ON ALA.idautor = A.idautor "
-                // Agrupación obligatoria de todas las columnas que no usan STRING_AGG
-                + "GROUP BY L.idlibro, L.titulo, L.aniopublicacion, L.estado, E.nombre, C.nombrecategoria "
                 + "ORDER BY L.idlibro";
         try {
             rs = objConectar.consultarBD(strSQL);
@@ -285,4 +274,74 @@ public class Libro {
             throw new Exception("Error al buscar libros por título: " + e.getMessage());
         }
     }
+
+    public ResultSet filtrarLibros(String titulo, String anio, String estado,
+            String nomEditorial, String nomCategoria) throws Exception {
+
+        // Consulta Base: Selecciona los 6 campos que necesitas para la tabla
+        String sqlBase = "SELECT L.idlibro, L.titulo, L.aniopublicacion, L.estado, "
+                + "E.nombre AS nombre_editorial, "
+                + "C.nombrecategoria AS nombre_categoria "
+                + "FROM LIBROS L "
+                + "INNER JOIN EDITORIAL E ON L.ideditorial = E.ideditorial "
+                + "INNER JOIN CATEGORIA C ON L.idcategoria = C.idcategoria "
+                + "WHERE 1=1";
+
+        StringBuilder sb = new StringBuilder(sqlBase);
+
+        try {
+            // --- FILTRO POR TÍTULO (nombre) ---
+            if (titulo != null && !titulo.trim().isEmpty()) {
+                sb.append(" AND LOWER(L.titulo) LIKE LOWER('%").append(titulo.trim().replace("'", "''")).append("%')");
+            }
+
+            // --- FILTRO POR AÑO DE PUBLICACIÓN ---
+            // Se asume que anioPublicacion es tipo CHAR(4) o VARCHAR en la BD
+            if (anio != null && !anio.trim().isEmpty()) {
+                sb.append(" AND L.aniopublicacion = '").append(anio.trim()).append("'");
+            }
+
+            // --- FILTRO POR EDITORIAL (Texto) ---
+            if (nomEditorial != null && !nomEditorial.trim().isEmpty()) {
+                sb.append(" AND LOWER(E.nombre) LIKE LOWER('%").append(nomEditorial.trim().replace("'", "''")).append("%')");
+            }
+
+            // --- FILTRO POR CATEGORÍA (Texto) ---
+            if (nomCategoria != null && !nomCategoria.trim().isEmpty()) {
+                sb.append(" AND LOWER(C.nombrecategoria) LIKE LOWER('%").append(nomCategoria.trim().replace("'", "''")).append("%')");
+            }
+
+            // --- FILTRO POR ESTADO (Activo/Inactivo) ---
+            if (estado != null && !estado.trim().equalsIgnoreCase("Todos")) {
+                String valorEstado = estado.trim().equalsIgnoreCase("Activo") ? "TRUE" : "FALSE";
+                sb.append(" AND L.estado = ").append(valorEstado);
+            }
+
+            sb.append(" ORDER BY L.titulo");
+
+            strSQL = sb.toString();
+            return objConectar.consultarBD(strSQL);
+
+        } catch (Exception e) {
+            // Asegurar el manejo de la conexión en caso de error
+            throw new Exception("Error al filtrar libros: " + e.getMessage());
+        }
+    }
+
+    public ResultSet listarInformeAsignaciones() throws Exception {
+        strSQL = "SELECT L.titulo AS titulo_libro, "
+                + "A.nombres || ' ' || A.apepaterno || ' ' || A.apematerno AS nombre_autor "
+                + "FROM LIBROS L "
+                + "INNER JOIN ASIGNAR_LIBRO_AUTOR ALA ON L.idlibro = ALA.idlibro "
+                + "INNER JOIN AUTOR A ON ALA.idautor = A.idautor "
+                + "ORDER BY L.titulo, A.apepaterno";
+
+        try {
+            // Usa objConectar.consultarBD(strSQL) que ya manejas
+            return objConectar.consultarBD(strSQL);
+        } catch (Exception e) {
+            throw new Exception("Error al listar el informe de asignaciones: " + e.getMessage());
+        }
+    }
+
 }

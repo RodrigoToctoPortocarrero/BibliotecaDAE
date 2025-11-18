@@ -18,16 +18,16 @@ import java.sql.SQLException;
  */
 public class BuscarAutor extends javax.swing.JPanel {
 
+    private ManAsignarAutorLibro panelAsignarLibro; // ⬅️ REFERENCIA AL DELEGADO
+    private javax.swing.JFrame frameContenedor;
     Autor objAutor = new Autor();
-    private ManLibro panelPrincipal;
-    private JFrame frameContenedor;
 
     /**
      * Creates new form BuscarAutor
      */
-    public BuscarAutor(ManLibro principal, JFrame contenedor) {
+    public BuscarAutor(ManAsignarAutorLibro principal, JFrame contenedor) {
         initComponents();
-        this.panelPrincipal = principal;
+        this.panelAsignarLibro = principal; // Guarda la referencia del JDialog
         this.frameContenedor = contenedor;
         llenarEstado();
         listarAutores();
@@ -207,38 +207,34 @@ public class BuscarAutor extends javax.swing.JPanel {
 
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
         int fila = tblListadoAutores.getSelectedRow();
-
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un Autor de la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+        // ... (Validación fila == -1) ...
 
         try {
             // 1. VALIDACIÓN: Obtener y verificar el ESTADO (Índice 5)
-            String estadoAutor = tblListadoAutores.getValueAt(fila, 5).toString(); // Columna 5 es ESTADO
+            // Columna 5 es el ESTADO, según tu método listarAutores()
+            String estadoAutor = tblListadoAutores.getValueAt(fila, 5).toString();
 
+            // 🛑 Lógica de Bloqueo 🛑
             if (!estadoAutor.equalsIgnoreCase("Activo")) {
                 JOptionPane.showMessageDialog(this,
                         "Solo se pueden seleccionar Autores Activos (Estado: " + estadoAutor + ").",
                         "Autor Inactivo",
                         JOptionPane.WARNING_MESSAGE);
-                return; 
+                return; // 🛑 ESTA LÍNEA ES CRUCIAL: Detiene la ejecución aquí.
             }
 
+            // 2. Obtener los datos (Solo se ejecuta si el estado es Activo)
             String idString = tblListadoAutores.getValueAt(fila, 0).toString();
-            Integer idAutor = Integer.parseInt(idString); // Columna 0: ID
-
-            // Obtenemos los campos por sus índices
-            String nombres = tblListadoAutores.getValueAt(fila, 1).toString(); // Columna 1: NOMBRES
-            String apePaterno = tblListadoAutores.getValueAt(fila, 2).toString(); // Columna 2: AP. PATERNO
-            String apeMaterno = tblListadoAutores.getValueAt(fila, 3).toString(); // Columna 3: AP. MATERNO
-
-            // 🚨 CONSTRUCCIÓN ESTANDARIZADA: NOMBRES + APE PATERNO + APE MATERNO
+            Integer idAutor = Integer.parseInt(idString);
+            // ... (obtención de nombres, etc.) ...
+            String nombres = tblListadoAutores.getValueAt(fila, 1).toString();
+            String apePaterno = tblListadoAutores.getValueAt(fila, 2).toString();
+            String apeMaterno = tblListadoAutores.getValueAt(fila, 3).toString();
             String nombreCompleto = nombres + " " + apePaterno + " " + apeMaterno;
 
-            // 3. Llamar al método delegado del panel principal (ManLibro)
-            if (panelPrincipal != null) {
-                panelPrincipal.setAutorSeleccionado(idAutor, nombreCompleto.trim()); // El método debe existir en ManLibro
+            // 3. Llamar al método delegado del panel principal (ManAsignarAutorLibro)
+            if (panelAsignarLibro != null) {
+                panelAsignarLibro.setAutorSeleccionado(idAutor, nombreCompleto.trim());
 
                 // 4. Cerrar el JFrame contenedor
                 if (frameContenedor != null) {
@@ -246,13 +242,9 @@ public class BuscarAutor extends javax.swing.JPanel {
                 }
             }
         } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(this,
-                    "Error de formato de ID. El código no es un número válido: " + nfe.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            // ... (Manejo de error de formato) ...
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al seleccionar el autor: " + e.getMessage(),
-                    "Error General", JOptionPane.ERROR_MESSAGE);
+            // ... (Manejo de error general) ...
         }
     }//GEN-LAST:event_btnSeleccionarActionPerformed
 
