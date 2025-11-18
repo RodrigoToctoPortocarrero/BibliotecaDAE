@@ -17,7 +17,6 @@ public class Autor {
 
     // Listar todos los autores
     public ResultSet listarAutores() throws Exception {
-        // CORRECTO: Incluye la columna 'estado'
         strSQL = "SELECT idautor, nombres, apepaterno, apematerno, descripcion, estado FROM AUTOR";
         try {
             rs = objConectar.consultarBD(strSQL);

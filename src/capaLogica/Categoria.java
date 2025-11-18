@@ -10,8 +10,6 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-
 /**
  *
  * @author Tocto Portocarrero Rodrigo Jesús
@@ -255,7 +253,7 @@ public class Categoria {
             throw new Exception("Error al insertar la categoría: " + e.getMessage());
         }
     }
-    
+
     public ResultSet listarCategoriasActivas() throws Exception {
         Statement st = null;
         try {
@@ -267,10 +265,76 @@ public class Categoria {
         } catch (Exception e) {
             // Intentar cerrar el Statement si se abrió
             if (st != null) {
-                 try { st.close(); } catch (SQLException ex) { /* ignorar */ }
+                try {
+                    st.close();
+                } catch (SQLException ex) {
+                    /* ignorar */ }
             }
             throw new Exception("Error al listar categorías activas: " + e.getMessage());
         }
     }
 
+    public ResultSet filtrarCategorias(String nombre, String descripcion, String estado) throws Exception {
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            // 1. Iniciar la consulta base
+            sql = "SELECT idcategoria, nombrecategoria, descripcion, estado FROM CATEGORIA WHERE 1=1";
+
+            // 2. Usar un StringBuilder o List para manejar los parámetros y la cláusula WHERE
+            StringBuilder sb = new StringBuilder(sql);
+            int parameterIndex = 1;
+
+            // 3. Crear la lista para almacenar los valores de los parámetros (?)
+            java.util.List<Object> parametros = new java.util.ArrayList<>();
+
+            // --- FILTRO POR NOMBRE ---
+            if (nombre != null && !nombre.trim().isEmpty()) {
+                sb.append(" AND UPPER(nombrecategoria) LIKE UPPER(?)");
+                parametros.add("%" + nombre.trim() + "%");
+            }
+
+            // --- FILTRO POR DESCRIPCIÓN ---
+            if (descripcion != null && !descripcion.trim().isEmpty()) {
+                sb.append(" AND UPPER(descripcion) LIKE UPPER(?)");
+                parametros.add("%" + descripcion.trim() + "%");
+            }
+
+            // --- FILTRO POR ESTADO ---
+            if (estado != null && !estado.trim().equalsIgnoreCase("todos")) {
+                sb.append(" AND estado = ?");
+                boolean activo = estado.trim().equalsIgnoreCase("activo");
+                parametros.add(activo); // Añade el valor booleano
+            }
+
+            // 4. Agregar ordenación para mejor visualización
+            sb.append(" ORDER BY nombrecategoria");
+
+            // 5. Preparar la sentencia
+            pst = con.conectar().prepareStatement(sb.toString());
+
+            // 6. Asignar los parámetros dinámicamente
+            for (Object param : parametros) {
+                if (param instanceof String) {
+                    pst.setString(parameterIndex++, (String) param);
+                } else if (param instanceof Boolean) {
+                    pst.setBoolean(parameterIndex++, (Boolean) param);
+                }
+            }
+
+            // 7. Ejecutar la consulta
+            rs = pst.executeQuery();
+            return rs;
+
+        } catch (Exception e) {
+            // Asegurar que el PreparedStatement se cierre en caso de error
+            if (pst != null) {
+                try {
+                    pst.close();
+                } catch (SQLException ex) {
+                    /* ignored */ }
+            }
+            throw new Exception("Error al filtrar categorías: " + e.getMessage());
+        }
+    }
 }

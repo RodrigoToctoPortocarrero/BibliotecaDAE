@@ -44,7 +44,7 @@ public class ManLibro extends javax.swing.JPanel {
         if (btnMas != null) {
             btnMas.setEnabled(false);
         }
-        
+
     }
 
     /**
@@ -235,8 +235,9 @@ public class ManLibro extends javax.swing.JPanel {
                                 .addComponent(txttitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                                 .addComponent(txtcodigo))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(cmbEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(1, 1, 1)
+                                .addComponent(cmbEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(23, 23, 23)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -418,7 +419,7 @@ public class ManLibro extends javax.swing.JPanel {
             rs.close();
         }
     }
-    
+
     private void cargarComboBoxAutores(ResultSet rs, javax.swing.JComboBox<String> cmb, HashMap<String, Integer> map,
             String idCol, String nombreCol, String apellidoCol, String defaultItem) throws Exception {
         cmb.removeAllItems();
@@ -682,8 +683,13 @@ public class ManLibro extends javax.swing.JPanel {
     }//GEN-LAST:event_tbllibrosMouseClicked
 
     private void btnEditorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditorialActionPerformed
-        ManEditorial panelEditorial = new ManEditorial();
-        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Gestión de Editorial");
+        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Buscar Editorial");
+
+        // 2. Crear la instancia de BuscarEditorial, usando el constructor
+        //    que requiere la referencia del panel principal (this) y el contenedor.
+        BuscarEditorial panelEditorial = new BuscarEditorial(this, frameContenedor);
+
+        // 3. Configurar y mostrar el frame
         frameContenedor.setContentPane(panelEditorial);
         frameContenedor.revalidate();
         frameContenedor.pack();
@@ -693,8 +699,10 @@ public class ManLibro extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditorialActionPerformed
 
     private void btnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriaActionPerformed
-        ManCategoria panelCategoria = new ManCategoria();
-        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Gestión de Editorial");
+        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Buscar Categoría");
+
+        BuscarCategoria panelCategoria = new BuscarCategoria(this, frameContenedor);
+
         frameContenedor.setContentPane(panelCategoria);
         frameContenedor.revalidate();
         frameContenedor.pack();
@@ -704,8 +712,8 @@ public class ManLibro extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCategoriaActionPerformed
 
     private void btnAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorActionPerformed
-        ManAutor panelAutor = new ManAutor();
-        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Gestión de Editorial");
+        BuscarAutor panelAutor = new BuscarAutor();
+        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Buscar Autor");
         frameContenedor.setContentPane(panelAutor);
         frameContenedor.revalidate();
         frameContenedor.pack();
@@ -769,6 +777,50 @@ public class ManLibro extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_btnMasActionPerformed
+
+    public void setCategoriaSeleccionada(int idCategoria, String nombreCategoria) {
+        try {
+            // 1. Asegurarse de que el mapa contenga la nueva categoría.
+            // Si no está, la añadimos (esto es importante si la categoría
+            // fue creada recientemente o si el filtro no la trajo).
+            if (!mapCategorias.containsKey(nombreCategoria)) {
+                // IMPORTANTE: Asegúrate de que el DefaultComboBoxModel lo permita
+                cmbCategoria.addItem(nombreCategoria);
+                mapCategorias.put(nombreCategoria, idCategoria);
+            }
+
+            // 2. Seleccionar el ítem en el JComboBox
+            cmbCategoria.setSelectedItem(nombreCategoria);
+
+            // Opcional: enfocar el siguiente campo
+            txtanio.requestFocus();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar la categoría seleccionada: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void setEditorialSeleccionada(int idEditorial, String nombreEditorial) {
+        try {
+            // 1. Asegurarse de que el mapa contenga la nueva editorial.
+            if (!mapEditoriales.containsKey(nombreEditorial)) {
+                // Agregamos el nuevo item al JComboBox y al HashMap
+                cmbEditorial.addItem(nombreEditorial);
+                mapEditoriales.put(nombreEditorial, idEditorial);
+            }
+
+            // 2. Seleccionar el ítem en el JComboBox
+            cmbEditorial.setSelectedItem(nombreEditorial);
+
+            // Opcional: enfocar el siguiente campo (Categoría)
+            cmbCategoria.requestFocus();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la editorial seleccionada: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void cmbCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategoriaActionPerformed
         // TODO add your handling code here:
