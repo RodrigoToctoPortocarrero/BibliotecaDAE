@@ -149,6 +149,8 @@ public class PrincipalUsuario extends javax.swing.JPanel {
         Integer cont = 0;
         String Vigencia = "";
         DefaultTableModel modeloC = new DefaultTableModel();
+        
+        // 1. Definir las columnas (Igual que en Bibliotecario)
         modeloC.addColumn("Código");
         modeloC.addColumn("Título");
         modeloC.addColumn("Autor");
@@ -159,34 +161,36 @@ public class PrincipalUsuario extends javax.swing.JPanel {
         tblLibros.setModel(modeloC);
 
         try {
-            // 1. Lógica Condicional: Si no hay texto, lista todos; si hay, busca por título.
+            // 1. Lógica de Búsqueda
             if (tituloBusqueda == null || tituloBusqueda.trim().isEmpty()) {
                 rsLibro = Libro.listarLibros();
             } else {
-                // Llama al nuevo método de búsqueda
                 rsLibro = Libro.buscarLibrosPorTitulo(tituloBusqueda.trim());
             }
 
-            // 2. Procesa los resultados (el bucle While es el mismo)
+            // 2. Procesar resultados usando los nombres EXACTOS que funcionan en Bibliotecario
             while (rsLibro.next()) {
-                if (rsLibro.getString("estado_vigencia").equals("t")) {
-                    Vigencia = "Si";
+                
+                // Usamos la lógica que te funcionó: getString("estado").equals("t")
+                // Nota: Asumo que tu BD devuelve "t" para true (común en PostgreSQL)
+                String estadoStr = rsLibro.getString("estado");
+                if (estadoStr != null && estadoStr.equals("t")) {
+                    Vigencia = "Disponible";
                 } else {
-                    Vigencia = "No";
+                    Vigencia = "No Disponible";
                 }
 
                 modeloC.addRow(new Object[]{
-                    rsLibro.getInt("id_libro"),
+                    rsLibro.getInt("id_libro"),          // COPIADO DE TU CÓDIGO QUE FUNCIONA
                     rsLibro.getString("titulo"),
-                    rsLibro.getString("autor_completo"),
-                    rsLibro.getString("categoria"),
-                    rsLibro.getInt("anio_publicacion"),
+                    rsLibro.getString("autor_completo"), // COPIADO DE TU CÓDIGO QUE FUNCIONA
+                    rsLibro.getString("categoria"),      // COPIADO DE TU CÓDIGO QUE FUNCIONA
+                    rsLibro.getInt("anio_publicacion"),  // COPIADO DE TU CÓDIGO QUE FUNCIONA
                     Vigencia
                 });
                 cont += 1;
             }
 
-            // Opcional: Mostrar mensaje si no se encuentra nada
             if (cont == 0 && tituloBusqueda != null && !tituloBusqueda.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No se encontraron libros con el título: '" + tituloBusqueda + "'.", "Búsqueda sin resultados", JOptionPane.INFORMATION_MESSAGE);
             }
