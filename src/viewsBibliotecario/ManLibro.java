@@ -538,7 +538,7 @@ public class ManLibro extends javax.swing.JPanel {
                 // Asignación de campos restantes
                 txtanio.setText(anio);
 
-                chkvigente.setSelected(estado.equals("Si"));
+                chkvigente.setSelected(estado.equals("Vigente"));
 
             } finally {
             }
@@ -641,7 +641,7 @@ public class ManLibro extends javax.swing.JPanel {
 
             // 4. Llenar el modelo con los datos del ResultSet
             while (rs.next()) {
-                String estado = rs.getBoolean("estado") ? "Si" : "No"; // Usamos "Si"/"No" para consistencia con tu tabla
+                String estado = rs.getBoolean("estado") ? "Vigente" : "No Vigente";
 
                 Object[] fila = {
                     rs.getInt("idlibro"),

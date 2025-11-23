@@ -458,14 +458,24 @@ public class ManAutor extends javax.swing.JPanel {
 
         try {
             rs = autor.listarAutores();
+            
+            
             while (rs.next()) {
+                boolean estado = rs.getBoolean("estado");
+                String est = "";
+                if(estado){
+                    est = "Vigente";
+                }else{
+                    est = "No Vigente";
+                }
+                
                 modelo.addRow(new Object[]{
                     rs.getInt("idautor"),
                     rs.getString("nombres"),
                     rs.getString("apepaterno"),
                     rs.getString("apematerno"),
                     rs.getString("descripcion"),
-                    rs.getBoolean("estado") // ⭐ Se obtiene el estado
+                    est// ⭐ Se obtiene el estado
                 });
             }
         } catch (Exception e) {

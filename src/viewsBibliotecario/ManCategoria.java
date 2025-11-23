@@ -47,9 +47,9 @@ public class ManCategoria extends javax.swing.JPanel {
                 String descripcion = categorias.getString("descripcion");
                 Boolean vig = categorias.getBoolean("estado");
                 if(vig){
-                    vigente = "VIGENTE";
+                    vigente = "Vigente";
                 }else{
-                    vigente = "NO VIGENTE";
+                    vigente = "No Vigente";
                 }
                 
                 fila = new Vector();
