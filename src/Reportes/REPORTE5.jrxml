@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="REPORTE5" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5edd36e3-d3c1-4aba-830d-f6f1bce73315">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+    l.titulo AS "Título del Libro",
+    a.nombres || ' ' || a.apepaterno || ' ' || a.apematerno AS "Nombre Completo del Autor",
+    ala.descripcion AS "Rol / Descripción"
+FROM
+    libros l
+JOIN
+    asignar_libro_autor ala ON l.idlibro = ala.idlibro
+JOIN
+    autor a ON ala.idautor = a.idautor
+ORDER BY
+    l.titulo;]]>
+	</queryString>
+	<field name="Título del Libro" class="java.lang.String"/>
+	<field name="Nombre Completo del Autor" class="java.lang.String"/>
+	<field name="Rol / Descripción" class="java.lang.String"/>
+	<group name="GrupoLibro">
+		<groupExpression><![CDATA[$F{Título del Libro}]]></groupExpression>
+		<groupHeader>
+			<band height="41">
+				<textField isStretchWithOverflow="true">
+					<reportElement x="65" y="20" width="100" height="20" uuid="0101ebc6-db9d-4a0a-a05d-4614a9105632"/>
+					<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="165" y="20" width="100" height="20" uuid="c7579d3e-909a-477e-9b56-a75fd4498980"/>
+					<text><![CDATA[:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="146" y="20" width="263" height="36" uuid="f42231b5-5e63-4ff3-b021-052595f8e158"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="25"/>
+				</textElement>
+				<text><![CDATA[Libros y sus Autores]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="65" y="19" width="100" height="20" uuid="d8933ef5-d752-4cbf-8625-1f3c6157c5df"/>
+				<textElement>
+					<font isBold="true" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Título del Libro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="19" width="100" height="20" uuid="488921b5-680c-45bb-a55a-7283e11650a0"/>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Completo del Autor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="19" width="100" height="20" uuid="acd4621d-e4a3-4e1a-be3f-655e50437307"/>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Rol / Descripción]]></text>
+			</staticText>
+			<line>
+				<reportElement x="65" y="49" width="428" height="1" uuid="e76f30fc-3598-4bba-8f67-594993b2af47"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="230" y="0" width="100" height="20" uuid="7f1fdd39-8f24-478a-ad33-4822ee97b8c0"/>
+				<textFieldExpression><![CDATA[$F{Nombre Completo del Autor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="393" y="0" width="100" height="20" uuid="a32e05b1-e535-4adb-aa4f-59657e0d536a"/>
+				<textFieldExpression><![CDATA[$F{Rol / Descripción}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="20" width="220" height="20" uuid="39cf5f08-5dd8-4e38-87ec-a104bff5a5c8"/>
+				<text><![CDATA[ELABORADO POR: EDGAR BERNABÉ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="424" y="20" width="80" height="20" uuid="58b9f17c-5413-4bd7-9485-a760d8892b12"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="504" y="20" width="40" height="20" uuid="b838ae61-c343-4777-9f91-0978202f9447"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

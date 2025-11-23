@@ -94,7 +94,6 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         btnGestionarCategoria = new javax.swing.JButton();
         btnGestionarUsuarios = new javax.swing.JButton();
         btnDevolucion = new javax.swing.JButton();
-        btnDevolucion1 = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         dateText = new javax.swing.JLabel();
@@ -241,19 +240,6 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        btnDevolucion1.setBackground(new java.awt.Color(0, 102, 255));
-        btnDevolucion1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnDevolucion1.setForeground(new java.awt.Color(255, 255, 255));
-        btnDevolucion1.setText("REPORTES");
-        btnDevolucion1.setBorder(null);
-        btnDevolucion1.setBorderPainted(false);
-        btnDevolucion1.setFocusPainted(false);
-        btnDevolucion1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDevolucion1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout menuLayout = new javax.swing.GroupLayout(menu);
         menu.setLayout(menuLayout);
         menuLayout.setHorizontalGroup(
@@ -283,8 +269,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                     .addComponent(btnPrestamosUsuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(menuLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btnGestionarlibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(btnDevolucion1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnGestionarlibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addComponent(btnDevolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -313,11 +298,9 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addComponent(btnGestionarUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDevolucion1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         header.setBackground(new java.awt.Color(0, 153, 255));
@@ -395,7 +378,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(54, Short.MAX_VALUE)
                 .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel4)
@@ -547,10 +530,6 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDevolucionActionPerformed
 
-    private void btnDevolucion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucion1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDevolucion1ActionPerformed
-
     private void InitContent() {
         
         //Que vaya el gestionar ejemplar
@@ -600,7 +579,6 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
     private javax.swing.JButton btnDevolucion;
-    private javax.swing.JButton btnDevolucion1;
     private javax.swing.JButton btnEjemplar;
     private javax.swing.JButton btnGestionarAutor;
     private javax.swing.JButton btnGestionarCategoria;
