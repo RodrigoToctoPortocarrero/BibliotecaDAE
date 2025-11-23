@@ -263,18 +263,25 @@ public class Libro {
     /**
      * Busca libros por coincidencia en el título.
      */
-    public ResultSet buscarLibrosPorTitulo(String titulo) throws Exception {
-        // Se usa LOWER para búsqueda insensible a mayúsculas/minúsculas y LIKE para coincidencias parciales.
-        strSQL = "SELECT * FROM LIBROS WHERE LOWER(titulo) LIKE '%" + titulo.toLowerCase().replace("'", "''") + "%'";
+        public ResultSet buscarLibrosPorTitulo(String titulo) throws Exception {
+            // Usamos la misma estructura que en listarLibros para que la tabla no falle
+            strSQL = "SELECT L.idlibro, L.titulo, L.aniopublicacion, L.estado, "
+                    + "E.nombre AS nombre_editorial, "
+                    + "C.nombrecategoria AS nombre_categoria "
+                    + "FROM LIBROS L "
+                    + "INNER JOIN EDITORIAL E ON L.ideditorial = E.ideditorial "
+                    + "INNER JOIN CATEGORIA C ON L.idcategoria = C.idcategoria "
+                    + "WHERE LOWER(L.titulo) LIKE '%" + titulo.toLowerCase().replace("'", "''") + "%' "
+                    + "ORDER BY L.idlibro";
 
-        try {
-            rs = objConectar.consultarBD(strSQL);
-            return rs;
-        } catch (Exception e) {
-            throw new Exception("Error al buscar libros por título: " + e.getMessage());
+            try {
+                rs = objConectar.consultarBD(strSQL);
+                return rs;
+            } catch (Exception e) {
+                throw new Exception("Error al buscar libros por título: " + e.getMessage());
+            }
         }
-    }
-
+        
     public ResultSet filtrarLibros(String titulo, String anio, String estado,
             String nomEditorial, String nomCategoria) throws Exception {
 

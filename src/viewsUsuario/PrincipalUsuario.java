@@ -169,20 +169,21 @@ public class PrincipalUsuario extends javax.swing.JPanel {
 
             // 2. Procesa los resultados (el bucle While es el mismo)
             while (rsLibro.next()) {
-                if (rsLibro.getString("estado_vigencia").equals("t")) {
-                    Vigencia = "Si";
+                boolean estadoActivo = rsLibro.getBoolean("estado");
+                if (estadoActivo) {
+                Vigencia = "Si";
                 } else {
-                    Vigencia = "No";
+                Vigencia = "No";
                 }
 
                 modeloC.addRow(new Object[]{
-                    rsLibro.getInt("id_libro"),
-                    rsLibro.getString("titulo"),
-                    rsLibro.getString("autor_completo"),
-                    rsLibro.getString("categoria"),
-                    rsLibro.getInt("anio_publicacion"),
-                    Vigencia
-                });
+                rsLibro.getInt("idlibro"),             // Antes decía "id_libro"
+                rsLibro.getString("titulo"),
+                rsLibro.getString("nombre_editorial"), // Antes decía "autor_completo" (Tu SQL no trae autores, trae editorial)
+                rsLibro.getString("nombre_categoria"), // Antes decía "categoria"
+                rsLibro.getString("aniopublicacion"),  // Antes decía "anio_publicacion"
+                Vigencia
+            });
                 cont += 1;
             }
 

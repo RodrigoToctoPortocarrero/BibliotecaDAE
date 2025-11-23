@@ -40,7 +40,17 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
         this.setResizable(false);
         this.setTitle("Sistema de Biblioteca-Panel de Bibliotecario");
+        
+        
+        PrincipalBibliotecario eje = new PrincipalBibliotecario();
+        eje.setSize(745, 430);
+        eje.setLocation(0, 0);
 
+        content.removeAll();
+        content.add(eje, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+        
         if (nombreUsuario.equals("ana.bibliotecaria")) {
             btnGestionarUsuarios.setEnabled(true);
         } else {
