@@ -25,6 +25,7 @@ public class ManAutor extends javax.swing.JPanel {
     public ManAutor() {
         initComponents();
         listarAutor();
+        txtCodigo.setEditable(true);
     }
 
     /**
