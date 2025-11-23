@@ -4,17 +4,20 @@
  */
 package viewsUsuario;
 
+import java.awt.BorderLayout;
+import javax.swing.JPanel; // Asegúrate de tener esto
 /**
  *
  * @author BIENVENIDO
  */
 public class frmReporte extends javax.swing.JPanel {
-
+private final javax.swing.JPanel panelContenedor;
     /**
      * Creates new form frmReporte
      */
-    public frmReporte() {
+    public frmReporte(javax.swing.JPanel panelContenedor) {
         initComponents();
+        this.panelContenedor = panelContenedor;
     }
 
     /**
@@ -373,8 +376,15 @@ public class frmReporte extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         Reporte04 pres = new Reporte04();
+        
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
+
+        // Usar la referencia guardada para la navegación:
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

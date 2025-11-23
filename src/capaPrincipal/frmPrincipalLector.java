@@ -11,7 +11,7 @@ import java.util.Locale;
 import javax.swing.ImageIcon;
 import viewsUsuario.PrestamosUsuario;
 import viewsUsuario.PrincipalUsuario;
-import viewsUsuario.frmReportes;
+import viewsUsuario.frmReporte;
 
 /**
  *
@@ -20,6 +20,7 @@ import viewsUsuario.frmReportes;
 public class frmPrincipalLector extends javax.swing.JFrame {
 
     private String nombreUsuario;
+
     // Constructor con el nombre del usuario
     public frmPrincipalLector(String nombreUsuario) {
         initComponents();
@@ -29,14 +30,14 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         // Mostrar el nombre del usuario en el label
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
         this.setTitle("Sistema de Biblioteca-Panel de Lector");
-        this.setResizable(false); 
+        this.setResizable(false);
         try {
             // 1. Carga la imagen como un recurso del proyecto (ruta relativa)
             Image icon = new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage();
-            
+
             // 2. Establece la imagen como el icono de la ventana
             this.setIconImage(icon);
-            
+
         } catch (Exception e) {
             System.err.println("Error al cargar el icono: " + e.getMessage());
             // Manejo básico de error si no se encuentra la imagen
@@ -300,12 +301,15 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPrincipalUsuarioActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        frmReportes pres = new frmReportes();
+        viewsUsuario.frmReporte pres = new viewsUsuario.frmReporte(content);
+
+        // Configurar el tamaño
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
+        // Navegación en la ventana principal
         content.removeAll();
-        content.add(pres, BorderLayout.CENTER);
+        content.add(pres, java.awt.BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
     }//GEN-LAST:event_btnReportesActionPerformed
