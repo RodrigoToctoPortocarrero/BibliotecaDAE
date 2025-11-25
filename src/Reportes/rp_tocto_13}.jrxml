@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp_tocto_13" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cd867ba1-da00-48f6-851d-bb57ed7943aa">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select pre.idprestamo as idprestamo,usu.nombre as
+lector, dev.multagenerada as multa from devolucion as dev INNER JOIN prestamo as pre ON
+pre.idprestamo = dev.iddevolucion INNER JOIN usuario as usu ON usu.idusuario = pre.idusuariolector
+where dev.multagenerada > 0 order by pre.idprestamo;]]>
+	</queryString>
+	<field name="idprestamo" class="java.lang.Integer"/>
+	<field name="lector" class="java.lang.String"/>
+	<field name="multa" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="137" y="24" width="312" height="20" uuid="06e89169-bc0e-4896-95ec-311995ef5240"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEVOLUCIONES CON MULTA GENERADA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="37" y="2" width="100" height="20" uuid="32adfd1c-8655-4622-a7be-30649a6c1412"/>
+				<text><![CDATA[idPrestamo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="182" y="2" width="100" height="20" uuid="70c3be18-0d7d-494f-a1af-726452f4ea44"/>
+				<text><![CDATA[Lector]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="331" y="2" width="100" height="20" uuid="c6a57a73-a47e-4b9c-b11f-d6b0cfc36e57"/>
+				<text><![CDATA[Multa]]></text>
+			</staticText>
+			<line>
+				<reportElement x="37" y="42" width="499" height="1" uuid="331b47f5-a783-4684-beed-2aea5d438379"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="62" splitType="Stretch">
+			<textField>
+				<reportElement x="37" y="31" width="100" height="20" uuid="ddf54840-a220-4038-8da7-86b160931d4e"/>
+				<textFieldExpression><![CDATA[$F{idprestamo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="182" y="31" width="100" height="20" uuid="0810986d-d95b-4441-a391-41ffb6f58caa"/>
+				<textFieldExpression><![CDATA[$F{lector}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="331" y="31" width="100" height="20" uuid="acf74cb4-fd07-40b8-9741-fde6ba9b02d6"/>
+				<textFieldExpression><![CDATA[$F{multa}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="20" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="46" y="18" width="279" height="20" uuid="e24884ab-61ca-436e-ac2a-71d19f7db4ee"/>
+				<text><![CDATA[Elaborado por: Tocto Portocarrero Rodrigo Jesús]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="390" y="19" width="80" height="20" uuid="fac085cc-6983-4806-b08f-b76a2066ef2e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="470" y="19" width="40" height="20" uuid="5075b6cb-659d-44fc-ab41-105e3f927a91"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="13" splitType="Stretch"/>
+	</summary>
+</jasperReport>
