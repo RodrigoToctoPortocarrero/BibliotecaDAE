@@ -442,7 +442,7 @@
                               <Component id="jButton13" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                               <Component id="jButton14" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="117" max="32767" attributes="0"/>
+                              <EmptySpace pref="89" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="32767" attributes="0"/>
@@ -589,18 +589,27 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButton13">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jButton13"/>
+        <Property name="text" type="java.lang.String" value="REPORTE 13"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton13ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton14">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jButton14"/>
+        <Property name="text" type="java.lang.String" value="REPORTE 14"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton14ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton15">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jButton15"/>
+        <Property name="text" type="java.lang.String" value="REPORTE 15"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton15ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

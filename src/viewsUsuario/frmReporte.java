@@ -282,11 +282,26 @@ private final javax.swing.JPanel panelContenedor;
 
         jButton12.setText("jButton12");
 
-        jButton13.setText("jButton13");
+        jButton13.setText("REPORTE 13");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
 
-        jButton14.setText("jButton14");
+        jButton14.setText("REPORTE 14");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
 
-        jButton15.setText("jButton15");
+        jButton15.setText("REPORTE 15");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -317,16 +332,13 @@ private final javax.swing.JPanel panelContenedor;
                                 .addComponent(jButton13)
                                 .addGap(27, 27, 27)
                                 .addComponent(jButton14)
-                                .addContainerGap(117, Short.MAX_VALUE))
+                                .addContainerGap(89, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jButton8)
-                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jButton15)
-                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))))
+                                    .addComponent(jButton8)
+                                    .addComponent(jButton15))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -398,6 +410,30 @@ private final javax.swing.JPanel panelContenedor;
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+       Reporte13 pres = new Reporte13();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        Reporte14 pres = new Reporte14();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton14ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

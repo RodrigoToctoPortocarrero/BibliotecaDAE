@@ -8,6 +8,7 @@ import capaDatos.clsJDBC;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 /**
  *
@@ -348,6 +349,21 @@ public class Libro {
             return objConectar.consultarBD(strSQL);
         } catch (Exception e) {
             throw new Exception("Error al listar el informe de asignaciones: " + e.getMessage());
+        }
+    }
+    
+    
+    //Necesito listar los titulos del los libros
+    
+    
+    public ResultSet listarTitulosLibros() throws Exception{
+        try{
+            strSQL = "select titulo from libros";
+
+            return objConectar.consultarBD(strSQL) ;
+            
+        }catch(Exception e){
+            throw new Exception("Error al listar los titulos de libros: "+e.getMessage());
         }
     }
 
