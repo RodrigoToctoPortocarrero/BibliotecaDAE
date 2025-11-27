@@ -9,6 +9,8 @@ import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.ImageIcon;
+import viewsBibliotecario.ManEditorial;
+import viewsUsuario.DevoluciónUsuario;
 import viewsUsuario.PrestamosUsuario;
 import viewsUsuario.PrincipalUsuario;
 import viewsUsuario.frmReporte;
@@ -61,7 +63,8 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         btnPrincipalUsuario = new javax.swing.JButton();
         btnReportes = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
-        btnPrestamosUsuario1 = new javax.swing.JButton();
+        btnDevolucionesUsuario1 = new javax.swing.JButton();
+        btnPrestamosUsuario2 = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         dateText = new javax.swing.JLabel();
@@ -131,20 +134,37 @@ public class frmPrincipalLector extends javax.swing.JFrame {
             }
         });
 
-        btnPrestamosUsuario1.setBackground(new java.awt.Color(0, 102, 255));
-        btnPrestamosUsuario1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnPrestamosUsuario1.setForeground(new java.awt.Color(255, 255, 255));
-        btnPrestamosUsuario1.setText("PRESTAMOS");
-        btnPrestamosUsuario1.setBorder(null);
-        btnPrestamosUsuario1.setBorderPainted(false);
-        btnPrestamosUsuario1.setFocusPainted(false);
-        btnPrestamosUsuario1.setIconTextGap(10);
-        btnPrestamosUsuario1.setMaximumSize(new java.awt.Dimension(108, 32));
-        btnPrestamosUsuario1.setMinimumSize(new java.awt.Dimension(108, 32));
-        btnPrestamosUsuario1.setPreferredSize(new java.awt.Dimension(108, 32));
-        btnPrestamosUsuario1.addActionListener(new java.awt.event.ActionListener() {
+        btnDevolucionesUsuario1.setBackground(new java.awt.Color(0, 102, 255));
+        btnDevolucionesUsuario1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnDevolucionesUsuario1.setForeground(new java.awt.Color(255, 255, 255));
+        btnDevolucionesUsuario1.setText("DEVOLUCIONES");
+        btnDevolucionesUsuario1.setBorder(null);
+        btnDevolucionesUsuario1.setBorderPainted(false);
+        btnDevolucionesUsuario1.setFocusPainted(false);
+        btnDevolucionesUsuario1.setIconTextGap(10);
+        btnDevolucionesUsuario1.setMaximumSize(new java.awt.Dimension(108, 32));
+        btnDevolucionesUsuario1.setMinimumSize(new java.awt.Dimension(108, 32));
+        btnDevolucionesUsuario1.setPreferredSize(new java.awt.Dimension(108, 32));
+        btnDevolucionesUsuario1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrestamosUsuario1ActionPerformed(evt);
+                btnDevolucionesUsuario1ActionPerformed(evt);
+            }
+        });
+
+        btnPrestamosUsuario2.setBackground(new java.awt.Color(0, 102, 255));
+        btnPrestamosUsuario2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnPrestamosUsuario2.setForeground(new java.awt.Color(255, 255, 255));
+        btnPrestamosUsuario2.setText("PRESTAMOS");
+        btnPrestamosUsuario2.setBorder(null);
+        btnPrestamosUsuario2.setBorderPainted(false);
+        btnPrestamosUsuario2.setFocusPainted(false);
+        btnPrestamosUsuario2.setIconTextGap(10);
+        btnPrestamosUsuario2.setMaximumSize(new java.awt.Dimension(108, 32));
+        btnPrestamosUsuario2.setMinimumSize(new java.awt.Dimension(108, 32));
+        btnPrestamosUsuario2.setPreferredSize(new java.awt.Dimension(108, 32));
+        btnPrestamosUsuario2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrestamosUsuario2ActionPerformed(evt);
             }
         });
 
@@ -152,22 +172,28 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         menu.setLayout(menuLayout);
         menuLayout.setHorizontalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnPrincipalUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnSalir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnReportes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnDevolucionesUsuario1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(menuLayout.createSequentialGroup()
                 .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(menuLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jLabel3))
+                        .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, menuLayout.createSequentialGroup()
+                                .addGap(56, 56, 56)
+                                .addComponent(jLabel3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, menuLayout.createSequentialGroup()
+                                .addGap(94, 94, 94)
+                                .addComponent(jLabel5))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, menuLayout.createSequentialGroup()
+                                .addGap(41, 41, 41)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 37, Short.MAX_VALUE))
                     .addGroup(menuLayout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(menuLayout.createSequentialGroup()
-                        .addGap(94, 94, 94)
-                        .addComponent(jLabel5)))
-                .addContainerGap(43, Short.MAX_VALUE))
-            .addComponent(btnReportes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnPrestamosUsuario1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(btnPrincipalUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnPrestamosUsuario2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,13 +204,15 @@ public class frmPrincipalLector extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(12, 12, 12)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnPrincipalUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnPrestamosUsuario1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(1, 1, 1)
+                .addComponent(btnPrestamosUsuario2, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDevolucionesUsuario1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
@@ -341,9 +369,23 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void btnPrestamosUsuario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuario1ActionPerformed
+    private void btnDevolucionesUsuario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionesUsuario1ActionPerformed
+        //Realizado por Valentino
+        DevoluciónUsuario pres = new DevoluciónUsuario(this, rootPaneCheckingEnabled);
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+
+        content.removeAll();
+        content.add(pres, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+        
+     
+    }//GEN-LAST:event_btnDevolucionesUsuario1ActionPerformed
+
+    private void btnPrestamosUsuario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuario2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnPrestamosUsuario1ActionPerformed
+    }//GEN-LAST:event_btnPrestamosUsuario2ActionPerformed
 
     private void InitContent() {
         PrincipalUsuario psu = new PrincipalUsuario();
@@ -388,7 +430,8 @@ public class frmPrincipalLector extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
-    private javax.swing.JButton btnPrestamosUsuario1;
+    private javax.swing.JButton btnDevolucionesUsuario1;
+    private javax.swing.JButton btnPrestamosUsuario2;
     private javax.swing.JButton btnPrincipalUsuario;
     private javax.swing.JButton btnReportes;
     private javax.swing.JButton btnSalir;
