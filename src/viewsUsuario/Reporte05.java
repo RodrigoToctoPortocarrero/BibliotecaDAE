@@ -4,6 +4,12 @@
  */
 package viewsUsuario;
 
+import capaLogica.Reportes;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import javax.swing.JOptionPane;
+import net.sf.jasperreports.swing.JRViewer;
+
 /**
  *
  * @author BIENVENIDO
@@ -15,12 +21,12 @@ public class Reporte05 extends javax.swing.JPanel {
      */
     public Reporte05() {
         initComponents();
-        /*try {
+        try {
             Container contenedor = this.vistaReporte;
             contenedor.setLayout(new BorderLayout());
             contenedor.removeAll();
-            
-            JRViewer objReporte = new clsReporte().reporteInterno("REPORTE5.jasper", null);
+
+            JRViewer objReporte = new Reportes().reporteInterno("REPORTE5.jasper", null);
             contenedor.add(objReporte);
             contenedor.revalidate();
             contenedor.repaint();
@@ -29,9 +35,9 @@ public class Reporte05 extends javax.swing.JPanel {
             this.vistaReporte.setVisible(true);
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage() + "ERROR en Reporte " + e.getMessage(), 
+            JOptionPane.showMessageDialog(this, e.getMessage() + "ERROR en Reporte " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
-        }*/
+        }
     }
 
     /**
