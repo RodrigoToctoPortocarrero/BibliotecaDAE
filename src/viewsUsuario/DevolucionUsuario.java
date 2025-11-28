@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package viewsUsuario;
+import capaDatos.clsJDBC;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,10 +14,9 @@ import java.time.temporal.ChronoUnit;
  * @author VALENTINO
  */
 public class DevolucionUsuario extends javax.swing.JPanel {
-Connection cn; // Asumo que tienes tu lógica de conexión
-DefaultTableModel modelo;
-int idUsuarioLogueado; // Variable para saber de quién buscar los libros
-int idUsuario;
+    clsJDBC jdbc = new clsJDBC();
+    DefaultTableModel modelo;
+    int idUsuarioLogueado;
     /**
      * Creates new form DevolucionUsuario
      */
@@ -24,59 +24,56 @@ int idUsuario;
         initComponents();
         this.idUsuarioLogueado = idUsuario;
         configurarTabla();
-        cargarMisPrestamos();
+        cargarMisPrestamos(null); // null = Cargar todo al inicio
     }
-    private void configurarTabla() {
+ private void configurarTabla() {
         modelo = new DefaultTableModel();
+        modelo.addColumn("ID Préstamo");
         modelo.addColumn("Libro");
         modelo.addColumn("F. Préstamo");
         modelo.addColumn("F. Vencimiento");
         modelo.addColumn("Estado");
-        modelo.addColumn("Multa Aprox.");
+        modelo.addColumn("Multa Estimada");
         tblMisPrestamos.setModel(modelo);
     }
-    // --- METODO 1: Cargar TODOS los préstamos pendientes del usuario ---
-    public void cargarMisPrestamos() {
+    public void cargarMisPrestamos(String fechaFiltro) {
         String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada, p.fechaprestamo " +
                      "FROM PRESTAMO p " +
                      "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo " +
                      "INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar " +
                      "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
-                     "WHERE p.idusuariolector = ? AND p.estado = TRUE";
+                     "WHERE p.idusuariolector = " + idUsuarioLogueado + " AND p.estado = 'activo'";
 
-        procesarConsulta(sql, null); // null indica que no hay filtro de fecha extra
-    }
-    // --- LÓGICA COMÚN PARA LLENAR LA TABLA ---
-    private void procesarConsulta(String sql, String fechaFiltro) {
+        // Si el usuario quiere filtrar por una fecha específica
+        if (fechaFiltro != null && !fechaFiltro.isEmpty()) {
+            sql += " AND p.fechaprestamo = '" + fechaFiltro + "'";
+        }
+        
+        sql += " ORDER BY p.fechaprestamo DESC";
+
         try {
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idUsuarioLogueado);
-            
-            if (fechaFiltro != null) {
-                pst.setDate(2, java.sql.Date.valueOf(fechaFiltro));
-            }
-
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = jdbc.consultarBD(sql);
             modelo.setRowCount(0);
             LocalDate hoy = LocalDate.now();
+            boolean hayDatos = false;
 
             while (rs.next()) {
+                hayDatos = true;
                 Date fechaVenceSQL = rs.getDate("fechadevolucionestimada");
                 LocalDate fechaVence = fechaVenceSQL.toLocalDate();
                 
-                // Calcular diferencia de días
+                // Calcular retraso
                 long diasRetraso = ChronoUnit.DAYS.between(fechaVence, hoy);
                 
-                String estado = "A tiempo";
+                String estadoStr = "A tiempo";
                 double multa = 0.0;
                 
                 if (diasRetraso > 0) {
-                    estado = "CON RETRASO (" + diasRetraso + " días)";
-                    multa = diasRetraso * 5.00; // 5 soles por día de mora
+                    estadoStr = "CON RETRASO (" + diasRetraso + " días)";
+                    multa = diasRetraso * 2.00; // 2 soles por día
                 } else {
-                    // Opcional: Mostrar cuántos días faltan para devolver
                     long diasRestantes = ChronoUnit.DAYS.between(hoy, fechaVence);
-                    estado = "Vence en " + diasRestantes + " días";
+                    estadoStr = "Vence en " + diasRestantes + " días";
                 }
 
                 modelo.addRow(new Object[]{
@@ -84,19 +81,23 @@ int idUsuario;
                     rs.getString("titulo"),
                     rs.getDate("fechaprestamo"),
                     fechaVenceSQL,
-                    estado,
+                    estadoStr,
                     String.format("S/. %.2f", multa)
                 });
             }
             
-            if(modelo.getRowCount() == 0 && fechaFiltro != null) {
-                 JOptionPane.showMessageDialog(this, "No encontré préstamos en esa fecha.");
+            jdbc.desconectar(); // Cerrar conexión
+
+            if (!hayDatos && fechaFiltro != null) {
+                 JOptionPane.showMessageDialog(this, "No tienes préstamos registrados en esa fecha.");
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al consultar: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al cargar préstamos: " + e.getMessage());
         }
     }
+    // --- LÓGICA COMÚN PARA LLENAR LA TABLA ---
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -107,16 +108,20 @@ int idUsuario;
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblMisPrestamos = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtFechaBusqueda = new javax.swing.JTextField();
         btnDevolver = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblMisPrestamos = new javax.swing.JTable();
 
-        tblMisPrestamos.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -127,7 +132,20 @@ int idUsuario;
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tblMisPrestamos);
+        jScrollPane2.setViewportView(jTable1);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable2);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -156,41 +174,59 @@ int idUsuario;
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/descarga (1).jpg"))); // NOI18N
 
+        tblMisPrestamos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tblMisPrestamos);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 33, Short.MAX_VALUE))
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(34, 34, 34)
+                        .addComponent(jButton1))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(82, 82, 82))
+                        .addContainerGap()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel1)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -198,20 +234,15 @@ int idUsuario;
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -220,41 +251,20 @@ int idUsuario;
     }//GEN-LAST:event_btnDevolverMouseClicked
 
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
-        String fecha = txtFechaBusqueda.getText();
-
-        // SQL filtra por Usuario (logueado) Y por Fecha de Préstamo
-        String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada, p.fechaprestamo " +
-        "FROM PRESTAMO p " +
-        "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo " +
-        "INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar " +
-        "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
-        "WHERE p.idusuariolector = ? AND p.estado = TRUE AND p.fechaprestamo = ?";
-
-        try {
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idUsuarioLogueado); // Variable global del ID del usuario
-            pst.setDate(2, java.sql.Date.valueOf(fecha)); // La fecha ingresada
-
-            ResultSet rs = pst.executeQuery();
-            modelo.setRowCount(0); // Limpiar tabla
-
-            while (rs.next()) {
-                // ... lógica para llenar la fila (igual que antes) ...
-                modelo.addRow(new Object[]{
-                    rs.getString("titulo"),
-                    rs.getDate("fechaprestamo"),
-                    rs.getDate("fechadevolucionestimada"),
-                    "Pendiente"
-                });
-            }
-
-            if(modelo.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "No tienes préstamos activos de esa fecha.");
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Verifique la fecha (YYYY-MM-DD) o conexión.");
+        String fecha = txtFechaBusqueda.getText().trim();
+        
+        if (fecha.isEmpty()) {
+            cargarMisPrestamos(null); // Recargar todo
+            return;
         }
+
+        // Validación simple de formato YYYY-MM-DD
+        if(!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            JOptionPane.showMessageDialog(this, "Use formato: YYYY-MM-DD (Ej: 2025-05-01)");
+            return;
+        }
+
+        cargarMisPrestamos(fecha);
     }//GEN-LAST:event_btnDevolverActionPerformed
 
 
@@ -264,7 +274,11 @@ int idUsuario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTable tblMisPrestamos;
     private javax.swing.JTextField txtFechaBusqueda;
     // End of variables declaration//GEN-END:variables

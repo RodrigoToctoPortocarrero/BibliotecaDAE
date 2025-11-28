@@ -369,7 +369,17 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnDevolucionesUsuario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionesUsuario1ActionPerformed
-   
+        DevolucionUsuario panel = new DevolucionUsuario(WIDTH);
+        
+        // 2. Ajustamos tamaño y ubicación (mismo tamaño que tu panel 'content')
+        panel.setSize(750, 430);
+        panel.setLocation(0, 0);
+
+        // 3. Limpiamos y agregamos
+        content.removeAll();
+        content.add(panel, java.awt.BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
      
     }//GEN-LAST:event_btnDevolucionesUsuario1ActionPerformed
 
