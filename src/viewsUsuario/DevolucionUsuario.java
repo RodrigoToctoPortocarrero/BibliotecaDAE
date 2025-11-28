@@ -26,17 +26,18 @@ public class DevolucionUsuario extends javax.swing.JPanel {
         configurarTabla();
         cargarMisPrestamos(null); // null = Cargar todo al inicio
     }
- private void configurarTabla() {
+private void configurarTabla() {
         modelo = new DefaultTableModel();
         modelo.addColumn("ID Préstamo");
         modelo.addColumn("Libro");
-        modelo.addColumn("F. Préstamo");
+        modelo.addColumn("F. Préstamo"); // Esta es la fecha clave
         modelo.addColumn("F. Vencimiento");
         modelo.addColumn("Estado");
         modelo.addColumn("Multa Estimada");
         tblMisPrestamos.setModel(modelo);
     }
-    public void cargarMisPrestamos(String fechaFiltro) {
+   public void cargarMisPrestamos(String fechaFiltro) {
+        // SQL Base: Busca por ID de Usuario y Estado Activo
         String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada, p.fechaprestamo " +
                      "FROM PRESTAMO p " +
                      "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo " +
@@ -44,10 +45,11 @@ public class DevolucionUsuario extends javax.swing.JPanel {
                      "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
                      "WHERE p.idusuariolector = " + idUsuarioLogueado + " AND p.estado = 'activo'";
 
-        // Si el usuario quiere filtrar por una fecha específica
+        // --- FILTRO POR FECHA (NO POR ID) ---
         if (fechaFiltro != null && !fechaFiltro.isEmpty()) {
             sql += " AND p.fechaprestamo = '" + fechaFiltro + "'";
         }
+        // ------------------------------------
         
         sql += " ORDER BY p.fechaprestamo DESC";
 
@@ -59,6 +61,7 @@ public class DevolucionUsuario extends javax.swing.JPanel {
 
             while (rs.next()) {
                 hayDatos = true;
+                Date fechaPrestamoSQL = rs.getDate("fechaprestamo");
                 Date fechaVenceSQL = rs.getDate("fechadevolucionestimada");
                 LocalDate fechaVence = fechaVenceSQL.toLocalDate();
                 
@@ -79,17 +82,17 @@ public class DevolucionUsuario extends javax.swing.JPanel {
                 modelo.addRow(new Object[]{
                     rs.getInt("idprestamo"),
                     rs.getString("titulo"),
-                    rs.getDate("fechaprestamo"),
+                    fechaPrestamoSQL, // Mostramos fecha de préstamo
                     fechaVenceSQL,
                     estadoStr,
                     String.format("S/. %.2f", multa)
                 });
             }
             
-            jdbc.desconectar(); // Cerrar conexión
+            jdbc.desconectar();
 
             if (!hayDatos && fechaFiltro != null) {
-                 JOptionPane.showMessageDialog(this, "No tienes préstamos registrados en esa fecha.");
+                 JOptionPane.showMessageDialog(this, "No encontré préstamos realizados en la fecha: " + fechaFiltro);
             }
 
         } catch (Exception e) {
@@ -253,17 +256,19 @@ public class DevolucionUsuario extends javax.swing.JPanel {
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
         String fecha = txtFechaBusqueda.getText().trim();
         
+        // Si el campo está vacío, recargamos todo
         if (fecha.isEmpty()) {
-            cargarMisPrestamos(null); // Recargar todo
+            cargarMisPrestamos(null);
             return;
         }
 
-        // Validación simple de formato YYYY-MM-DD
+        // Validación de formato fecha
         if(!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            JOptionPane.showMessageDialog(this, "Use formato: YYYY-MM-DD (Ej: 2025-05-01)");
+            JOptionPane.showMessageDialog(this, "Por favor ingrese una fecha válida (YYYY-MM-DD)");
             return;
         }
 
+        // Llamamos al método pasándole la FECHA
         cargarMisPrestamos(fecha);
     }//GEN-LAST:event_btnDevolverActionPerformed
 
