@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportePercy" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ee4e06b8-4761-4889-9791-5157d352f296">
+	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="35"/>
+	<parameter name="NOMBRE_EDITORIAL" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    E.nombre AS Nombre_Editorial,
+    L.titulo AS Titulo_Libro,
+    L.aniopublicacion AS Anio_Publicacion
+FROM
+    LIBROS L
+JOIN
+    EDITORIAL E ON L.ideditorial = E.ideditorial
+WHERE
+    E.nombre ILIKE '%' || $P{NOMBRE_EDITORIAL} || '%'
+ORDER BY
+    L.titulo;]]>
+	</queryString>
+	<field name="nombre_editorial" class="java.lang.String"/>
+	<field name="titulo_libro" class="java.lang.String"/>
+	<field name="anio_publicacion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="97" splitType="Stretch">
+			<staticText>
+				<reportElement x="131" y="15" width="294" height="52" uuid="cd699fdc-c3c8-4170-a49c-306d61e3fa75"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Libros por nombre de editorial]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="254" y="77" width="134" height="20" uuid="a3449424-d41a-4d9e-82fb-95562549a725"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{NOMBRE_EDITORIAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="194" y="77" width="60" height="20" uuid="3ea74135-aeb1-4031-964f-6f249a08c180"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Editorial:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="144" y="2" width="100" height="20" uuid="c8517899-c866-42ea-9ada-0fe4ad2156ce"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título de libro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="2" width="121" height="20" uuid="53a2d81f-6178-425a-a670-d717e4951180"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año de publicación]]></text>
+			</staticText>
+			<line>
+				<reportElement x="131" y="22" width="296" height="1" uuid="7d205d37-3986-441d-918e-a5853f117c47"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="144" y="0" width="100" height="20" uuid="5f73f8ec-db00-4677-bd1b-b80530a24a37"/>
+				<textFieldExpression><![CDATA[$F{titulo_libro}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="131" y="19" width="296" height="1" uuid="94bc979e-1020-424d-9045-ee809d6aac32"/>
+			</line>
+			<textField>
+				<reportElement x="277" y="0" width="121" height="20" uuid="ae7b83a2-f1ca-4966-ab6b-b18f7e0acffe"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{anio_publicacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="438" y="19" width="71" height="20" uuid="a946acec-68c1-47ce-923c-0ad71bd4c4f7"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="509" y="19" width="40" height="20" uuid="4bc01544-5b2e-47a3-8227-48007c3d677e"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="23" y="19" width="254" height="20" uuid="ec69950d-4481-4584-900f-90c7f819104a"/>
+				<text><![CDATA[Elaborado por: Castañeda Coronel Percy Alexander]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

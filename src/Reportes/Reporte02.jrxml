@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte02" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a79979f8-c74b-41ad-82f8-4e4bddae2f30">
+	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="FECHA_INICIO" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_FIN" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    L.idlibro AS id_Libro,
+    L.titulo AS Titulo_Libro,
+    COUNT(DP.idejemplar) AS Total_Prestamos
+FROM
+    LIBROS L
+JOIN
+    EJEMPLAR E ON L.idlibro = E.idlibro
+JOIN
+    DETALLE_PRESTAMO DP ON E.idejemplar = DP.idejemplar
+JOIN
+    PRESTAMO P ON DP.idprestamo = P.idprestamo
+WHERE
+    P.fechaprestamo >= $P{FECHA_INICIO}
+    AND P.fechaprestamo <= $P{FECHA_FIN}
+GROUP BY
+    L.idlibro,
+    L.titulo
+ORDER BY
+    Total_Prestamos DESC, Titulo_Libro ASC;]]>
+	</queryString>
+	<field name="id_libro" class="java.lang.Integer"/>
+	<field name="titulo_libro" class="java.lang.String"/>
+	<field name="total_prestamos" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="130" y="15" width="294" height="32" uuid="9eaf8134-cdad-45e4-8c0d-d3d24a4bdf28"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Libros más prestados]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="149" y="59" width="100" height="20" uuid="0ff1f966-5b90-4b49-8bf8-eae45b5e0742"/>
+				<textFieldExpression><![CDATA[$P{FECHA_INICIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="354" y="59" width="100" height="20" uuid="cd2c28af-a4a3-4253-9ccb-3c85f64ad9ed"/>
+				<textFieldExpression><![CDATA[$P{FECHA_FIN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="49" y="59" width="100" height="20" uuid="0cc87982-12cb-4824-97df-ca6e97399601"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha inicio:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="254" y="59" width="100" height="20" uuid="950436e1-dcf3-40a8-a86b-e81e4e8a0781"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha fin:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="106" y="2" width="127" height="20" uuid="64e6f562-ff19-4289-96cf-64ff72106a37"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="249" y="2" width="127" height="20" uuid="df14b2b6-27ae-41e5-ae84-7bfd8847f0b6"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° de veces prestado]]></text>
+			</staticText>
+			<line>
+				<reportElement x="96" y="22" width="318" height="1" uuid="f265ca89-980c-439a-b05e-90d881c079f6"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="34" splitType="Stretch">
+			<textField>
+				<reportElement x="130" y="0" width="100" height="20" uuid="aac69bf7-8ccf-4268-b540-fa220ae66794"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{titulo_libro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="266" y="0" width="100" height="20" uuid="05c2d2ad-d3c5-484e-a445-5d78dfc29f22"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{total_prestamos}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="96" y="19" width="318" height="1" uuid="db0c6b9f-21cf-445f-9401-7238157f2b1d"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="20" y="20" width="254" height="20" uuid="e1fa39e4-3e21-491b-b3f6-9627931c5e87"/>
+				<text><![CDATA[Elaborado por: Castañeda Coronel Percy Alexander]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="435" y="20" width="71" height="20" uuid="e6b2ea24-6d34-43e3-b92a-2d28682be431"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="506" y="20" width="40" height="20" uuid="052c9357-cc43-466e-9869-db0f54a97770"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
