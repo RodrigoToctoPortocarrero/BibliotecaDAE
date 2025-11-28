@@ -3,19 +3,80 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package viewsUsuario;
-
+import java.sql.*;
+import javax.swing.table.DefaultTableModel;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import javax.swing.JOptionPane;
 /**
  *
  * @author VALENTINO
  */
 public class DevoluciónUsuario extends javax.swing.JDialog {
-
+Connection cn; 
+DefaultTableModel modelo;
+int idUsuarioLogueado; // Este dato debe llegar desde el Login o Principal
     /**
      * Creates new form DevoluciónUsuario
      */
     public DevoluciónUsuario(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        configurarTabla();
+        cargarMisPrestamos();
+    }
+    private void configurarTabla() {
+        modelo = new DefaultTableModel();
+        modelo.addColumn("ID Préstamo");
+        modelo.addColumn("Libro");
+        modelo.addColumn("Vence el");
+        modelo.addColumn("Estado");
+        modelo.addColumn("Multa Aprox.");
+        tblMisPrestamos.setModel(modelo);
+    }
+public void cargarMisPrestamos() {
+        // Buscamos préstamos activos (estado = TRUE) de este usuario
+        String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada " +
+                     "FROM PRESTAMO p " +
+                     "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo " +
+                     "INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar " +
+                     "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
+                     "WHERE p.idusuariolector = ? AND p.estado = TRUE";
+
+        try {
+            // Asumiendo conexión establecida
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idUsuarioLogueado);
+            ResultSet rs = pst.executeQuery();
+
+            modelo.setRowCount(0);
+            LocalDate hoy = LocalDate.now();
+
+            while (rs.next()) {
+                Date fechaVenceSQL = rs.getDate("fechadevolucionestimada");
+                LocalDate fechaVence = fechaVenceSQL.toLocalDate();
+                
+                long diasRetraso = ChronoUnit.DAYS.between(fechaVence, hoy);
+                
+                String estado = "A tiempo";
+                double multa = 0.0;
+                
+                if (diasRetraso > 0) {
+                    estado = "CON RETRASO (" + diasRetraso + " días)";
+                    multa = diasRetraso * 5.00; // 5 soles por dia
+                }
+
+                modelo.addRow(new Object[]{
+                    rs.getInt("idprestamo"),
+                    rs.getString("titulo"),
+                    fechaVenceSQL,
+                    estado,
+                    String.format("S/. %.2f", multa)
+                });
+            }
+        } catch (Exception e) {
+            System.out.println("Error al cargar prestamos: " + e.getMessage());
+        }
     }
 
     /**
@@ -34,11 +95,11 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtFechaBusqueda = new javax.swing.JTextField();
         btnCambiar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblMisPrestamos = new javax.swing.JTable();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -63,15 +124,12 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
         jLabel1.setText("Devolución de Libro");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setText("Nombre de Usuario:");
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setText("Libro ID:");
+        jLabel2.setText("Fecha para buscar Devolucion:");
 
         btnCambiar.setBackground(new java.awt.Color(24, 118, 210));
         btnCambiar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnCambiar.setForeground(new java.awt.Color(255, 255, 255));
-        btnCambiar.setText("Devolver");
+        btnCambiar.setText("Ver Libros Devueltos");
         btnCambiar.setBorder(null);
         btnCambiar.setBorderPainted(false);
         btnCambiar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -85,6 +143,8 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
             }
         });
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/descarga (1).jpg"))); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -93,36 +153,47 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
                 .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 33, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnCambiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(82, 82, 82))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(jLabel1)
-                .addGap(53, 53, 53)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/descarga (1).jpg"))); // NOI18N
+        tblMisPrestamos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblMisPrestamos);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -131,20 +202,17 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(115, 115, 115))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(118, 118, 118)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -173,7 +241,41 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCambiarMouseClicked
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
-       
+    String fecha = txtFechaBusqueda.getText();
+        
+        // SQL filtra por Usuario (logueado) Y por Fecha de Préstamo
+        String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada, p.fechaprestamo " +
+                     "FROM PRESTAMO p " +
+                     "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo " +
+                     "INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar " +
+                     "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
+                     "WHERE p.idusuariolector = ? AND p.estado = TRUE AND p.fechaprestamo = ?";
+
+        try {
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idUsuarioLogueado); // Variable global del ID del usuario
+            pst.setDate(2, java.sql.Date.valueOf(fecha)); // La fecha ingresada
+            
+            ResultSet rs = pst.executeQuery();
+            modelo.setRowCount(0); // Limpiar tabla
+
+            while (rs.next()) {
+                // ... lógica para llenar la fila (igual que antes) ...
+                 modelo.addRow(new Object[]{
+                    rs.getString("titulo"),
+                    rs.getDate("fechaprestamo"),
+                    rs.getDate("fechadevolucionestimada"),
+                    "Pendiente"
+                });
+            }
+            
+            if(modelo.getRowCount() == 0) {
+                 JOptionPane.showMessageDialog(this, "No tienes préstamos activos de esa fecha.");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Verifique la fecha (YYYY-MM-DD) o conexión.");
+        }       
     }//GEN-LAST:event_btnCambiarActionPerformed
 
     /**
@@ -224,12 +326,12 @@ public class DevoluciónUsuario extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tblMisPrestamos;
+    private javax.swing.JTextField txtFechaBusqueda;
     // End of variables declaration//GEN-END:variables
 }
