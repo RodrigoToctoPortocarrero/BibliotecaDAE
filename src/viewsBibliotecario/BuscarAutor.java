@@ -18,17 +18,17 @@ import java.sql.SQLException;
  */
 public class BuscarAutor extends javax.swing.JPanel {
 
-    private ManAsignarAutorLibro panelAsignarLibro; // ⬅️ REFERENCIA AL DELEGADO
-    private javax.swing.JFrame frameContenedor;
+    private ManAsignarAutorLibro panelAsignarLibro; // Referencia al delegado
+    private javax.swing.JDialog dialogoContenedor;
     Autor objAutor = new Autor();
 
     /**
      * Creates new form BuscarAutor
      */
-    public BuscarAutor(ManAsignarAutorLibro principal, JFrame contenedor) {
+    public BuscarAutor(ManAsignarAutorLibro principal,javax.swing.JDialog contenedor) {
         initComponents();
         this.panelAsignarLibro = principal; // Guarda la referencia del JDialog
-        this.frameContenedor = contenedor;
+        this.dialogoContenedor = contenedor;
         llenarEstado();
         listarAutores();
     }
@@ -114,11 +114,11 @@ public class BuscarAutor extends javax.swing.JPanel {
         txtNombre = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListadoAutores = new javax.swing.JTable();
-        txtApePaterno = new javax.swing.JTextField();
         cboEstado = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         txtTotalAutores = new javax.swing.JLabel();
         btnSeleccionar = new javax.swing.JButton();
+        txtApePaterno = new javax.swing.JTextField();
 
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -139,12 +139,6 @@ public class BuscarAutor extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblListadoAutores);
 
-        txtApePaterno.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtApePaternoKeyReleased(evt);
-            }
-        });
-
         cboEstado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboEstadoActionPerformed(evt);
@@ -162,28 +156,35 @@ public class BuscarAutor extends javax.swing.JPanel {
             }
         });
 
+        txtApePaterno.setText("jTextField1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(69, 69, 69)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(28, 28, 28)
                                 .addComponent(txtTotalAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(btnSeleccionar, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                                .addComponent(txtApePaterno))
-                            .addGap(71, 71, 71)
-                            .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtApePaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)))
                 .addContainerGap(66, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(233, 233, 233))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,8 +238,8 @@ public class BuscarAutor extends javax.swing.JPanel {
                 panelAsignarLibro.setAutorSeleccionado(idAutor, nombreCompleto.trim());
 
                 // 4. Cerrar el JFrame contenedor
-                if (frameContenedor != null) {
-                    frameContenedor.dispose();
+                if (dialogoContenedor != null) {
+                    dialogoContenedor.dispose();
                 }
             }
         } catch (NumberFormatException nfe) {
@@ -251,10 +252,6 @@ public class BuscarAutor extends javax.swing.JPanel {
     private void txtNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyReleased
         listarAutores();
     }//GEN-LAST:event_txtNombreKeyReleased
-
-    private void txtApePaternoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApePaternoKeyReleased
-        listarAutores();
-    }//GEN-LAST:event_txtApePaternoKeyReleased
 
     private void cboEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadoActionPerformed
         listarAutores();

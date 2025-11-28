@@ -258,21 +258,29 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorActionPerformed
-        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Buscar Autor");
+        java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        javax.swing.JDialog dialogoContenedor;
+
+        if (owner instanceof java.awt.Frame) {
+            dialogoContenedor = new javax.swing.JDialog((java.awt.Frame) owner, "Buscar Libro", true);
+        } else if (owner instanceof java.awt.Dialog) {
+            dialogoContenedor = new javax.swing.JDialog((java.awt.Dialog) owner, "Buscar Libro", true);
+        } else {
+            dialogoContenedor = new javax.swing.JDialog((java.awt.Frame) null, "Buscar Libro", true);
+        }
 
         try {
+            BuscarAutor panelLibro = new BuscarAutor(this, dialogoContenedor);
 
-            BuscarAutor panelAutor = new BuscarAutor(this, frameContenedor); // 🚨 Descomentado y corregido
-
-            // Configurar y mostrar el frame
-            frameContenedor.setContentPane(panelAutor); // 🚨 Descomentado
-            frameContenedor.revalidate();
-            frameContenedor.pack();
-            frameContenedor.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-            frameContenedor.setLocationRelativeTo(null);
-            frameContenedor.setVisible(true);
+            dialogoContenedor.setContentPane(panelLibro);
+            dialogoContenedor.revalidate();
+            dialogoContenedor.pack();
+            dialogoContenedor.setDefaultCloseOperation(javax.swing.JDialog.DISPOSE_ON_CLOSE);
+            dialogoContenedor.setLocationRelativeTo(owner);
+            dialogoContenedor.setVisible(true);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al abrir la búsqueda de Autor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al abrir la búsqueda de Libro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAutorActionPerformed
 
@@ -285,19 +293,27 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
     }//GEN-LAST:event_cboLibrosActionPerformed
 
     private void btnBuscarLibroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarLibroActionPerformed
-        javax.swing.JFrame frameContenedor = new javax.swing.JFrame("Buscar Libro");
+        java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
+
+        javax.swing.JDialog dialogoContenedor;
+
+        if (owner instanceof java.awt.Frame) {
+            dialogoContenedor = new javax.swing.JDialog((java.awt.Frame) owner, "Buscar Libro", true);
+        } else if (owner instanceof java.awt.Dialog) {
+            dialogoContenedor = new javax.swing.JDialog((java.awt.Dialog) owner, "Buscar Libro", true);
+        } else {
+            dialogoContenedor = new javax.swing.JDialog((java.awt.Frame) null, "Buscar Libro", true);
+        }
 
         try {
-            // Crear la instancia de BuscarLibro, pasando 'this' y el contenedor
-            BuscarLibro panelLibro = new BuscarLibro(this, frameContenedor);
+            BuscarLibro panelLibro = new BuscarLibro(this, dialogoContenedor);
 
-            // Configurar y mostrar el frame
-            frameContenedor.setContentPane(panelLibro);
-            frameContenedor.revalidate();
-            frameContenedor.pack();
-            frameContenedor.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-            frameContenedor.setLocationRelativeTo(null);
-            frameContenedor.setVisible(true);
+            dialogoContenedor.setContentPane(panelLibro);
+            dialogoContenedor.revalidate();
+            dialogoContenedor.pack();
+            dialogoContenedor.setDefaultCloseOperation(javax.swing.JDialog.DISPOSE_ON_CLOSE);
+            dialogoContenedor.setLocationRelativeTo(owner);
+            dialogoContenedor.setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al abrir la búsqueda de Libro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

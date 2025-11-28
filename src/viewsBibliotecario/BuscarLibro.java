@@ -23,15 +23,15 @@ public class BuscarLibro extends javax.swing.JPanel {
 
     Libro objLibro = new Libro(); // Instancia de la capa lógica
     private ManAsignarAutorLibro panelAsignarLibro; // Referencia al delegado
-    private javax.swing.JFrame frameContenedor;
+    private javax.swing.JDialog dialogoContenedor;
 
     /**
      * Creates new form BuscarLibro
      */
-    public BuscarLibro(ManAsignarAutorLibro principal, JFrame contenedor) { // 👈 ESTE CONSTRUCTOR
+    public BuscarLibro(ManAsignarAutorLibro principal, javax.swing.JDialog contenedor) { // 👈 ESTE CONSTRUCTOR
         initComponents();
         this.panelAsignarLibro = principal; // Asigna la referencia del delegado
-        this.frameContenedor = contenedor;
+        this.dialogoContenedor = contenedor;
         llenarEstado();
         listarLibros(); // Opcional: listar al inicio
     }
@@ -122,7 +122,7 @@ public class BuscarLibro extends javax.swing.JPanel {
             // 3. Llamada al delegado y cierre de ventana
             if (panelAsignarLibro != null) {
                 panelAsignarLibro.setLibroSeleccionado(idLibro, titulo);
-                frameContenedor.dispose();
+                dialogoContenedor.dispose();
             }
 
         } catch (Exception e) {
