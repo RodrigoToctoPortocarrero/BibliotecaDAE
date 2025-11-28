@@ -128,7 +128,7 @@ public class Autor {
         }
     }
 
-    public ResultSet filtrarAutores(String nombres, String apePaterno, String estado) throws Exception {
+    public ResultSet filtrarAutores(String nombres, String estado) throws Exception {
         try {
             // 1. Consulta Base (Selecciona todos los campos)
             StringBuilder sb = new StringBuilder(
@@ -143,13 +143,6 @@ public class Autor {
                         .append("%')");
             }
 
-            // 3. Filtro por APELLIDO PATERNO
-            if (apePaterno != null && !apePaterno.trim().isEmpty()) {
-                // Usamos concatenación directa para el LIKE, sanitizando la entrada
-                sb.append(" AND UPPER(apepaterno) LIKE UPPER('%")
-                        .append(apePaterno.trim().replace("'", "''"))
-                        .append("%')");
-            }
 
             // 4. Filtro por ESTADO
             if (estado != null && !estado.trim().equalsIgnoreCase("Todos")) {
@@ -160,7 +153,7 @@ public class Autor {
             }
 
             // 5. Agregar ordenación
-            sb.append(" ORDER BY apepaterno, nombres");
+            sb.append(" ORDER BY nombres");
 
             // 6. Asignar la SQL final a la variable de instancia y ejecutar
             strSQL = sb.toString();
