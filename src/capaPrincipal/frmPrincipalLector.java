@@ -9,9 +9,8 @@ import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.ImageIcon;
-import viewsBibliotecario.ManEditorial;
 import viewsUsuario.DevolucionUsuario;
-import viewsUsuario.PrestamosUsuario;
+import viewsUsuario.PrestamosUsuarios;
 import viewsUsuario.PrincipalUsuario;
 import viewsUsuario.frmReporte;
 

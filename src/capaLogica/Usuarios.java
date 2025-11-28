@@ -41,7 +41,7 @@ public class Usuarios {
     public void registrar(Integer id, String nombre, String apPat, String apMat,
             String fNacimiento, String nomUsuario, String contrasenia,
             String telefono, String correo, String direccion,
-            String tipoUsuario, Boolean estado) throws Exception {
+            String tipoUsuario) throws Exception {
 
         strSQL = "INSERT INTO USUARIO (idusuario, nombre, ap_paterno, ap_materno, f_nacimiento, "
                 + "nomusuario, contrasenia, telefono, correo, direccion, tipousuario, estado) "
@@ -57,7 +57,7 @@ public class Usuarios {
                 + correo + "', '"
                 + direccion + "', '"
                 + tipoUsuario + "', "
-                + estado + ")";
+                + "TRUE)";
 
         try {
             objConectar.ejecutarBD(strSQL);
@@ -112,18 +112,50 @@ public class Usuarios {
     }
 
     public void eliminarUsuario(Integer id) throws Exception {
-        strSQL = "DELETE FROM USUARIO WHERE idusuario=" + id;
         try {
+            strSQL = "SELECT 1 FROM PRESTAMO p "
+                    + "JOIN DETALLE_PRESTAMO dp ON dp.idprestamo = p.idprestamo "
+                    + "WHERE p.idusuariolector = " + id + " AND p.estado = 'activo' LIMIT 1";
+
+            ResultSet rsPrestamos = objConectar.consultarBD(strSQL);
+            if (rsPrestamos.next()) {
+                throw new Exception("No se puede eliminar el usuario, tiene préstamos activos.");
+            }
+
+            strSQL = "SELECT 1 FROM MULTA WHERE idusuario = " + id + " AND pagado = FALSE LIMIT 1";
+            ResultSet rsMultas = objConectar.consultarBD(strSQL);
+            if (rsMultas.next()) {
+                throw new Exception("No se puede eliminar el usuario, tiene multas pendientes.");
+            }
+
+            strSQL = "DELETE FROM USUARIO WHERE idusuario = " + id;
             objConectar.ejecutarBD(strSQL);
+
         } catch (Exception e) {
             throw new Exception("Error al eliminar usuario: " + e.getMessage());
         }
     }
 
     public void darBajaUsuario(Integer id) throws Exception {
-        strSQL = "UPDATE USUARIO SET estado=false WHERE idusuario=" + id;
         try {
+            strSQL = "SELECT 1 FROM PRESTAMO p "
+                    + "JOIN DETALLE_PRESTAMO dp ON dp.idprestamo = p.idprestamo "
+                    + "WHERE p.idusuariolector = " + id + " AND p.estado = 'activo' LIMIT 1";
+
+            ResultSet rsPrestamos = objConectar.consultarBD(strSQL);
+            if (rsPrestamos.next()) {
+                throw new Exception("No se puede dar de baja al usuario: tiene préstamos activos.");
+            }
+
+            strSQL = "SELECT 1 FROM MULTA WHERE idusuario = " + id + " AND pagado = FALSE LIMIT 1";
+            ResultSet rsMultas = objConectar.consultarBD(strSQL);
+            if (rsMultas.next()) {
+                throw new Exception("No se puede dar de baja al usuario: tiene multas pendientes.");
+            }
+
+            strSQL = "UPDATE USUARIO SET estado = FALSE WHERE idusuario = " + id;
             objConectar.ejecutarBD(strSQL);
+
         } catch (Exception e) {
             throw new Exception("Error al dar de baja usuario: " + e.getMessage());
         }

@@ -17,8 +17,7 @@ import viewsBibliotecario.ManEjemplar;
 import viewsBibliotecario.ManLibro;
 import viewsBibliotecario.ManUsuarios;
 import viewsBibliotecario.PrincipalBibliotecario;
-import viewsUsuario.PrestamosUsuario;
-import viewsUsuario.PrincipalUsuario;
+import viewsUsuario.PrestamosUsuarios;
 
 /**
  *
@@ -41,8 +40,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         lblNombreUsuarioPrincipal.setText(nombreUsuario);
         this.setResizable(false);
         this.setTitle("Sistema de Biblioteca-Panel de Bibliotecario");
-        
-        
+
         PrincipalBibliotecario eje = new PrincipalBibliotecario();
         eje.setSize(745, 430);
         eje.setLocation(0, 0);
@@ -51,7 +49,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(eje, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         if (nombreUsuario.equals("ana.bibliotecaria")) {
             btnGestionarUsuarios.setEnabled(true);
         } else {
@@ -422,7 +420,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEjemplarActionPerformed
 
     private void btnPrestamosUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuarioActionPerformed
-        PrestamosUsuario pres = new PrestamosUsuario();
+        PrestamosUsuarios pres = new PrestamosUsuarios();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
@@ -430,7 +428,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(pres, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Prestamos");
     }//GEN-LAST:event_btnPrestamosUsuarioActionPerformed
 
@@ -471,7 +469,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(pres, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Gestionar Libro");
     }//GEN-LAST:event_btnGestionarlibroActionPerformed
 
@@ -485,7 +483,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(pres, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Gestionar Editorial");
     }//GEN-LAST:event_btnGestionareditorialActionPerformed
 
@@ -498,7 +496,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(pres, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Gestionar Autor");
     }//GEN-LAST:event_btnGestionarAutorActionPerformed
 
@@ -511,7 +509,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(cat, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Gestionar Categoria");
     }//GEN-LAST:event_btnGestionarCategoriaActionPerformed
 
@@ -523,29 +521,28 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(usu, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Gestionar Usuarios");
     }//GEN-LAST:event_btnGestionarUsuariosActionPerformed
 
     private void btnDevolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionActionPerformed
         // 1. Instanciamos el panel de Devoluciones del Bibliotecario
         Devolucion pnl = new Devolucion();
-     
-        pnl.setSize(750, 430); 
+
+        pnl.setSize(750, 430);
         pnl.setLocation(0, 0);
 
         content.removeAll();
         content.add(pnl, java.awt.BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Devoluciones");
     }//GEN-LAST:event_btnDevolucionActionPerformed
 
     private void InitContent() {
-        
-        //Que vaya el gestionar ejemplar
-        PrestamosUsuario pres = new PrestamosUsuario();
+
+        PrestamosUsuarios pres = new PrestamosUsuarios();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
@@ -553,7 +550,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.add(pres, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
+
         lblMenu.setText("Prestamos");
 
     }

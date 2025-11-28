@@ -73,6 +73,29 @@ public class ManUsuarios extends javax.swing.JPanel {
 
     private void limpiarControles() {
         txtId.setEnabled(true);
+        chkvigente.setEnabled(true);
+        txtContrasena.setEnabled(true);
+        txtId.setText("");
+        txtNombre.setText("");
+        txtApPaterno.setText("");
+        txtApMaterno.setText("");
+        txtDireccion.setText("");
+        txtTelefono.setText("");
+        txtContrasena.setText("");
+        txtGmail.setText("");
+        txtUsuario.setText("");
+        jDateChooser1.setDate(null);
+        if (cboTipo.getItemCount() > 0) {
+            cboTipo.setSelectedIndex(0);
+        }
+        chkvigente.setSelected(false);
+        tblUsuarios.clearSelection();
+    }
+
+    private void limpiarControlesRegistrar() {
+        btnNuevo.setText("NUEVO");
+        txtId.setEnabled(true);
+        chkvigente.setEnabled(true);
         txtContrasena.setEnabled(true);
         txtId.setText("");
         txtNombre.setText("");
@@ -506,7 +529,7 @@ public class ManUsuarios extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        limpiarControles();
+        limpiarControlesRegistrar();
         listarUsuarios();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
@@ -556,6 +579,8 @@ public class ManUsuarios extends javax.swing.JPanel {
             if (btnNuevo.getText().equals("NUEVO")) {
                 btnNuevo.setText("GUARDAR");
                 limpiarControles();
+                chkvigente.setEnabled(false);
+                chkvigente.setSelected(true);
                 jDateChooser1.setCalendar(null);
                 txtId.setText(objUsuarios.generarCodigoUsuario().toString());
             } else if (btnNuevo.getText().equals("GUARDAR")) {
@@ -641,8 +666,7 @@ public class ManUsuarios extends javax.swing.JPanel {
                         txtTelefono.getText(),
                         txtGmail.getText(),
                         txtDireccion.getText(),
-                        cboTipo.getSelectedItem().toString(),
-                        chkvigente.isSelected()
+                        cboTipo.getSelectedItem().toString()
                 );
 
                 JOptionPane.showMessageDialog(this, "Usuario registrado exitosamente.");
