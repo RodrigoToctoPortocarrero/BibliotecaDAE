@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.ImageIcon;
 import viewsBibliotecario.ManEditorial;
-import viewsUsuario.DevoluciónUsuario;
+import viewsUsuario.DevolucionUsuario;
 import viewsUsuario.PrestamosUsuario;
 import viewsUsuario.PrincipalUsuario;
 import viewsUsuario.frmReporte;
@@ -370,16 +370,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnDevolucionesUsuario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionesUsuario1ActionPerformed
-        //Realizado por Valentino
-        DevoluciónUsuario pres = new DevoluciónUsuario(this, rootPaneCheckingEnabled);
-        pres.setSize(750, 430);
-        pres.setLocation(0, 0);
-
-        content.removeAll();
-        content.add(pres, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
-        
+   
      
     }//GEN-LAST:event_btnDevolucionesUsuario1ActionPerformed
 

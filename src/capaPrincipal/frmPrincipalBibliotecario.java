@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.ImageIcon;
+import viewsBibliotecario.Devolucion;
 import viewsBibliotecario.ManAutor;
 import viewsBibliotecario.ManCategoria;
 import viewsBibliotecario.ManEditorial;
@@ -527,7 +528,18 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGestionarUsuariosActionPerformed
 
     private void btnDevolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionActionPerformed
-        // TODO add your handling code here:
+        // 1. Instanciamos el panel de Devoluciones del Bibliotecario
+        Devolucion pnl = new Devolucion();
+     
+        pnl.setSize(750, 430); 
+        pnl.setLocation(0, 0);
+
+        content.removeAll();
+        content.add(pnl, java.awt.BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+        
+        lblMenu.setText("Devoluciones");
     }//GEN-LAST:event_btnDevolucionActionPerformed
 
     private void InitContent() {
