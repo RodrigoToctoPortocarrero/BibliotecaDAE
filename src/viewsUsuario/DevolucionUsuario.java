@@ -21,35 +21,37 @@ public class DevolucionUsuario extends javax.swing.JPanel {
      * Creates new form DevolucionUsuario
      */
     public DevolucionUsuario(int idUsuario) {
-        initComponents();
         this.idUsuarioLogueado = idUsuario;
+        initComponents();
+        
         configurarTabla();
         cargarMisPrestamos(null); // null = Cargar todo al inicio
+        System.out.println("DEBUG: ID Usuario logueado recibido es: " + idUsuario);
     }
 private void configurarTabla() {
         modelo = new DefaultTableModel();
         modelo.addColumn("ID Préstamo");
         modelo.addColumn("Libro");
-        modelo.addColumn("F. Préstamo"); // Esta es la fecha clave
+        modelo.addColumn("F. Préstamo");
         modelo.addColumn("F. Vencimiento");
         modelo.addColumn("Estado");
-        modelo.addColumn("Multa Estimada");
+        modelo.addColumn("Multa/Situación");
         tblMisPrestamos.setModel(modelo);
-    }
+}
    public void cargarMisPrestamos(String fechaFiltro) {
-        // SQL Base: Busca por ID de Usuario y Estado Activo
-        String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada, p.fechaprestamo " +
+        // 1. QUERY CORREGIDA: Trae TODO (quitamos p.estado = 'activo') 
+        // y agregamos p.estado al SELECT para saber si ya se devolvió.
+        String sql = "SELECT p.idprestamo, l.titulo, p.fechadevolucionestimada, p.fechaprestamo, p.estado " +
                      "FROM PRESTAMO p " +
                      "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo " +
                      "INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar " +
                      "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
-                     "WHERE p.idusuariolector = " + idUsuarioLogueado + " AND p.estado = 'activo'";
+                     "WHERE p.idusuariolector = " + idUsuarioLogueado; // ¡SIN FILTRO DE ESTADO!
 
-        // --- FILTRO POR FECHA (NO POR ID) ---
+        // Si hay filtro de fecha, lo aplicamos
         if (fechaFiltro != null && !fechaFiltro.isEmpty()) {
             sql += " AND p.fechaprestamo = '" + fechaFiltro + "'";
         }
-        // ------------------------------------
         
         sql += " ORDER BY p.fechaprestamo DESC";
 
@@ -61,42 +63,56 @@ private void configurarTabla() {
 
             while (rs.next()) {
                 hayDatos = true;
-                Date fechaPrestamoSQL = rs.getDate("fechaprestamo");
-                Date fechaVenceSQL = rs.getDate("fechadevolucionestimada");
-                LocalDate fechaVence = fechaVenceSQL.toLocalDate();
                 
-                // Calcular retraso
-                long diasRetraso = ChronoUnit.DAYS.between(fechaVence, hoy);
+                int idPrestamo = rs.getInt("idprestamo");
+                String titulo = rs.getString("titulo");
+                Date fPrestamo = rs.getDate("fechaprestamo");
+                Date fVence = rs.getDate("fechadevolucionestimada");
+                String estadoBD = rs.getString("estado"); // 'activo' o 'completado'
                 
-                String estadoStr = "A tiempo";
-                double multa = 0.0;
-                
-                if (diasRetraso > 0) {
-                    estadoStr = "CON RETRASO (" + diasRetraso + " días)";
-                    multa = diasRetraso * 2.00; // 2 soles por día
+                String estadoMostrar = "";
+                String situacionMulta = "";
+
+                // --- LOGICA DE VISUALIZACIÓN ---
+                if (estadoBD != null && estadoBD.equalsIgnoreCase("completado")) {
+                    // CASO 1: YA DEVUELTO
+                    estadoMostrar = "DEVUELTO";
+                    situacionMulta = "S/. 0.00 (Cerrado)";
                 } else {
-                    long diasRestantes = ChronoUnit.DAYS.between(hoy, fechaVence);
-                    estadoStr = "Vence en " + diasRestantes + " días";
+                    // CASO 2: PRÉSTAMO ACTIVO (Calculamos mora)
+                    LocalDate fechaVenceLocal = fVence.toLocalDate();
+                    long diasRetraso = ChronoUnit.DAYS.between(fechaVenceLocal, hoy);
+                    
+                    if (diasRetraso > 0) {
+                        estadoMostrar = "CON RETRASO (" + diasRetraso + " días)";
+                        double multa = diasRetraso * 2.00; 
+                        situacionMulta = String.format("Est. S/. %.2f", multa);
+                    } else {
+                        long diasRestantes = ChronoUnit.DAYS.between(hoy, fechaVenceLocal);
+                        estadoMostrar = "A tiempo (" + diasRestantes + " días rest.)";
+                        situacionMulta = "S/. 0.00";
+                    }
                 }
 
                 modelo.addRow(new Object[]{
-                    rs.getInt("idprestamo"),
-                    rs.getString("titulo"),
-                    fechaPrestamoSQL, // Mostramos fecha de préstamo
-                    fechaVenceSQL,
-                    estadoStr,
-                    String.format("S/. %.2f", multa)
+                    idPrestamo,
+                    titulo,
+                    fPrestamo,
+                    fVence,
+                    estadoMostrar,
+                    situacionMulta
                 });
             }
             
             jdbc.desconectar();
 
             if (!hayDatos && fechaFiltro != null) {
-                 JOptionPane.showMessageDialog(this, "No encontré préstamos realizados en la fecha: " + fechaFiltro);
+                 JOptionPane.showMessageDialog(this, "No se encontraron registros para la fecha: " + fechaFiltro);
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar préstamos: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al cargar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     // --- LÓGICA COMÚN PARA LLENAR LA TABLA ---
@@ -253,22 +269,17 @@ private void configurarTabla() {
     }//GEN-LAST:event_btnDevolverMouseClicked
 
     private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
-        String fecha = txtFechaBusqueda.getText().trim();
-        
-        // Si el campo está vacío, recargamos todo
+       String fecha = txtFechaBusqueda.getText().trim();
         if (fecha.isEmpty()) {
             cargarMisPrestamos(null);
-            return;
+        } else {
+            // Validación simple
+            if(!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                JOptionPane.showMessageDialog(this, "Formato incorrecto. Use YYYY-MM-DD");
+                return;
+            }
+            cargarMisPrestamos(fecha);
         }
-
-        // Validación de formato fecha
-        if(!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese una fecha válida (YYYY-MM-DD)");
-            return;
-        }
-
-        // Llamamos al método pasándole la FECHA
-        cargarMisPrestamos(fecha);
     }//GEN-LAST:event_btnDevolverActionPerformed
 
 
