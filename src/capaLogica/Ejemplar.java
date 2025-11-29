@@ -33,13 +33,17 @@ public class Ejemplar {
     // ============================
     // GENERAR PREFIJO DEL TÍTULO (opcional)
     // ============================
-    private String generarPrefijo(String titulo) {
-        if (titulo == null || titulo.trim().isEmpty()) return "X";
+    public String generarPrefijo(String titulo) {
+        if (titulo == null || titulo.trim().isEmpty()) {
+            return "X";
+        }
         String[] palabras = titulo.trim().split("\\s+");
         StringBuilder sb = new StringBuilder();
 
         for (String p : palabras) {
-            if (!p.isEmpty()) sb.append(Character.toUpperCase(p.charAt(0)));
+            if (!p.isEmpty()) {
+                sb.append(Character.toUpperCase(p.charAt(0)));
+            }
         }
         return sb.toString();
     }
@@ -89,14 +93,14 @@ public class Ejemplar {
     }
 
     // ============================
-    // LISTAR TODOS LOS EJEMPLARES (con título)
+    // LISTAR TODOS LOS EJEMPLARES (con título y estado_devolucion)
     // ============================
     public ResultSet listarEjemplares() throws Exception {
         try {
-            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, li.titulo "
-                + "FROM ejemplar ej "
-                + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
-                + "ORDER BY ej.idejemplar";
+            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, ej.estado_devolucion, li.titulo "
+                    + "FROM ejemplar ej "
+                    + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
+                    + "ORDER BY ej.idejemplar";
             Statement st = con.conectar().createStatement();
             return st.executeQuery(sql);
 
@@ -142,11 +146,11 @@ public class Ejemplar {
     // ============================
     public ResultSet buscarEjemplarNroEjemplar(String nroejemplar) throws Exception {
         try {
-            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, li.titulo "
-                + "FROM ejemplar ej "
-                + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
-                + "WHERE ej.nroejemplar ILIKE ? "
-                + "ORDER BY ej.idejemplar";
+            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, ej.estado_devolucion, li.titulo "
+                    + "FROM ejemplar ej "
+                    + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
+                    + "WHERE ej.nroejemplar ILIKE ? "
+                    + "ORDER BY ej.idejemplar";
 
             PreparedStatement pst = con.conectar().prepareStatement(sql);
             pst.setString(1, "%" + nroejemplar + "%");
@@ -158,10 +162,31 @@ public class Ejemplar {
     }
 
     // ============================
-    // VERIFICAR SI EJEMPLAR TIENE PRÉSTAMO ACTIVO
+    // VERIFICAR SI EJEMPLAR ESTÁ DISPONIBLE (estado_devolucion = TRUE)
     // ============================
-    public boolean ejemplarTienePrestamo(int idEjemplar) throws Exception {
-        String sqlCheck = "SELECT COUNT(*) AS total FROM prestamo WHERE idejemplar = ?";
+    public boolean ejemplarEstaDisponible(int idEjemplar) throws Exception {
+        String sqlCheck = "SELECT estado_devolucion FROM ejemplar WHERE idejemplar = ?";
+
+        try {
+            PreparedStatement pst = con.conectar().prepareStatement(sqlCheck);
+            pst.setInt(1, idEjemplar);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBoolean("estado_devolucion"); // TRUE = disponible, FALSE = prestado
+            }
+            return false;
+
+        } catch (Exception e) {
+            throw new Exception("Error al verificar disponibilidad del ejemplar: " + e.getMessage());
+        }
+    }
+
+    // ============================
+    // VERIFICAR SI EJEMPLAR TIENE REGISTROS EN DETALLE_PRESTAMO
+    // ============================
+    public boolean ejemplarTieneDetallesPrestamo(int idEjemplar) throws Exception {
+        String sqlCheck = "SELECT COUNT(*) AS total FROM detalle_prestamo WHERE idejemplar = ?";
 
         try {
             PreparedStatement pst = con.conectar().prepareStatement(sqlCheck);
@@ -174,7 +199,23 @@ public class Ejemplar {
             return false;
 
         } catch (Exception e) {
-            throw new Exception("Error al verificar préstamos: " + e.getMessage());
+            throw new Exception("Error al verificar detalles de préstamo: " + e.getMessage());
+        }
+    }
+
+    // ============================
+    // ELIMINAR DETALLES DE PRÉSTAMO DE UN EJEMPLAR
+    // ============================
+    private void eliminarDetallesPrestamo(int idEjemplar) throws Exception {
+        String sqlDelete = "DELETE FROM detalle_prestamo WHERE idejemplar = ?";
+
+        try {
+            PreparedStatement pst = con.conectar().prepareStatement(sqlDelete);
+            pst.setInt(1, idEjemplar);
+            pst.executeUpdate();
+
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar detalles de préstamo: " + e.getMessage());
         }
     }
 
@@ -185,8 +226,8 @@ public class Ejemplar {
         try {
             int idejemplar = generarIdEjemplar();
 
-            sql = "INSERT INTO ejemplar(idejemplar, nroejemplar, estado, idlibro) "
-                + "VALUES (?, ?, ?, ?)";
+            sql = "INSERT INTO ejemplar(idejemplar, nroejemplar, estado, idlibro, estado_devolucion) "
+                    + "VALUES (?, ?, ?, ?, TRUE)";
 
             PreparedStatement pst = con.conectar().prepareStatement(sql);
             pst.setInt(1, idejemplar);
@@ -206,9 +247,9 @@ public class Ejemplar {
     // ============================
     public int modificarEjemplar(int idEjemplar, int idlibro, String nroejemplar, boolean estado) throws Exception {
         try {
-            // VALIDAR QUE NO TENGA PRÉSTAMOS
-            if (ejemplarTienePrestamo(idEjemplar)) {
-                throw new Exception("No se puede modificar. El ejemplar está asociado a uno o más préstamos.");
+            // VALIDAR QUE EL EJEMPLAR ESTÉ DISPONIBLE (no prestado)
+            if (!ejemplarEstaDisponible(idEjemplar)) {
+                throw new Exception("No se puede modificar. El ejemplar está actualmente prestado.");
             }
 
             sql = "UPDATE ejemplar SET nroejemplar = ?, estado = ?, idlibro = ? WHERE idejemplar = ?";
@@ -227,13 +268,14 @@ public class Ejemplar {
     }
 
     // ============================
-    // DAR DE BAJA (estado = false) CON VALIDACIÓN
-    // ============================
+// DAR DE BAJA (estado = false) CON VALIDACIÓN
+// ============================
     public int darBajaEjemplar(int idEjemplar) throws Exception {
         try {
-            // VALIDAR QUE NO TENGA PRÉSTAMOS
-            if (ejemplarTienePrestamo(idEjemplar)) {
-                throw new Exception("No se puede dar de baja. El ejemplar está asociado a uno o más préstamos.");
+            // VALIDAR QUE EL EJEMPLAR ESTÉ DISPONIBLE (no prestado)
+            // Solo se puede dar de baja si está disponible
+            if (!ejemplarEstaDisponible(idEjemplar)) {
+                throw new Exception("No se puede dar de baja. El ejemplar está actualmente prestado. Debe estar disponible para darlo de baja.");
             }
 
             sql = "UPDATE ejemplar SET estado = false WHERE idejemplar = ?";
@@ -252,21 +294,47 @@ public class Ejemplar {
     // ELIMINAR EJEMPLAR (FÍSICO) CON VALIDACIÓN
     // ============================
     public int eliminarEjemplar(int idEjemplar) throws Exception {
+        Connection cn = null;
         try {
-            // VALIDAR QUE NO TENGA PRÉSTAMOS
-            if (ejemplarTienePrestamo(idEjemplar)) {
-                throw new Exception("No se puede eliminar. El ejemplar está asociado a uno o más préstamos.");
+            cn = con.conectar();
+            cn.setAutoCommit(false); // Iniciar transacción
+
+            // 1. VALIDAR QUE EL EJEMPLAR ESTÉ DISPONIBLE (estado_devolucion = TRUE)
+            if (!ejemplarEstaDisponible(idEjemplar)) {
+                throw new Exception("No se puede eliminar. El ejemplar está actualmente prestado. Debe estar disponible para eliminarlo.");
             }
 
+            // 2. SI TIENE DETALLES DE PRÉSTAMO (histórico), ELIMINARLOS PRIMERO
+            if (ejemplarTieneDetallesPrestamo(idEjemplar)) {
+                eliminarDetallesPrestamo(idEjemplar);
+            }
+
+            // 3. ELIMINAR EL EJEMPLAR
             sql = "DELETE FROM ejemplar WHERE idejemplar = ?";
-
-            PreparedStatement pst = con.conectar().prepareStatement(sql);
+            PreparedStatement pst = cn.prepareStatement(sql);
             pst.setInt(1, idEjemplar);
+            int resultado = pst.executeUpdate();
 
-            return pst.executeUpdate();
+            cn.commit(); // Confirmar transacción
+            return resultado;
 
         } catch (Exception e) {
+            if (cn != null) {
+                try {
+                    cn.rollback(); // Revertir cambios en caso de error
+                } catch (Exception ex) {
+                    throw new Exception("Error al revertir transacción: " + ex.getMessage());
+                }
+            }
             throw new Exception("Error al eliminar ejemplar: " + e.getMessage());
+        } finally {
+            if (cn != null) {
+                try {
+                    cn.setAutoCommit(true); // Restaurar auto-commit
+                } catch (Exception e) {
+                    // Ignorar error al restaurar auto-commit
+                }
+            }
         }
     }
 
@@ -275,10 +343,10 @@ public class Ejemplar {
     // ============================
     public ResultSet buscarEjemplar(int idEjemplar) throws Exception {
         try {
-            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, li.titulo "
-                + "FROM ejemplar ej "
-                + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
-                + "WHERE ej.idejemplar = ?";
+            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, ej.estado_devolucion, li.titulo "
+                    + "FROM ejemplar ej "
+                    + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
+                    + "WHERE ej.idejemplar = ?";
 
             PreparedStatement pst = con.conectar().prepareStatement(sql);
             pst.setInt(1, idEjemplar);
@@ -287,6 +355,26 @@ public class Ejemplar {
 
         } catch (Exception e) {
             throw new Exception("Error al buscar ejemplar: " + e.getMessage());
+        }
+    }
+
+    // ============================
+// BUSCAR EJEMPLARES POR TÍTULO DE LIBRO
+// ============================
+    public ResultSet buscarEjemplaresPorTitulo(String titulo) throws Exception {
+        try {
+            sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, ej.estado_devolucion, li.titulo "
+                    + "FROM ejemplar ej "
+                    + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
+                    + "WHERE li.titulo ILIKE ? "
+                    + "ORDER BY ej.idejemplar";
+
+            PreparedStatement pst = con.conectar().prepareStatement(sql);
+            pst.setString(1, "%" + titulo + "%");
+            return pst.executeQuery();
+
+        } catch (Exception e) {
+            throw new Exception("Error al buscar ejemplares por título: " + e.getMessage());
         }
     }
 }

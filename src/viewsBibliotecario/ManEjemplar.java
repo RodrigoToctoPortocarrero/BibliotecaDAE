@@ -16,9 +16,11 @@ import java.sql.ResultSet;
 public class ManEjemplar extends javax.swing.JPanel {
 
     Ejemplar ejem = new Ejemplar();
+    private boolean cargandoDesdTabla = false; // <-- AGREGAR ESTA LÍNEA
+
     DefaultTableModel tabla = new DefaultTableModel(
             new Object[][]{},
-            new String[]{"ID Ejemplar", "Nro Ejemplar", "Estado", "Libro"}
+            new String[]{"ID Ejemplar", "Nro Ejemplar", "Estado", "Disponibilidad", "Libro"}
     ) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -36,6 +38,9 @@ public class ManEjemplar extends javax.swing.JPanel {
         btnModificar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnDarBaja.setEnabled(false);
+
+        txtCodigo.setEnabled(false);
+        txtNroEjemplar.setEnabled(false);
     }
 
     private void cargarEjemplares() {
@@ -48,6 +53,7 @@ public class ManEjemplar extends javax.swing.JPanel {
                     rs.getInt("idejemplar"),
                     rs.getString("nroejemplar"),
                     rs.getBoolean("estado") ? "Vigente" : "No Vigente",
+                    rs.getBoolean("estado_devolucion") ? "Disponible" : "Prestado",
                     rs.getString("titulo")
                 });
             }
@@ -76,6 +82,8 @@ public class ManEjemplar extends javax.swing.JPanel {
     }
 
     private void LimpiarCampos() {
+        cargandoDesdTabla = true; // Activar bandera al limpiar
+
         txtCodigo.setText("");
         txtNroEjemplar.setText("");
         cboLibros.setSelectedIndex(-1);
@@ -91,6 +99,8 @@ public class ManEjemplar extends javax.swing.JPanel {
         txtNroEjemplar.setEnabled(true);
         cboLibros.setEnabled(true);
         checkVigencia.setEnabled(true);
+
+        cargandoDesdTabla = false; // Desactivar bandera
     }
 
     // Agregar listener al combo de libros para regenerar código
@@ -209,16 +219,6 @@ public class ManEjemplar extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDarBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 706, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
@@ -229,19 +229,29 @@ public class ManEjemplar extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNroEjemplar, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38)
-                                .addComponent(jLabel4)
-                                .addGap(41, 41, 41)
-                                .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(36, 36, 36)
+                                .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(129, 129, 129)
-                                .addComponent(jLabel3)
-                                .addGap(49, 49, 49)
-                                .addComponent(checkVigencia)))))
+                                .addGap(33, 33, 33)
+                                .addComponent(checkVigencia))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnInsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDarBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -253,14 +263,14 @@ public class ManEjemplar extends javax.swing.JPanel {
                     .addComponent(jLabel3)
                     .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(checkVigencia))
-                .addGap(30, 30, 30)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4)
                     .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNroEjemplar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 43, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnInsertar, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                     .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -268,8 +278,8 @@ public class ManEjemplar extends javax.swing.JPanel {
                     .addComponent(btnModificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -280,7 +290,7 @@ public class ManEjemplar extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -291,15 +301,22 @@ public class ManEjemplar extends javax.swing.JPanel {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
-            String filtro = txtNroEjemplar.getText().trim();
-
-            if (filtro.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Ingrese un número de ejemplar para buscar");
+            // Obtener el título seleccionado del combo
+            if (cboLibros.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Debe seleccionar un libro del combo para buscar sus ejemplares.",
+                        "Libro no seleccionado",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            ResultSet rs = ejem.buscarEjemplarNroEjemplar(filtro);
+            String tituloLibro = cboLibros.getSelectedItem().toString();
+
+            // Limpiar la tabla
             tabla.setRowCount(0);
+
+            // Buscar ejemplares por título
+            ResultSet rs = ejem.buscarEjemplaresPorTitulo(tituloLibro);
 
             boolean encontrado = false;
             while (rs.next()) {
@@ -307,18 +324,24 @@ public class ManEjemplar extends javax.swing.JPanel {
                 tabla.addRow(new Object[]{
                     rs.getInt("idejemplar"),
                     rs.getString("nroejemplar"),
-                    rs.getBoolean("estado") ? "Activo" : "Inactivo",
+                    rs.getBoolean("estado") ? "Vigente" : "No Vigente",
+                    rs.getBoolean("estado_devolucion") ? "Disponible" : "Prestado",
                     rs.getString("titulo")
                 });
             }
 
             if (!encontrado) {
-                JOptionPane.showMessageDialog(this, "No se encontraron ejemplares con ese número");
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron ejemplares para el libro: " + tituloLibro,
+                        "Sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Error al buscar ejemplar: " + e.getMessage());
+                    "Error al buscar ejemplares: " + e.getMessage(),
+                    "Error de búsqueda",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -330,17 +353,40 @@ public class ManEjemplar extends javax.swing.JPanel {
                 return;
             }
 
+            int id = Integer.parseInt(idText);
+
+            // Verificar disponibilidad antes de mostrar confirmación
+            if (!ejem.ejemplarEstaDisponible(id)) {
+                JOptionPane.showMessageDialog(this,
+                        "No se puede eliminar. El ejemplar está actualmente prestado.\n"
+                        + "Debe estar disponible para poder eliminarlo.",
+                        "Ejemplar no disponible",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Verificar si tiene historial de préstamos
+            boolean tieneHistorial = ejem.ejemplarTieneDetallesPrestamo(id);
+            String mensaje = tieneHistorial
+                    ? "¿Está seguro de eliminar este ejemplar?\n"
+                    + "ADVERTENCIA: Este ejemplar tiene historial de préstamos.\n"
+                    + "Se eliminará el ejemplar y todo su historial de préstamos.\n"
+                    + "Esta acción no se puede deshacer."
+                    : "¿Está seguro de eliminar este ejemplar?\n"
+                    + "Esta acción no se puede deshacer.";
+
             int confirmacion = JOptionPane.showConfirmDialog(this,
-                    "¿Está seguro de eliminar este ejemplar? Esta acción no se puede deshacer.",
+                    mensaje,
                     "Confirmar eliminación",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
 
             if (confirmacion == JOptionPane.YES_OPTION) {
-                int id = Integer.parseInt(idText);
                 ejem.eliminarEjemplar(id);
 
-                JOptionPane.showMessageDialog(this, "Ejemplar eliminado correctamente");
+                JOptionPane.showMessageDialog(this,
+                        "Ejemplar eliminado correctamente"
+                        + (tieneHistorial ? "\n(Se eliminó también el historial de préstamos)" : ""));
                 LimpiarCampos();
                 cargarEjemplares();
             }
@@ -382,7 +428,9 @@ public class ManEjemplar extends javax.swing.JPanel {
                 btnInsertar.setText("INSERTAR");
 
                 JOptionPane.showMessageDialog(this,
-                        "ID y Número de Ejemplar generados. Presione INSERTAR para guardar.");
+                        "ID y Número de Ejemplar generados.\n"
+                        + "El ejemplar se creará como DISPONIBLE.\n"
+                        + "Presione INSERTAR para guardar.");
 
             } else { // Si el botón dice "INSERTAR", realizar la inserción
                 if (cboLibros.getSelectedItem() == null) {
@@ -408,11 +456,11 @@ public class ManEjemplar extends javax.swing.JPanel {
 
                 ejem.insertarEjemplar(idLibro, nro, estado);
 
-                JOptionPane.showMessageDialog(this, "Ejemplar insertado correctamente");
+                JOptionPane.showMessageDialog(this, "Ejemplar insertado correctamente\n(Estado: Disponible)");
                 LimpiarCampos();
                 cargarEjemplares();
-                txtCodigo.setEnabled(true);
-                txtNroEjemplar.setEnabled(true);
+                txtCodigo.setEnabled(false);
+                txtNroEjemplar.setEnabled(false);
             }
 
         } catch (Exception e) {
@@ -429,17 +477,33 @@ public class ManEjemplar extends javax.swing.JPanel {
                 return;
             }
 
+            int id = Integer.parseInt(idText);
+
+            // Verificar que el ejemplar ESTÉ DISPONIBLE (no prestado)
+            if (!ejem.ejemplarEstaDisponible(id)) {
+                JOptionPane.showMessageDialog(this,
+                        "No se puede dar de baja. El ejemplar está PRESTADO actualmente.\n"
+                        + "Debe estar DISPONIBLE para poder darlo de baja.\n\n"
+                        + "Espere a que el ejemplar sea devuelto antes de darlo de baja.",
+                        "Ejemplar no disponible",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             int confirmacion = JOptionPane.showConfirmDialog(this,
-                    "¿Está seguro de dar de baja este ejemplar?",
+                    "¿Está seguro de dar de baja este ejemplar?\n"
+                    + "El ejemplar se marcará como NO VIGENTE.\n"
+                    + "Una vez dado de baja, NO podrá ser prestado nuevamente.",
                     "Confirmar baja",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
 
             if (confirmacion == JOptionPane.YES_OPTION) {
-                int id = Integer.parseInt(idText);
                 ejem.darBajaEjemplar(id);
 
-                JOptionPane.showMessageDialog(this, "Ejemplar dado de baja correctamente");
+                JOptionPane.showMessageDialog(this,
+                        "Ejemplar dado de baja correctamente.\n"
+                        + "El ejemplar ya NO podrá ser prestado.");
                 LimpiarCampos();
                 cargarEjemplares();
             }
@@ -461,6 +525,16 @@ public class ManEjemplar extends javax.swing.JPanel {
             }
 
             int id = Integer.parseInt(idText);
+
+            // Verificar que el ejemplar esté disponible antes de modificar
+            if (!ejem.ejemplarEstaDisponible(id)) {
+                JOptionPane.showMessageDialog(this,
+                        "No se puede modificar. El ejemplar está actualmente prestado.\n"
+                        + "Debe estar disponible para poder modificarlo.",
+                        "Ejemplar no disponible",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
             if (cboLibros.getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(this, "Seleccione un libro.");
@@ -510,18 +584,22 @@ public class ManEjemplar extends javax.swing.JPanel {
             int fila = tblEjemplar.getSelectedRow();
 
             if (fila >= 0) {
+                // ACTIVAR bandera para evitar regeneración
+                cargandoDesdTabla = true;
+
                 // Obtener datos de la fila seleccionada
                 int id = Integer.parseInt(tblEjemplar.getValueAt(fila, 0).toString());
                 String nroEjemplar = tblEjemplar.getValueAt(fila, 1).toString();
                 String estadoStr = tblEjemplar.getValueAt(fila, 2).toString();
-                String tituloLibro = tblEjemplar.getValueAt(fila, 3).toString();
+                String disponibilidadStr = tblEjemplar.getValueAt(fila, 3).toString();
+                String tituloLibro = tblEjemplar.getValueAt(fila, 4).toString();
 
                 // Llenar los campos
                 txtCodigo.setText(String.valueOf(id));
                 txtNroEjemplar.setText(nroEjemplar);
                 checkVigencia.setSelected(estadoStr.equals("Vigente"));
 
-                // Seleccionar el libro en el combo
+                // Seleccionar el libro en el combo (esto NO disparará regeneración por la bandera)
                 for (int i = 0; i < cboLibros.getItemCount(); i++) {
                     if (cboLibros.getItemAt(i).equals(tituloLibro)) {
                         cboLibros.setSelectedIndex(i);
@@ -529,30 +607,67 @@ public class ManEjemplar extends javax.swing.JPanel {
                     }
                 }
 
+                // DESACTIVAR bandera después de cargar todo
+                cargandoDesdTabla = false;
+
                 // Configurar botones para modo edición
                 btnInsertar.setText("NUEVO");
-                btnModificar.setEnabled(true);
-                btnEliminar.setEnabled(true);
-                btnDarBaja.setEnabled(true);
+
+                // Habilitar/deshabilitar botones según disponibilidad
+                boolean estaDisponible = disponibilidadStr.equals("Disponible");
+                boolean estaVigente = estadoStr.equals("Vigente");
+
+                // MODIFICAR, ELIMINAR y DAR DE BAJA: solo si está disponible (no prestado)
+                btnModificar.setEnabled(estaDisponible);
+                btnEliminar.setEnabled(estaDisponible);
+                btnDarBaja.setEnabled(estaDisponible && estaVigente);
+
+                // Mostrar info según el estado
+                if (!estaDisponible) {
+                    JOptionPane.showMessageDialog(this,
+                            "Este ejemplar está PRESTADO actualmente.\n\n"
+                            + "• No se puede MODIFICAR, ELIMINAR ni DAR DE BAJA mientras esté prestado.\n"
+                            + "• Espere a que sea devuelto para realizar estas acciones.",
+                            "Información del ejemplar",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else if (!estaVigente) {
+                    JOptionPane.showMessageDialog(this,
+                            "Este ejemplar está dado de BAJA (No Vigente).\n\n"
+                            + "• Ya no puede ser prestado.\n"
+                            + "• Puede MODIFICARLO o ELIMINARLO si es necesario.",
+                            "Información del ejemplar",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Error al cargar datos: " + e.getMessage());
+        } finally {
+            // Asegurar que la bandera se desactive incluso si hay error
+            cargandoDesdTabla = false;
         }
     }//GEN-LAST:event_tblEjemplarMouseClicked
 
     private void cboLibrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboLibrosActionPerformed
         try {
-        // Solo regenerar si hay un código cargado (modo edición/modificación)
-        if (!txtCodigo.getText().trim().isEmpty() && cboLibros.getSelectedItem() != null) {
-            String titulo = cboLibros.getSelectedItem().toString();
-            String nroGenerado = ejem.generarCodigoEjemplar(titulo);
-            txtNroEjemplar.setText(nroGenerado);
+            // NO regenerar si estamos cargando datos desde la tabla
+            if (cargandoDesdTabla) {
+                return;
+            }
+
+            // Regenerar código en modo INSERCIÓN o MODIFICACIÓN
+            boolean modoInsercion = btnInsertar.getText().equals("INSERTAR");
+            boolean modoModificacion = !txtCodigo.getText().trim().isEmpty() && btnModificar.isEnabled();
+
+            if ((modoInsercion || modoModificacion) && cboLibros.getSelectedItem() != null) {
+                String titulo = cboLibros.getSelectedItem().toString();
+                String nroGenerado = ejem.generarCodigoEjemplar(titulo);
+                txtNroEjemplar.setText(nroGenerado);
+            }
+        } catch (Exception e) {
+            // No mostrar error aquí para no molestar al usuario
         }
-    } catch (Exception e) {
-        // No mostrar error aquí para no molestar al usuario
-    }
     }//GEN-LAST:event_cboLibrosActionPerformed
 
 
