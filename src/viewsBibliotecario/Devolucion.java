@@ -108,6 +108,11 @@ private void configurarTabla() {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblDetalle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblDetalleMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblDetalle);
 
         txtMulta.setEditable(false);
@@ -231,9 +236,6 @@ private void configurarTabla() {
                 
                 // Si hay resultados, ponemos el primer lector en el campo texto (visual)
                 // aunque en la tabla saldrán todos.
-                if(txtLector != null && txtLector.getText().isEmpty()){
-                    txtLector.setText(rs.getString("lector"));
-                }
 
                 LocalDate fechaVence = rs.getDate("fechadevolucionestimada").toLocalDate();
                 long dias = ChronoUnit.DAYS.between(fechaVence, hoy);
@@ -272,7 +274,12 @@ private void configurarTabla() {
     }//GEN-LAST:event_btnGrabarDevolucionMouseClicked
 
     private void btnGrabarDevolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarDevolucionActionPerformed
-        if (modelo.getRowCount() == 0) return;
+        // 1. Validar que haya una fila seleccionada
+        int filaSeleccionada = tblDetalle.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione el libro que desea devolver en la tabla.");
+            return;
+        }
 
         Connection cn = null;
 
@@ -282,11 +289,7 @@ private void configurarTabla() {
 
             Statement st = cn.createStatement();
             
-            // MAPA para controlar duplicados: ID_Prestamo -> ID_Devolucion
-            // Esto evita que si hay 3 libros del mismo préstamo, intentemos crear 3 devoluciones.
-            Map<Integer, Integer> mapaPrestamoDevolucion = new HashMap<>();
-
-            // Preparamos las sentencias SQL (se reutilizan en el bucle)
+            // Preparamos SQLs
             String sqlDev = "INSERT INTO DEVOLUCION (iddevolucion, idprestamo, fechadevolucionreal) VALUES (?, ?, ?)";
             PreparedStatement pstDev = cn.prepareStatement(sqlDev);
 
@@ -296,81 +299,102 @@ private void configurarTabla() {
             String sqlUpdEj = "UPDATE EJEMPLAR SET Estado_Devolucion = TRUE WHERE idejemplar = ?";
             PreparedStatement pstUpdEj = cn.prepareStatement(sqlUpdEj);
 
-            // Obtener siguiente ID para Detalle (secuencial manual)
-            ResultSet rsIdDet = st.executeQuery("SELECT COALESCE(MAX(iddetalledev), 0) FROM DETALLE_DEVOLUCION");
-            rsIdDet.next();
-            int idDetalle = rsIdDet.getInt(1) + 1;
+            // --- PROCESAMOS SOLO LA FILA SELECCIONADA ---
+            
+            // Datos de la fila
+            int idPrestamo = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 0).toString());
+            int idEjemplar = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 2).toString());
+            String estadoStr = modelo.getValueAt(filaSeleccionada, 6).toString(); 
+            double multaItem = Double.parseDouble(modelo.getValueAt(filaSeleccionada, 7).toString());
 
-            // --- RECORREMOS LA TABLA FILA POR FILA ---
-            for (int i = 0; i < tblDetalle.getRowCount(); i++) {
+            // A. VERIFICAR O CREAR CABECERA DE DEVOLUCIÓN
+            // Buscamos si YA existe una devolución HOY para este préstamo (para no duplicar cabeceras)
+            String sqlCheck = "SELECT iddevolucion FROM DEVOLUCION WHERE idprestamo = " + idPrestamo + " AND fechadevolucionreal = CURRENT_DATE";
+            ResultSet rsCheck = st.executeQuery(sqlCheck);
+            
+            int idDevolucionActual;
+            
+            if (rsCheck.next()) {
+                // Ya existe cabecera hoy, usamos esa
+                idDevolucionActual = rsCheck.getInt("iddevolucion");
+            } else {
+                // No existe, creamos nueva cabecera
+                ResultSet rsIdDev = st.executeQuery("SELECT COALESCE(MAX(iddevolucion), 0) + 1 FROM DEVOLUCION");
+                rsIdDev.next();
+                idDevolucionActual = rsIdDev.getInt(1);
                 
-                // Datos de la fila
-                int idPrestamo = Integer.parseInt(modelo.getValueAt(i, 0).toString());
-                int idEjemplar = Integer.parseInt(modelo.getValueAt(i, 2).toString());
-                String estadoStr = modelo.getValueAt(i, 6).toString(); // Columna 6 es estado
-                double multaItem = Double.parseDouble(modelo.getValueAt(i, 7).toString()); // Col 7 es multa
-
-                // 1. GESTIÓN DE LA CABECERA DE DEVOLUCIÓN (Solo una por préstamo)
-                int idDevolucionActual;
-                
-                if (mapaPrestamoDevolucion.containsKey(idPrestamo)) {
-                    // Si ya creamos la cabecera en una vuelta anterior del bucle, usamos ese ID
-                    idDevolucionActual = mapaPrestamoDevolucion.get(idPrestamo);
-                } else {
-                    // Es un préstamo nuevo en este lote: CREAMOS LA CABECERA
-                    ResultSet rsIdDev = st.executeQuery("SELECT COALESCE(MAX(iddevolucion), 0) + 1 FROM DEVOLUCION");
-                    rsIdDev.next();
-                    idDevolucionActual = rsIdDev.getInt(1);
-                    
-                    pstDev.setInt(1, idDevolucionActual);
-                    pstDev.setInt(2, idPrestamo);
-                    pstDev.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
-                    pstDev.executeUpdate();
-                    
-                    // Guardamos en el mapa para no repetirlo
-                    mapaPrestamoDevolucion.put(idPrestamo, idDevolucionActual);
-                }
-
-                // 2. INSERTAR DETALLE
-                pstDet.setInt(1, idDetalle++);
-                pstDet.setInt(2, idDevolucionActual);
-                pstDet.setInt(3, idEjemplar);
-                pstDet.setBoolean(4, estadoStr.equalsIgnoreCase("Bueno"));
-                pstDet.setDouble(5, multaItem);
-                pstDet.setString(6, "Estado: " + estadoStr);
-                pstDet.executeUpdate();
-
-                // 3. LIBERAR EJEMPLAR
-                pstUpdEj.setInt(1, idEjemplar);
-                pstUpdEj.executeUpdate();
+                pstDev.setInt(1, idDevolucionActual);
+                pstDev.setInt(2, idPrestamo);
+                pstDev.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+                pstDev.executeUpdate();
             }
+            rsCheck.close(); // Importante cerrar RS auxiliares
 
-            // 4. CERRAR TODOS LOS PRÉSTAMOS INVOLUCRADOS
-            // Recorremos el mapa porque ahí están los IDs únicos de préstamos procesados
+            // B. INSERTAR DETALLE DEVOLUCIÓN
+            ResultSet rsIdDet = st.executeQuery("SELECT COALESCE(MAX(iddetalledev), 0) + 1 FROM DETALLE_DEVOLUCION");
+            rsIdDet.next();
+            int idDetalle = rsIdDet.getInt(1);
+            rsIdDet.close();
+
+            pstDet.setInt(1, idDetalle);
+            pstDet.setInt(2, idDevolucionActual);
+            pstDet.setInt(3, idEjemplar);
+            pstDet.setBoolean(4, estadoStr.equalsIgnoreCase("Bueno"));
+            pstDet.setDouble(5, multaItem);
+            pstDet.setString(6, "Estado: " + estadoStr);
+            pstDet.executeUpdate();
+
+            // C. LIBERAR EJEMPLAR
+            pstUpdEj.setInt(1, idEjemplar);
+            pstUpdEj.executeUpdate();
+
+            // D. VERIFICAR SI EL PRÉSTAMO SE CIERRA COMPLETO
+            // Contamos cuántos libros tenía el préstamo original vs cuántos se han devuelto ya
+            // (Esta es una lógica opcional avanzada, por ahora mantenemos tu lógica simple: cerramos el préstamo al devolver)
+            
+            // Si quieres cerrar el préstamo SOLO cuando se devuelvan TODOS los libros, necesitarías un count.
+            // Pero según tu lógica anterior, cerrabas el préstamo directo. Lo mantendré así pero solo para este ID.
+            
+            // OPCIONAL: Cerrar préstamo (Si decides que devolver 1 libro cierra el préstamo completo)
+            // OJO: Si el préstamo tiene 2 libros y devuelves 1, el estado pasaría a completado.
+            // Si prefieres mantenerlo activo hasta devolver todo, comenta estas 3 líneas:
             String sqlClose = "UPDATE PRESTAMO SET estado = 'completado' WHERE idprestamo = ?";
             PreparedStatement pstClose = cn.prepareStatement(sqlClose);
-            
-            for (Integer idPrestamoCerrar : mapaPrestamoDevolucion.keySet()) {
-                pstClose.setInt(1, idPrestamoCerrar);
-                pstClose.executeUpdate();
-            }
+            pstClose.setInt(1, idPrestamo);
+            pstClose.executeUpdate();
 
-            cn.commit(); // CONFIRMAR TODO
-            JOptionPane.showMessageDialog(this, "Devoluciones procesadas exitosamente.");
+            cn.commit(); 
+            JOptionPane.showMessageDialog(this, "Libro devuelto exitosamente.");
             
-            modelo.setRowCount(0);
-            txtFechaPrestamo.setText("");
+            // Eliminar la fila de la tabla visualmente para que no la vuelva a procesar
+            modelo.removeRow(filaSeleccionada);
+            txtLector.setText("");
             txtMulta.setText("");
-            if(txtLector != null) txtLector.setText("");
 
         } catch (Exception e) {
             try { if(cn!=null) cn.rollback(); } catch (SQLException ex) {}
-            JOptionPane.showMessageDialog(this, "Error en transacción: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
             e.printStackTrace();
         } finally {
             try { if(cn!=null) cn.close(); } catch (SQLException ex) {}
         }
     }//GEN-LAST:event_btnGrabarDevolucionActionPerformed
+
+    private void tblDetalleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDetalleMouseClicked
+
+        int fila = tblDetalle.getSelectedRow();
+
+        if (fila >= 0) {
+            // 1. Mostrar Lector (Ya lo tenías)
+            String nombreLector = tblDetalle.getValueAt(fila, 1).toString();
+            txtLector.setText(nombreLector);
+
+            // 2. Mostrar Multa INDIVIDUAL (Nueva funcionalidad)
+            // La multa está en la columna 7 (índice 7) según tu modelo
+            String multaIndividual = tblDetalle.getValueAt(fila, 7).toString();
+            txtMulta.setText(multaIndividual);
+        }
+    }//GEN-LAST:event_tblDetalleMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
