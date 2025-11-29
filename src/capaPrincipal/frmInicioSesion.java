@@ -215,17 +215,19 @@ public class frmInicioSesion extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "¡Bienvenido/a, " + sesion.getNombre() + "!");
 
                 // El 'usuario' que pasabas antes era el nomusuario.
-                String usuarioParaVentana = sesion.getNomusuario();
+                String nombreUser = sesion.getNomusuario();
+                int idUser = sesion.getIdusuario(); // <--- IMPORTANTE: OBTENER EL ID
 
                 if (sesion.getTipousuario().equalsIgnoreCase("lector")) {
-                    // Abrir el formulario para Lectores, pasándole el nomusuario
-                    frmPrincipalLector lector = new frmPrincipalLector(usuarioParaVentana);
+                    // 2. Pasas AMBOS datos al nuevo constructor que hicimos
+                    frmPrincipalLector lector = new frmPrincipalLector(nombreUser, idUser);
+
                     lector.setVisible(true);
                     lector.setLocationRelativeTo(null);
 
                 } else if (sesion.getTipousuario().equalsIgnoreCase("bibliotecario")) {
                     // Abrir el formulario para Bibliotecarios, pasándole el nomusuario
-                    frmPrincipalBibliotecario biblio = new frmPrincipalBibliotecario(usuarioParaVentana);
+                    frmPrincipalBibliotecario biblio = new frmPrincipalBibliotecario(nombreUser);
                     biblio.setVisible(true);
                     biblio.setLocationRelativeTo(null);
 

@@ -317,4 +317,27 @@ public class Editorial {
             throw new Exception("Error al filtrar editoriales: " + e.getMessage());
         }
     }
+public boolean tieneLibrosActivos(int idEditorial) {
+    String sql = "SELECT COUNT(*) AS total FROM LIBROS WHERE ideditorial = " + idEditorial + " AND estado = TRUE";
+
+    try {
+        // --- AGREGA ESTA LÍNEA AQUÍ PARA CREAR LA CONEXIÓN ---
+        capaDatos.clsJDBC objCon = new capaDatos.clsJDBC(); 
+        // -----------------------------------------------------
+
+        ResultSet rs = objCon.consultarBD(sql);
+
+        if (rs.next()) {
+            int cantidad = rs.getInt("total");
+            // Importante: desconectar después de usar para liberar recursos
+            objCon.desconectar(); 
+            return cantidad > 0; 
+        }
+        objCon.desconectar(); // Desconectar si no entró al if
+
+    } catch (Exception e) {
+        System.out.println("Error al verificar libros activos: " + e.getMessage());
+    }
+    return false;
+}
 }

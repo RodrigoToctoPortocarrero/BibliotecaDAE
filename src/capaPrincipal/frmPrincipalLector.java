@@ -14,18 +14,24 @@ import viewsUsuario.PrestamosUsuarios;
 import viewsUsuario.PrincipalUsuario;
 import viewsUsuario.frmReporte;
 
+
 /**
  *
  * @author Tocto Portocarrero Rodrigo
  */
 public class frmPrincipalLector extends javax.swing.JFrame {
+private String nombreUsuario;
+private int idUsuario;
 
-    private String nombreUsuario;
+   
 
     // Constructor con el nombre del usuario
-    public frmPrincipalLector(String nombreUsuario) {
+    public frmPrincipalLector(String nombreUsuario, int idRecibido) {
         initComponents();
         this.nombreUsuario = nombreUsuario.toUpperCase();
+        this.idUsuario = idRecibido; // <--- GUARDAMOS EL ID CORRECTO AQUÍ
+        // Debug para que veas en la consola que ahora sí tienes el ID 2
+        System.out.println("FRM PRINCIPAL: ID Guardado = " + this.idUsuario);
         SetDate();
         InitContent();
         // Mostrar el nombre del usuario en el label
@@ -369,13 +375,12 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnDevolucionesUsuario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionesUsuario1ActionPerformed
-        DevolucionUsuario panel = new DevolucionUsuario(WIDTH);
+        // AQUÍ ESTABA EL ERROR. Antes decia (WIDTH), ahora pasamos (this.idUsuario)
+        viewsUsuario.DevolucionUsuario panel = new viewsUsuario.DevolucionUsuario(this.idUsuario);
         
-        // 2. Ajustamos tamaño y ubicación (mismo tamaño que tu panel 'content')
         panel.setSize(750, 430);
         panel.setLocation(0, 0);
 
-        // 3. Limpiamos y agregamos
         content.removeAll();
         content.add(panel, java.awt.BorderLayout.CENTER);
         content.revalidate();
