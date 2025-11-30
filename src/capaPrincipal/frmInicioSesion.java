@@ -29,10 +29,10 @@ public class frmInicioSesion extends javax.swing.JFrame {
         try {
             // 1. Carga la imagen como un recurso del proyecto (ruta relativa)
             Image icon = new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage();
-            
+
             // 2. Establece la imagen como el icono de la ventana
             this.setIconImage(icon);
-            
+
         } catch (Exception e) {
             System.err.println("Error al cargar el icono: " + e.getMessage());
             // Manejo básico de error si no se encuentra la imagen
@@ -113,7 +113,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
         lblCambiarContra.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblCambiarContra.setForeground(new java.awt.Color(255, 255, 255));
-        lblCambiarContra.setText("¿Olvidaste tu contraseña?");
+        lblCambiarContra.setText("¿Desea cambiar su contraseña?");
         lblCambiarContra.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblCambiarContraMouseClicked(evt);
@@ -265,27 +265,37 @@ public class frmInicioSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void lblCambiarContraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCambiarContraMouseClicked
-        String nombreusuario = txtNombre.getText();
-        try {
-            Boolean existe = usu.verificarUsuario(nombreusuario);
-            String tipo = usu.tipoUsuario(nombreusuario);
+        String nombreusuario = txtNombre.getText().trim();
 
-            if (txtNombre.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Indique su nombre de usuario");
+        try {
+            if (nombreusuario.equals("")) {
+                JOptionPane.showMessageDialog(this, "Indique su nombre de usuario.");
                 return;
             }
+
+            boolean existe = usu.verificarUsuario(nombreusuario);
 
             if (!existe) {
-                JOptionPane.showMessageDialog(this, "El usuario no existe en la BD");
+                JOptionPane.showMessageDialog(this, "El usuario no existe en la BD.");
                 return;
             }
 
-            frmCambiarContrasenia obj = new frmCambiarContrasenia(txtNombre.getText(), tipo);
+            String tipo = usu.tipoUsuario(nombreusuario);
+
+            // ⛔ SOLO LOS BIBLIOTECARIOS PUEDEN CAMBIAR CONTRASEÑA
+            if (!tipo.equalsIgnoreCase("bibliotecario")) {
+                JOptionPane.showMessageDialog(this,
+                        "Solo los bibliotecarios pueden cambiar su contraseña.");
+                return;
+            }
+
+            // Si es bibliotecario → permitir cambio
+            frmCambiarContrasenia obj = new frmCambiarContrasenia(nombreusuario, tipo);
             obj.setVisible(true);
             this.dispose();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error");
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
 
     }//GEN-LAST:event_lblCambiarContraMouseClicked

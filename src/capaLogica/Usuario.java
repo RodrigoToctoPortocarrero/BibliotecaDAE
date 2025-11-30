@@ -1,176 +1,153 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package capaLogica;
 
 import capaDatos.clsJDBC;
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-/**
- *
- * @author rodri
- */
 public class Usuario {
 
     clsJDBC con = new clsJDBC();
     String sql = "";
+    final String SAL_ESTATICO = "USAT2025";
 
-    //Necesito un metodo que me verifique que si el usuario existe(nombre de usuario)(para verificar que el nombre de usuario sea unico)
+    // ============================================================
+    // VERIFICAR SI EL NOMBRE DE USUARIO EXISTE
+    // ============================================================
     public Boolean verificarUsuario(String nomusuario) throws Exception {
         try {
-            sql = "SELECT * FROM USUARIO WHERE nomusuario = ?";
+            sql = "SELECT 1 FROM USUARIO WHERE nomusuario = ?";
             PreparedStatement pst = con.conectar().prepareStatement(sql);
             pst.setString(1, nomusuario);
             ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                return true;
-            }
+
+            return rs.next();
 
         } catch (Exception e) {
-            throw new Exception("Ocurrio un eror al verificar usuario: " + e.getMessage());
+            throw new Exception("Error al verificar usuario: " + e.getMessage());
         }
-        return false;
     }
 
+    // ============================================================
+    // LOGIN SEGURO (ya estaba bien)
+    // ============================================================
     public UsuarioSesion loginSeguro(String usu, String contrasenia) throws Exception {
 
-        final String SAL_ESTATICO = "USAT2025";
         UsuarioSesion usuarioEncontrado = null;
 
-        // El SQL ya es correcto, selecciona idusuario, nombre, y tipousuario.
-        // Buscamos por nomusuario y contrasenia encriptada.
         sql = "SELECT idusuario, nombre, tipousuario "
                 + "FROM USUARIO "
-                + "WHERE nomusuario = ? AND contrasenia = MD5(? || ? || ?) AND estado = TRUE";
+                + "WHERE nomusuario = ? "
+                + "AND contrasenia = MD5(? || ? || ?) "
+                + "AND estado = TRUE";
 
-        Connection micon = null;
-        PreparedStatement sp = null;
-        ResultSet rs = null;
+        try (Connection micon = con.conectar(); PreparedStatement sp = micon.prepareStatement(sql)) {
 
-        try {
-            micon = con.conectar();
-            sp = micon.prepareStatement(sql);
+            sp.setString(1, usu);
+            sp.setString(2, contrasenia);
+            sp.setString(3, usu);
+            sp.setString(4, SAL_ESTATICO);
 
-            // Parámetros SQL (Correctos para la verificación)
-            sp.setString(1, usu);           // 1. nomusuario (usu)
-            sp.setString(2, contrasenia);   // 2. Contraseña plana
-            sp.setString(3, usu);           // 3. nomusuario (usu) para el salt
-            sp.setString(4, SAL_ESTATICO);  // 4. SALT estático
-
-            rs = sp.executeQuery();
+            ResultSet rs = sp.executeQuery();
 
             if (rs.next()) {
-                // Acceso exitoso. Capturamos los campos de la BD.
-                int id = rs.getInt("idusuario");
-                String nombreReal = rs.getString("nombre"); // e.g. "Ana"
-                String tipo = rs.getString("tipousuario");
-
-                // Creamos el objeto, usando 'usu' como el nomusuario
-                usuarioEncontrado = new UsuarioSesion(id, nombreReal, usu, tipo); // <-- 4 parámetros!
+                usuarioEncontrado = new UsuarioSesion(
+                        rs.getInt("idusuario"),
+                        rs.getString("nombre"),
+                        usu,
+                        rs.getString("tipousuario")
+                );
             }
 
         } catch (Exception e) {
-            throw new Exception("Error de base de datos durante el login: " + e.getMessage());
-        } finally {
-            // Bloque de cierre de recursos...
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (sp != null) {
-                    sp.close();
-                }
-                if (micon != null) {
-                    micon.close();
-                }
-            } catch (Exception e) {
-                System.err.println("Advertencia: Error al cerrar recursos de conexión: " + e.getMessage());
-            }
+            throw new Exception("Error en login: " + e.getMessage());
         }
 
         return usuarioEncontrado;
     }
 
-    //Necesito un metodo que me permita que si el usuario y contraseña son correctos
-    public String verificarUsuContra(String nomusuario, String password) throws Exception {
-        try {
-            sql = "SELECT nomusuario FROM USUARIO WHERE nomusuario = ? and contrasenia = ?";
-            PreparedStatement pst = con.conectar().prepareStatement(sql);
-            pst.setString(1, nomusuario);
-            pst.setString(2, password);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                return rs.getString("nomusuario");
-            }
-        } catch (Exception e) {
-            throw new Exception("Ocurrio un eror al verificar usuario: " + e.getMessage());
-        }
-
-        return "";
-
-    }
-
-    //Necesito saber si ese usuario es lector o bibliotecario
+    // ============================================================
+    // OBTENER TIPO DE USUARIO
+    // ============================================================
     public String tipoUsuario(String nombreusuario) throws Exception {
         try {
-            sql = "SELECT tipoUsuario from USUARIO where nomusuario = ?";
+            sql = "SELECT tipoUsuario FROM USUARIO WHERE nomusuario = ?";
             PreparedStatement pst = con.conectar().prepareStatement(sql);
             pst.setString(1, nombreusuario);
             ResultSet rs = pst.executeQuery();
+
             if (rs.next()) {
-                return rs.getString("tipoUsuario");// Lector o Bibliotecario
+                return rs.getString("tipoUsuario");
             }
 
         } catch (Exception e) {
-            throw new Exception("Ocurrio un error al ver el tipo de usuario: " + e.getMessage());
+            throw new Exception("Error al obtener tipo de usuario: " + e.getMessage());
         }
         return "";
     }
 
+    // ============================================================
+    // NUEVO: VERIFICAR CONTRASEÑA ACTUAL (REQUERIDO ANTES DE CAMBIAR)
+    // ============================================================
+    public boolean verificarContraActual(String nomusuario, String contraActual) throws Exception {
+
+        sql = "SELECT 1 FROM USUARIO "
+                + "WHERE nomusuario = ? "
+                + "AND contrasenia = MD5(? || ? || ?)";
+
+        try (Connection micon = con.conectar(); PreparedStatement pst = micon.prepareStatement(sql)) {
+
+            pst.setString(1, nomusuario);
+            pst.setString(2, contraActual);
+            pst.setString(3, nomusuario);
+            pst.setString(4, SAL_ESTATICO);
+
+            ResultSet rs = pst.executeQuery();
+
+            return rs.next();  // Si existe → contraseña actual válida
+
+        } catch (Exception e) {
+            throw new Exception("Error al verificar contraseña actual: " + e.getMessage());
+        }
+    }
+
+    public boolean esBibliotecario(String usuario) throws Exception {
+        String sql = "SELECT 1 FROM USUARIO WHERE nomusuario = ? AND tipousuario = 'bibliotecario'";
+
+        try (Connection c = con.conectar(); PreparedStatement pst = c.prepareStatement(sql)) {
+
+            pst.setString(1, usuario);
+            ResultSet rs = pst.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            throw new Exception("Error al validar tipo de usuario: " + e.getMessage());
+        }
+    }
+
+    // ============================================================
+    // CAMBIAR CONTRASEÑA (USANDO EL MISMO HASH DEL LOGIN)
+    // ============================================================
     public void cambiarContrasenia(String contraseniaNueva, String nombreusuario) throws Exception {
 
-        // Usamos el mismo SALT estático que en el login y los inserts
-        final String SAL_ESTATICO = "USAT2025";
+        if (!esBibliotecario(nombreusuario)) {
+            throw new Exception("Solo los bibliotecarios pueden cambiar contraseña.");
+        }
 
-        // La nueva contraseña se encripta DENTRO del SQL, usando MD5 y el salt.
         sql = "UPDATE USUARIO SET contrasenia = MD5(? || ? || ?) WHERE nomusuario = ?";
 
-        Connection micon = null;
-        PreparedStatement pst = null;
+        try (Connection micon = con.conectar(); PreparedStatement pst = micon.prepareStatement(sql)) {
 
-        try {
-            micon = con.conectar();
-            pst = micon.prepareStatement(sql);
-
-            // Parámetros para la función MD5(ContraseñaNueva || nomusuario || SALT)
-            pst.setString(1, contraseniaNueva);  // 1. Contraseña nueva (plana)
-            pst.setString(2, nombreusuario);     // 2. nomusuario
-            pst.setString(3, SAL_ESTATICO);      // 3. SALT
-
-            // Parámetro para la cláusula WHERE
-            pst.setString(4, nombreusuario);     // 4. nomusuario para identificar la fila
+            pst.setString(1, contraseniaNueva);
+            pst.setString(2, nombreusuario);
+            pst.setString(3, SAL_ESTATICO);
+            pst.setString(4, nombreusuario);
 
             pst.executeUpdate();
 
         } catch (Exception e) {
-            throw new Exception("Ocurrió un error al cambiar la contraseña: " + e.getMessage());
-        } finally {
-            // Cierre de recursos seguro
-            try {
-                if (pst != null) {
-                    pst.close();
-                }
-                if (micon != null) {
-                    micon.close();
-                }
-            } catch (Exception e) {
-                System.err.println("Advertencia: Error al cerrar recursos de conexión: " + e.getMessage());
-            }
+            throw new Exception("Error al cambiar contraseña: " + e.getMessage());
         }
     }
-        
 }

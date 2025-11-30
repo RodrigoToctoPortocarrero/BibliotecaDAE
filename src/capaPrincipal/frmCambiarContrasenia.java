@@ -18,6 +18,9 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
     private String nombreusuario;
     private String tipousuario;
     Usuario usu = new Usuario();
+    private boolean mostrarActual = false;
+    private boolean mostrarNueva = false;
+    private boolean mostrarRepetir = false;
 
     public frmCambiarContrasenia(String nombreusuario, String tipousuario) {
         initComponents();
@@ -38,6 +41,19 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
             // Manejo básico de error si no se encuentra la imagen
         }
 
+    }
+
+    private boolean esContraseniaSegura(String pass) {
+        // Al menos 8 caracteres
+        if (pass.length() < 8) {
+            return false;
+        }
+
+        // Expresión regular para validar seguridad
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)"
+                + "(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$";
+
+        return pass.matches(regex);
     }
 
     public void PonerNombre() {
@@ -70,6 +86,11 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
         txtContra2 = new javax.swing.JPasswordField();
         btnCambiar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        txtContraActual = new javax.swing.JPasswordField();
+        btnVer = new javax.swing.JButton();
+        btnVer2 = new javax.swing.JButton();
+        btnVer3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(new ImageIcon(getClass().getResource("/Recursos/logo.png")).getImage());
@@ -103,6 +124,12 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("CAMBIAR CONTRASEÑA");
 
+        txtContra1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContra1ActionPerformed(evt);
+            }
+        });
+
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Repita Contraseña");
@@ -132,44 +159,72 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Contraseña actual");
+
+        btnVer.setText("ver");
+        btnVer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerActionPerformed(evt);
+            }
+        });
+
+        btnVer2.setText("jButton1");
+        btnVer2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVer2ActionPerformed(evt);
+            }
+        });
+
+        btnVer3.setText("jButton1");
+        btnVer3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVer3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(29, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel7)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(54, 54, 54)
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(lblTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(15, 15, 15)
-                                        .addComponent(jLabel4)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jLabel3)
-                                    .addGap(84, 84, 84)))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel8)
-                                    .addComponent(txtContra2, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(txtContra1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
-                                        .addComponent(txtNombreUsuario, javax.swing.GroupLayout.Alignment.LEADING)))))
-                        .addGap(385, 385, 385))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(387, 387, 387))))
+                                        .addComponent(txtContra2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                                        .addComponent(txtContra1, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtNombreUsuario, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtContraActual, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnVer, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnVer2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnVer3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(391, 391, 391))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addGap(385, 385, 385))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(26, 26, 26)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel3)
+                                .addComponent(lblTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(399, 399, 399)))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,27 +233,37 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTipo)
                     .addComponent(jLabel2))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtNombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtContraActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVer, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
                 .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(txtContra1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtContra1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVer2, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtContra2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtContra2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVer3, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCambiar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -217,7 +282,7 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 2, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 690, 510));
@@ -232,32 +297,61 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
 
     private void btnCambiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarActionPerformed
         try {
-            String contra1 = String.valueOf(txtContra1.getPassword());
-            String contra2 = String.valueOf(txtContra2.getPassword());
+            String actual = String.valueOf(txtContraActual.getPassword());
+            String nueva = String.valueOf(txtContra1.getPassword());
+            String repetir = String.valueOf(txtContra2.getPassword());
 
-            if (contra1.equals("") || contra2.equals("")) {
-                JOptionPane.showMessageDialog(this, "Debe llenar ambas contraseñas.");
+            // Validar campos vacíos
+            if (actual.isEmpty() || nueva.isEmpty() || repetir.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe completar todos los campos.");
                 return;
-            } else {
-                if (contra1.equals(contra2)) {
-
-                    // *** El método cambiarContrasenia ahora se encarga de encriptar la contra1 (o contra2) ***
-                    usu.cambiarContrasenia(contra1, nombreusuario);
-
-                    JOptionPane.showMessageDialog(this, "Se actualizó la contraseña correctamente.");
-
-                    // Opcional: Limpiar los campos después del éxito
-                    txtContra1.setText("");
-                    txtContra2.setText("");
-
-                } else {
-                    JOptionPane.showMessageDialog(this, "Las contraseñas deben ser iguales.");
-                }
             }
 
+            // Verificar coincidencia de nueva contraseña
+            if (!nueva.equals(repetir)) {
+                JOptionPane.showMessageDialog(this, "Las nuevas contraseñas no coinciden.");
+                return;
+            }
+
+            // Validar fuerza de la contraseña nueva
+            if (!esContraseniaSegura(nueva)) {
+                JOptionPane.showMessageDialog(this,
+                        """
+                La contraseña debe contener:
+                • Mínimo 8 caracteres
+                • Al menos una letra mayúscula
+                • Al menos una letra minúscula
+                • Al menos un número
+                • Al menos un carácter especial (!@#$%^&*)
+                """);
+                return;
+            }
+
+            // Verificar contraseña actual
+            if (!usu.verificarContraActual(nombreusuario, actual)) {
+                JOptionPane.showMessageDialog(this, "La contraseña actual no es correcta.");
+                return;
+            }
+
+            // Cambiar contraseña
+            usu.cambiarContrasenia(nueva, nombreusuario);
+
+            JOptionPane.showMessageDialog(this,
+                    "Contraseña actualizada correctamente, vuelva a iniciar sesión");
+
+            // Limpiar campos
+            txtContraActual.setText("");
+            txtContra1.setText("");
+            txtContra2.setText("");
+
+            // Cerrar ventana y redirigir
+            this.dispose();
+            frmInicioSesion ini = new frmInicioSesion();
+            ini.setVisible(true);
+            ini.setLocationRelativeTo(null);
+
         } catch (Exception e) {
-            // Captura errores lanzados desde el DAO
-            JOptionPane.showMessageDialog(this, "Ocurrió un error al cambiar la contraseña: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
     }//GEN-LAST:event_btnCambiarActionPerformed
 
@@ -268,18 +362,59 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    private void txtContra1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContra1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtContra1ActionPerformed
+
+    private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
+        if (mostrarActual) {
+            txtContraActual.setEchoChar('•');
+            btnVer.setText("+");
+        } else {
+            txtContraActual.setEchoChar((char) 0);
+            btnVer.setText("X");
+        }
+        mostrarActual = !mostrarActual;
+    }//GEN-LAST:event_btnVerActionPerformed
+
+    private void btnVer2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVer2ActionPerformed
+        if (mostrarNueva) {
+            txtContra1.setEchoChar('•');
+            btnVer2.setText("+");
+        } else {
+            txtContra1.setEchoChar((char) 0);
+            btnVer2.setText("X");
+        }
+        mostrarNueva = !mostrarNueva;
+    }//GEN-LAST:event_btnVer2ActionPerformed
+
+    private void btnVer3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVer3ActionPerformed
+        if (mostrarRepetir) {
+            txtContra2.setEchoChar('•');
+            btnVer3.setText("+");
+        } else {
+            txtContra2.setEchoChar((char) 0);
+            btnVer3.setText("X");
+        }
+        mostrarRepetir = !mostrarRepetir;
+    }//GEN-LAST:event_btnVer3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCambiar;
+    private javax.swing.JButton btnVer;
+    private javax.swing.JButton btnVer2;
+    private javax.swing.JButton btnVer3;
     private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
@@ -287,6 +422,7 @@ public class frmCambiarContrasenia extends javax.swing.JFrame {
     private javax.swing.JLabel lblTipo;
     private javax.swing.JPasswordField txtContra1;
     private javax.swing.JPasswordField txtContra2;
+    private javax.swing.JPasswordField txtContraActual;
     private javax.swing.JTextField txtNombreUsuario;
     // End of variables declaration//GEN-END:variables
 }
