@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte7" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb9ebd70-0f07-4703-a2b9-4899d11374ea">
 	<property name="ireport.zoom" value="1.6105100000000014"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="154"/>
+	<property name="ireport.y" value="165"/>
 	<parameter name="p_nombreAutor" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -123,7 +123,7 @@ WHERE
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="47" y="33" width="192" height="20" uuid="7ddd41b2-c0f5-49de-bed7-df7a20cde6c9"/>
+				<reportElement x="33" y="34" width="169" height="20" uuid="021b9670-035b-457a-a781-c883ad1fd171"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>

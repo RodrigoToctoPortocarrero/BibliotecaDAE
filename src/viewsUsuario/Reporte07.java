@@ -129,13 +129,11 @@ clsJDBC jdbc = new clsJDBC();
             // 3. Obtener conexión
             cn = jdbc.conectar();
 
-            // 4. Preparar el Parámetro (Map)
-            // "p_nombreAutor" debe ser IDÉNTICO al nombre del parámetro en iReport
+            // 4. Preparar parámetros
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("p_nombreAutor", autorSeleccionado);
 
-            // 5. Cargar el reporte (Asegúrate de la ruta correcta)
-            // Si el .jasper está en el paquete 'reportes' dentro de 'src':
+            // 5. Cargar el reporte
             java.net.URL rutaReporte = getClass().getResource("/reportes/reporte7.jasper");
             
             if (rutaReporte == null) {
@@ -143,21 +141,28 @@ clsJDBC jdbc = new clsJDBC();
                 return;
             }
 
-            // 6. Llenar el reporte
+            // 6. Llenar el reporte (JasperPrint)
             JasperReport reporte = (JasperReport) JRLoader.loadObject(rutaReporte);
             JasperPrint print = JasperFillManager.fillReport(reporte, parametros, cn);
 
-            // 7. Mostrar el visor
-            JasperViewer visor = new JasperViewer(print, false); // false para que no cierre todo el sistema al salir
-            visor.setTitle("Reporte de Libros por Autor");
-            visor.setVisible(true);
+            // --- CAMBIO CLAVE AQUÍ ---
+            // En lugar de JasperViewer (ventana flotante), usamos JRViewer (panel incrustable)
+            net.sf.jasperreports.swing.JRViewer panelReporte = new net.sf.jasperreports.swing.JRViewer(print);
+            
+            // Limpiamos el JDesktopPane y agregamos el reporte
+            vistaReporte.removeAll();
+            
+            // Hacemos que el reporte ocupe todo el espacio disponible
+            panelReporte.setSize(vistaReporte.getSize());
+            panelReporte.setLocation(0, 0); 
+            
+            vistaReporte.add(panelReporte);
+            vistaReporte.revalidate();
+            vistaReporte.repaint();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al generar reporte: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            // Opcional: jdbc.desconectar(); si tu clase lo requiere, 
-            // aunque Jasper suele gestionar la conexión de lectura bien.
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

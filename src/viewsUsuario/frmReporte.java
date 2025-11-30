@@ -400,6 +400,11 @@ private final javax.swing.JPanel panelContenedor;
         jLabel10.setText("Usuario Activos por Tipo");
 
         jButton8.setText("REPORTE 8");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("REPORTE 6");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -467,6 +472,11 @@ private final javax.swing.JPanel panelContenedor;
         jPanel3.setBackground(new java.awt.Color(0, 204, 255));
 
         jButton9.setText("REPORTE 9");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jButton10.setText("REPORTE 10");
 
@@ -760,6 +770,29 @@ private final javax.swing.JPanel panelContenedor;
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+      
+        Reporte08 pres = new Reporte08();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        Reporte09 pres = new Reporte09();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton9ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

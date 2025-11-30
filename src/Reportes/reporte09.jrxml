@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte09" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9e32d7e4-e95d-464d-8555-d6d5d4f21354">
+	<property name="ireport.zoom" value="1.4641000000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="EstiloVencimiento">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[// Comparamos la fecha del campo (convertida a texto) con la fecha de hoy (convertida a texto)
+new java.text.SimpleDateFormat("yyyy-MM-dd").format($F{Fecha Vencimiento}).equals(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()))]]></conditionExpression>
+			<style forecolor="#FF3333"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[SELECT
+    u.nombre || ' ' || u.ap_paterno AS "Nombre Lector",
+    l.titulo AS "Título del Libro",
+    p.fechaprestamo AS "Fecha Préstamo",
+    p.fechadevolucionestimada AS "Fecha Vencimiento",
+    e.NroEjemplar AS "Cod. Ejemplar"
+FROM PRESTAMO p
+INNER JOIN USUARIO u ON p.idusuariolector = u.idusuario
+INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo
+INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar
+INNER JOIN LIBROS l ON e.idlibro = l.idlibro
+LEFT JOIN DEVOLUCION d ON p.idprestamo = d.idprestamo
+WHERE
+    d.iddevolucion IS NULL -- Verifica que NO tenga devolución asociada
+
+ORDER BY p.fechadevolucionestimada ASC]]>
+	</queryString>
+	<field name="Nombre Lector" class="java.lang.String"/>
+	<field name="Título del Libro" class="java.lang.String"/>
+	<field name="Fecha Préstamo" class="java.sql.Date"/>
+	<field name="Fecha Vencimiento" class="java.sql.Date"/>
+	<field name="Cod. Ejemplar" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="161" y="22" width="265" height="35" uuid="b40828cc-3ab0-49c7-a63b-618b511e2d1a"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Préstamos Vigentes]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="341" y="15" width="214" height="20" uuid="86839ca0-5398-4da6-9d6f-4f30727864a8"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="100" y="11" width="100" height="20" uuid="2f7f51b9-177c-457b-8f35-b7faeaf3b8d4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Lector]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="206" y="11" width="100" height="20" uuid="b1f8e146-3cd6-4fea-9fc6-b94bd3a085e1"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título del Libro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="323" y="11" width="100" height="20" uuid="02e52cd0-28b8-4f9a-8a26-726217ebb3ca"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Vencimiento]]></text>
+			</staticText>
+			<line>
+				<reportElement x="87" y="44" width="336" height="1" uuid="b6f90fd4-d2e6-4bed-81a1-71d95512cb74"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="69" splitType="Stretch">
+			<textField>
+				<reportElement x="100" y="22" width="100" height="20" uuid="16fb967c-6703-469b-9f2f-bb7ad8c627c3"/>
+				<textFieldExpression><![CDATA[$F{Nombre Lector}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="206" y="22" width="100" height="20" uuid="177333a0-c521-473b-8985-5a9a88dedf94"/>
+				<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="EstiloVencimiento" x="323" y="22" width="113" height="20" uuid="91e3f230-15c0-4c0a-9e34-a78d3416faa2"/>
+				<textFieldExpression><![CDATA[$F{Fecha Vencimiento}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="87" y="54" width="336" height="1" uuid="930db229-142a-4b66-828a-698d9f52d8d0"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="496" y="34" width="40" height="20" uuid="68209b41-8375-48e4-b395-c062ebc2ecb2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="426" y="34" width="70" height="20" uuid="250a36f6-b329-4acd-ad84-40508fcac2a4"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="10" y="34" width="144" height="20" uuid="a4d01df5-f941-44ee-93c8-873af925bc84"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

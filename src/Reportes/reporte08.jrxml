@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte08" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="deb3348e-6335-4b87-bb01-81ec54adc1a5">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+    ideditorial AS "ID",
+    nombre AS "Nombre Editorial",
+    telefono AS "Teléfono",
+    correo AS "Correo Electrónico"
+FROM EDITORIAL
+WHERE estado = TRUE
+ORDER BY nombre ASC]]>
+	</queryString>
+	<field name="ID" class="java.lang.Integer"/>
+	<field name="Nombre Editorial" class="java.lang.String"/>
+	<field name="Teléfono" class="java.lang.String"/>
+	<field name="Correo Electrónico" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="47" y="18" width="478" height="32" uuid="f4e2e4b4-a534-433e-b5da-887b551489e0"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Información de Contacto de Editoriales]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="341" y="15" width="214" height="20" uuid="07baf80d-d8fd-40ad-88de-de020e7a4d95"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="73" y="14" width="100" height="20" uuid="8f4746fc-cf82-4ecf-90ce-9d067ee51c86"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Editorial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="14" width="100" height="20" uuid="3f0f401b-6529-40ef-85c4-09a3a8f03cb8"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Teléfono]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="377" y="14" width="100" height="20" uuid="8e72d596-33f7-497c-ba13-4c878bf3bc81"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Correo Electrónico]]></text>
+			</staticText>
+			<line>
+				<reportElement x="62" y="44" width="440" height="1" uuid="7ebe2936-3a7b-485d-b909-e40e7118eea7"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="69" splitType="Stretch">
+			<textField>
+				<reportElement x="73" y="33" width="100" height="20" uuid="1f8e7547-1cd5-4cf8-af09-21ffd78532fa"/>
+				<textFieldExpression><![CDATA[$F{Nombre Editorial}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="222" y="33" width="100" height="20" uuid="b8a56956-b7df-4957-87ee-07b43ae3e7d2"/>
+				<textFieldExpression><![CDATA[$F{Teléfono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="377" y="33" width="100" height="20" uuid="8104dd4b-728b-42ac-8383-92e43b6c571d"/>
+				<textFieldExpression><![CDATA[$F{Correo Electrónico}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="62" y="54" width="440" height="1" uuid="c7e221ce-65d7-4c39-9a1a-32a240d4165d"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="445" y="34" width="70" height="20" uuid="32a5dab7-4ba5-4dd2-9f1d-77f9814776cf"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="34" width="40" height="20" uuid="4041e26c-ecaa-47f8-8156-107eab528e97"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="29" y="34" width="144" height="20" uuid="c386e6b3-50a1-4dd0-88c2-d8f3359f532e"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
