@@ -89,7 +89,7 @@ ORDER BY
 			<textField>
 				<reportElement x="416" y="24" width="80" height="20" uuid="ba579c6c-bed5-4855-a606-bba866cd4c3d"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="496" y="24" width="40" height="20" uuid="8f04ed35-cdbd-44e0-b8ee-7e01fb2c4cda"/>

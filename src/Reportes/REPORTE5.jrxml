@@ -104,7 +104,7 @@ ORDER BY
 			<textField>
 				<reportElement x="424" y="20" width="80" height="20" uuid="58b9f17c-5413-4bd7-9485-a760d8892b12"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="504" y="20" width="40" height="20" uuid="b838ae61-c343-4777-9f91-0978202f9447"/>
