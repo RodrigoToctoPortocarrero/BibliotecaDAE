@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,6 +30,7 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
     private Integer idLibroSeleccionado; // ⬅️ Variable para guardar el ID del libro
     private Autor objAutor = new Autor();
     private Libro objLibro = new Libro();
+    DefaultTableModel modeloTabla;
 
     /**
      * Creates new form asignarautor
@@ -36,8 +39,40 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         initComponents();
         cargarAutoresActivos();
         cargarLibrosActivos();
-        cargarInformeAsignaciones();
 
+        configurarTabla();
+
+    }
+
+    private void configurarTabla() {
+        modeloTabla = new DefaultTableModel();
+
+        // Definimos las columnas en este orden:
+        // 0: ID Libro (OCULTO)
+        // 1: Título Libro (VISIBLE)
+        // 2: ID Autor (OCULTO)
+        // 3: Nombre Autor (VISIBLE)
+        // 4: Descripción (VISIBLE)
+        modeloTabla.addColumn("idLibro");
+        modeloTabla.addColumn("Libro");
+        modeloTabla.addColumn("idAutor");
+        modeloTabla.addColumn("Autor");
+        modeloTabla.addColumn("Descripción");
+
+        tblAsignado.setModel(modeloTabla);
+
+        // --- TRUCO DE MAGIA: OCULTAR COLUMNAS DE IDs ---
+        // Ocultar Columna 0 (ID Libro)
+        tblAsignado.getColumnModel().getColumn(0).setMinWidth(0);
+        tblAsignado.getColumnModel().getColumn(0).setMaxWidth(0);
+        tblAsignado.getColumnModel().getColumn(0).setWidth(0);
+        tblAsignado.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        // Ocultar Columna 2 (ID Autor)
+        tblAsignado.getColumnModel().getColumn(2).setMinWidth(0);
+        tblAsignado.getColumnModel().getColumn(2).setMaxWidth(0);
+        tblAsignado.getColumnModel().getColumn(2).setWidth(0);
+        tblAsignado.getColumnModel().getColumn(2).setPreferredWidth(0);
     }
 
     private void cargarAutoresActivos() {
@@ -72,11 +107,7 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
     }
 
     private void cargarLibrosActivos() {
-        // NOTA: Si el cboLibros solo debe mostrar UN libro seleccionado, esta función 
-        // podría no ser necesaria, pero la mantendremos para cargar el combo con 
-        // todos los libros activos si es un combo de búsqueda general.
         try {
-            // objLibro.listarLibros() trae todos los libros (activos e inactivos)
             ResultSet rs = objLibro.listarLibros();
             DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
 
@@ -84,58 +115,25 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
             mapLibros.clear();
 
             while (rs.next()) {
-                // El estado es una columna booleana en tu BD
                 if (rs.getBoolean("estado")) {
                     Integer id = rs.getInt("idlibro");
+                    // 🚨 IMPORTANTE: Usamos .trim() para quitar espacios al inicio o final
                     String titulo = rs.getString("titulo");
+                    if (titulo != null) {
+                        titulo = titulo.trim();
 
-                    modelo.addElement(titulo);
-                    mapLibros.put(titulo, id);
+                        modelo.addElement(titulo);
+                        mapLibros.put(titulo, id);
+                    }
                 }
             }
 
-            cboLibros.setModel(modelo); // Asigna el modelo al ComboBox
+            cboLibros.setModel(modelo);
             rs.close();
 
         } catch (Exception e) {
-            // 🚨 Muestra la excepción en caso de que falle la BD
-            e.printStackTrace(); // Imprime el error completo en consola
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al cargar Libros: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void cargarInformeAsignaciones() {
-        ResultSet rsInforme = null;
-        DefaultTableModel modelo = new DefaultTableModel();
-
-        // 🚨 DEFINICIÓN DE COLUMNAS EXACTA SEGÚN TU REQUERIMIENTO 🚨
-        modelo.addColumn("Título del Libro");
-        modelo.addColumn("Nombre del Autor");
-
-        try {
-            // Llamar al nuevo método de la capa lógica
-            rsInforme = objLibro.listarInformeAsignaciones();
-
-            while (rsInforme.next()) {
-                modelo.addRow(new Object[]{
-                    // Los nombres de las columnas coinciden con el alias en la consulta SQL
-                    rsInforme.getString("titulo_libro"),
-                    rsInforme.getString("nombre_autor")
-                });
-            }
-
-            // Asignar el modelo a la tabla
-            tblAsignado.setModel(modelo);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar el informe de asignaciones: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            if (rsInforme != null) {
-                try {
-                    rsInforme.close();
-                } catch (SQLException ex) {
-                    /* ignorar */ }
-            }
         }
     }
 
@@ -157,6 +155,11 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAsignado = new javax.swing.JTable();
         btnAsignar = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtdescripcion = new javax.swing.JTextArea();
+        btnmas = new javax.swing.JButton();
+        btnmenos = new javax.swing.JButton();
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setText("Autor:");
@@ -210,33 +213,61 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
             }
         });
 
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel13.setText("Descripción:");
+
+        txtdescripcion.setColumns(20);
+        txtdescripcion.setRows(5);
+        jScrollPane2.setViewportView(txtdescripcion);
+
+        btnmas.setText("+");
+        btnmas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnmasActionPerformed(evt);
+            }
+        });
+
+        btnmenos.setText("-");
+        btnmenos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnmenosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(68, 68, 68)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(52, 52, 52)
-                .addComponent(jLabel12)
-                .addGap(27, 27, 27)
-                .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnBuscarLibro, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                        .addComponent(jLabel11)
+                        .addComponent(jLabel13)
+                        .addGap(36, 36, 36)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnmas, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnmenos, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addGap(27, 27, 27)
+                        .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(btnBuscarLibro, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(84, 84, 84))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAsignar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(72, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(232, 232, 232)
+                .addComponent(btnAsignar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,11 +280,19 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
                     .addComponent(jLabel12)
                     .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarLibro))
-                .addGap(28, 28, 28)
-                .addComponent(btnAsignar)
-                .addGap(44, 44, 44)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnmas, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnmenos, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnAsignar)
+                .addGap(45, 45, 45))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -320,92 +359,216 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBuscarLibroActionPerformed
 
     private void btnAsignarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarActionPerformed
-        if (this.idLibroSeleccionado == null) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un Libro primero.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        // 1. DETENER EDICIÓN (CRUCIAL): Si el usuario dejó el cursor en una celda, la tabla se bloquea.
+        if (tblAsignado.isEditing()) {
+            tblAsignado.getCellEditor().stopCellEditing();
+        }
+
+        // Usamos la variable global 'modeloTabla' que definiste en la clase
+        if (modeloTabla.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "La tabla está vacía.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String autorNombre = (String) cmbAutores.getSelectedItem();
-        if (autorNombre == null || autorNombre.startsWith("--")) { // "--" es el default item
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un Autor válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Procesar las " + modeloTabla.getRowCount() + " asignaciones?",
+                "Confirmar", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
 
-        // 2. Obtener IDs
-        // El mapa mapAutoresSeleccionados contiene todos los autores disponibles, no solo el seleccionado.
-        // Usaremos el ítem seleccionado en el ComboBox para obtener su ID.
-        Integer idAutor = mapAutoresSeleccionados.get(autorNombre);
+        int contExitos = 0;
+        StringBuilder reporteErrores = new StringBuilder();
 
-        if (idAutor == null) {
-            JOptionPane.showMessageDialog(this, "Error: No se pudo obtener el ID del autor seleccionado.", "Error Interno", JOptionPane.ERROR_MESSAGE);
-            return;
+        System.out.println("--- INICIANDO PROCESO DE ASIGNACIÓN ---");
+
+        // 2. BUCLE INVERSO (Cangrejo)
+        for (int i = modeloTabla.getRowCount() - 1; i >= 0; i--) {
+
+            String nombreLibro = modeloTabla.getValueAt(i, 1).toString();
+            String nombreAutor = modeloTabla.getValueAt(i, 3).toString();
+
+            try {
+                // Captura de IDs
+                Integer idLibroBD = Integer.parseInt(modeloTabla.getValueAt(i, 0).toString());
+                Integer idAutorBD = Integer.parseInt(modeloTabla.getValueAt(i, 2).toString());
+                String descBD = modeloTabla.getValueAt(i, 4).toString();
+
+                // 3. INTENTO DE GUARDADO
+                System.out.println("Intentando guardar: " + nombreLibro + " - " + nombreAutor);
+                objLibro.asignarAutor(idLibroBD, idAutorBD, descBD);
+
+                // 4. SI LLEGA AQUÍ, FUE ÉXITO -> BORRAR FILA
+                System.out.println("   -> ÉXITO. Borrando fila " + i);
+                modeloTabla.removeRow(i); // <--- ESTA LÍNEA BORRA LA FILA
+                contExitos++;
+
+            } catch (Exception e) {
+                // 5. SI FALLA, ENTRA AQUÍ -> NO BORRA FILA
+                System.out.println("   -> ERROR: " + e.getMessage());
+
+                String errorMsg = e.getMessage().toLowerCase();
+
+                // Construcción del reporte
+                reporteErrores.append("--------------------------------------------------\n")
+                        .append("LIBRO: ").append(nombreLibro).append("\n")
+                        .append("AUTOR: ").append(nombreAutor).append("\n");
+
+                if (errorMsg.contains("duplicate") || errorMsg.contains("llave duplicada") || errorMsg.contains("unique")) {
+                    reporteErrores.append("ESTADO: Ya estaba registrado en la BD (No se duplicó).\n");
+                } else {
+                    reporteErrores.append("ERROR: ").append(e.getMessage()).append("\n");
+                }
+            }
         }
 
-        try {
-            // 3. Llamar a la capa lógica para la inserción
-            // El método en Libro.java espera (idLibro, idAutor, descripcion)
-            objLibro.asignarAutor(this.idLibroSeleccionado, idAutor, ""); // Descripción vacía
+        System.out.println("--- FIN DEL PROCESO ---");
 
-            JOptionPane.showMessageDialog(this,
-                    "Autor '" + autorNombre + "' asignado al libro con éxito.",
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        // 6. FORZAR REFRESCO VISUAL (Por si acaso la tabla se quedó "pegada")
+        tblAsignado.revalidate();
+        tblAsignado.repaint();
 
-            // 4. Refrescar la tabla de Asignados
-            listarAsignaciones(this.idLibroSeleccionado);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Fallo al asignar: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        // 7. RESULTADOS
+        if (reporteErrores.length() == 0) {
+            JOptionPane.showMessageDialog(this, "¡Éxito Total! Se guardaron " + contExitos + " registros.", "Finalizado", JOptionPane.INFORMATION_MESSAGE);
+            txtdescripcion.setText("");
+        } else {
+            javax.swing.JTextArea areaTexto = new javax.swing.JTextArea(12, 50);
+            areaTexto.setText("Se guardaron correctamente: " + contExitos + "\n"
+                    + "Quedan en la tabla (no se pudieron guardar):\n"
+                    + reporteErrores.toString());
+            areaTexto.setEditable(false);
+            JOptionPane.showMessageDialog(this, new javax.swing.JScrollPane(areaTexto), "Reporte de Conflictos", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnAsignarActionPerformed
 
-    private void listarAsignaciones(Integer idLibro) {
-        ResultSet rsAsignaciones = null;
-        DefaultTableModel modelo = new DefaultTableModel();
+    private void btnmasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmasActionPerformed
+        // --- 1. OBTENER LIBRO ---
+        String nombreLibro = (String) cboLibros.getSelectedItem();
 
-        // 🚨 MODIFICACIÓN: La tabla debe mostrar el Nombre Completo
-        modelo.addColumn("ID Autor");
-        modelo.addColumn("Nombre Completo"); // ⬅️ Nombre completo del autor
-        // Si quieres la descripción, añade: modelo.addColumn("Descripción"); 
+        if (nombreLibro == null || nombreLibro.trim().isEmpty() || nombreLibro.startsWith("--")) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un Libro del desplegable.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        try {
-            if (idLibro == null) {
+        nombreLibro = nombreLibro.trim(); // Limpiamos espacios
+
+        // --- LÓGICA BLINDADA PARA OBTENER ID ---
+        // Intento 1: Búsqueda directa en el mapa
+        if (mapLibros.containsKey(nombreLibro)) {
+            this.idLibroSeleccionado = mapLibros.get(nombreLibro);
+        } else {
+            // Intento 2 (Respaldo): Buscar ignorando mayúsculas o espacios extra
+            // Esto se activa si el mapa falló, para forzar el encuentro del ID
+            boolean encontrado = false;
+            for (String key : mapLibros.keySet()) {
+                if (key.equalsIgnoreCase(nombreLibro)) {
+                    this.idLibroSeleccionado = mapLibros.get(key);
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            // Si después de buscar no lo encontramos y tampoco vino del botón buscar:
+            if (!encontrado && this.idLibroSeleccionado == null) {
+                JOptionPane.showMessageDialog(this, "Error: No se encuentra el ID para el libro: '" + nombreLibro + "'\nIntente recargar la ventana.", "Error de Datos", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+        }
 
-            rsAsignaciones = objLibro.listarAutoresPorLibro(idLibro);
+        // --- 2. OBTENER AUTOR ---
+        String nombreAutor = (String) cmbAutores.getSelectedItem();
+        if (nombreAutor == null || nombreAutor.startsWith("--")) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un Autor.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-            while (rsAsignaciones.next()) {
-                // Construye el nombre completo del autor
-                String nombreCompleto = rsAsignaciones.getString("nombres") + " " + rsAsignaciones.getString("apepaterno");
+        // Aseguramos que el nombre del autor también esté limpio
+        nombreAutor = nombreAutor.trim();
+        Integer idAutor = mapAutoresSeleccionados.get(nombreAutor);
 
-                modelo.addRow(new Object[]{
-                    rsAsignaciones.getInt("idautor"),
-                    nombreCompleto // ⬅️ Se inserta el nombre completo en la columna
-                });
+        if (idAutor == null) {
+            // Búsqueda de respaldo para Autor también
+            for (String key : mapAutoresSeleccionados.keySet()) {
+                if (key.equalsIgnoreCase(nombreAutor)) {
+                    idAutor = mapAutoresSeleccionados.get(key);
+                    break;
+                }
             }
 
-            // 🚨 Asume que tu JTable se llama tblAsignado
-            tblAsignado.setModel(modelo);
-
-        } catch (Exception e) {
-            // ...
-        } finally {
-            // ...
+            if (idAutor == null) {
+                JOptionPane.showMessageDialog(this, "Error al obtener ID del autor.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
-    }
+
+        // --- 3. DESCRIPCIÓN ---
+        String descripcion = txtdescripcion.getText().trim();
+        if (descripcion.isEmpty()) {
+            descripcion = "Sin descripción";
+        }
+
+        // --- 4. VALIDAR DUPLICADOS EN TABLA ---
+        for (int i = 0; i < modeloTabla.getRowCount(); i++) {
+            try {
+                int idLibroTabla = Integer.parseInt(modeloTabla.getValueAt(i, 0).toString());
+                int idAutorTabla = Integer.parseInt(modeloTabla.getValueAt(i, 2).toString());
+
+                if (idLibroTabla == this.idLibroSeleccionado && idAutorTabla == idAutor) {
+                    JOptionPane.showMessageDialog(this, "El autor '" + nombreAutor + "' ya está en la lista para este libro.", "Duplicado", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (Exception e) {
+                // Ignorar error de parseo si ocurre
+            }
+        }
+
+        // --- 5. AGREGAR A LA TABLA ---
+        modeloTabla.addRow(new Object[]{
+            this.idLibroSeleccionado, // Col 0: ID Libro (OCULTO)
+            nombreLibro, // Col 1: Título (VISIBLE)
+            idAutor, // Col 2: ID Autor (OCULTO)
+            nombreAutor, // Col 3: Nombre Autor (VISIBLE)
+            descripcion // Col 4: Descripción (VISIBLE)
+        });
+
+        // Limpiar solo descripción para permitir agregar otro autor al mismo libro rápido
+        txtdescripcion.setText("");
+    }//GEN-LAST:event_btnmasActionPerformed
+
+    private void btnmenosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmenosActionPerformed
+        // 1. Verificar si hay una fila seleccionada
+        int filaSeleccionada = tblAsignado.getSelectedRow();
+
+        if (filaSeleccionada < 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione una fila de la tabla para eliminar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 2. Preguntar confirmación (Opcional, pero recomendado)
+        // int confirm = JOptionPane.showConfirmDialog(this, "¿Quitar este autor de la lista?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        // if (confirm != JOptionPane.YES_OPTION) return;
+        // 3. Eliminar la fila del modelo
+        modeloTabla.removeRow(filaSeleccionada);
+    }//GEN-LAST:event_btnmenosActionPerformed
 
     public void setLibroSeleccionado(Integer idLibro, String titulo) {
         try {
-            cargarLibrosActivos();
+            this.idLibroSeleccionado = idLibro; // GUARDAR EL ID
 
+            // Sincronizar el combo box si existe el item
             cboLibros.setSelectedItem(titulo);
 
-            JOptionPane.showMessageDialog(this,
-                    "Libro seleccionado: " + titulo,
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            // Limpiar la tabla de autores pendientes porque cambiamos de libro
+            if (modeloTabla != null) {
+                modeloTabla.setRowCount(0);
+            }
+
+            JOptionPane.showMessageDialog(this, "Libro seleccionado: " + titulo + " (ID: " + idLibro + ")");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar el libro seleccionado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al seleccionar libro: " + e.getMessage());
         }
     }
 
@@ -434,11 +597,16 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
     private javax.swing.JButton btnAsignar;
     private javax.swing.JButton btnAutor;
     private javax.swing.JButton btnBuscarLibro;
+    private javax.swing.JButton btnmas;
+    private javax.swing.JButton btnmenos;
     private javax.swing.JComboBox<String> cboLibros;
     private javax.swing.JComboBox<String> cmbAutores;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblAsignado;
+    private javax.swing.JTextArea txtdescripcion;
     // End of variables declaration//GEN-END:variables
 }
