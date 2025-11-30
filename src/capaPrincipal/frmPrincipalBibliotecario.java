@@ -16,6 +16,7 @@ import viewsBibliotecario.ManEditorial;
 import viewsBibliotecario.ManEjemplar;
 import viewsBibliotecario.ManLibro;
 import viewsBibliotecario.ManUsuarios;
+import viewsBibliotecario.Multa;
 import viewsBibliotecario.PrincipalBibliotecario;
 import viewsUsuario.PrestamosUsuarios;
 
@@ -93,6 +94,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         btnGestionarCategoria = new javax.swing.JButton();
         btnGestionarUsuarios = new javax.swing.JButton();
         btnDevolucion = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         dateText = new javax.swing.JLabel();
@@ -239,6 +241,17 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setBackground(new java.awt.Color(0, 102, 255));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("MULTAS");
+        jButton1.setBorderPainted(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout menuLayout = new javax.swing.GroupLayout(menu);
         menu.setLayout(menuLayout);
         menuLayout.setHorizontalGroup(
@@ -271,6 +284,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                         .addComponent(btnGestionarlibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addComponent(btnDevolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -297,9 +311,11 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addComponent(btnGestionarUsuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
 
         header.setBackground(new java.awt.Color(0, 153, 255));
@@ -540,6 +556,20 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         lblMenu.setText("Devoluciones");
     }//GEN-LAST:event_btnDevolucionActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Multa mul = new Multa();
+
+        mul.setSize(750, 430);
+        mul.setLocation(0, 0);
+
+        content.removeAll();
+        content.add(mul, java.awt.BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+
+        lblMenu.setText("Devoluciones");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void InitContent() {
 
         PrestamosUsuarios pres = new PrestamosUsuarios();
@@ -599,6 +629,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     private javax.swing.JPanel content;
     private javax.swing.JLabel dateText;
     private javax.swing.JPanel header;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
