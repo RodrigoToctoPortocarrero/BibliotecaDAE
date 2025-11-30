@@ -73,7 +73,7 @@ ORDER BY
 		<band height="146" splitType="Stretch">
 			<pieChart>
 				<chart>
-					<reportElement x="164" y="25" width="200" height="100" uuid="73537bb8-4054-4fe2-b9f6-e4c29cccb323"/>
+					<reportElement x="153" y="11" width="226" height="125" uuid="73537bb8-4054-4fe2-b9f6-e4c29cccb323"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
