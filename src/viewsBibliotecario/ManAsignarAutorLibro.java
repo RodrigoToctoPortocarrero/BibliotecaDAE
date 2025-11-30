@@ -429,18 +429,7 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         }
     }
 
-    public static void main(String[] args) {
 
-        JFrame frame = new JFrame("Módulo de asignación de autores a libros");
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        ManAsignarAutorLibro panelLibro = new ManAsignarAutorLibro();
-        frame.getContentPane().add(panelLibro, BorderLayout.CENTER);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAsignar;
     private javax.swing.JButton btnAutor;

@@ -58,7 +58,7 @@ public class ManAutor extends javax.swing.JPanel {
         txtDescripcion = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         chkVigente = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
+        btnDarBaja = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -165,12 +165,12 @@ public class ManAutor extends javax.swing.JPanel {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/darBajaMarca.png"))); // NOI18N
-        jButton1.setText("DAR BAJA");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnDarBaja.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnDarBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/darBajaMarca.png"))); // NOI18N
+        btnDarBaja.setText("DAR BAJA");
+        btnDarBaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnDarBajaActionPerformed(evt);
             }
         });
 
@@ -187,7 +187,7 @@ public class ManAutor extends javax.swing.JPanel {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(329, 329, 329)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnDarBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnlimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,7 +262,7 @@ public class ManAutor extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDarBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnlimpiar))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -327,25 +327,25 @@ public class ManAutor extends javax.swing.JPanel {
                 return;
             }
 
+            int idAutor = Integer.parseInt(txtCodigo.getText());
+
+            // 1. VALIDACIÓN SOLICITADA
+            if (autor.tieneLibrosAsignados(idAutor)) {
+                JOptionPane.showMessageDialog(this, "El autor tiene asignado un libro, primero elimine el libro para eliminar el autor", "Error de Dependencia", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Confirmación de Eliminación FÍSICA
             int confirm = JOptionPane.showConfirmDialog(this,
-                    "¿Está seguro que desea eliminar (cambiar estado a Inactivo) al autor con código " + txtCodigo.getText() + "?",
-                    "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+                    "¿Está seguro que desea ELIMINAR FÍSICAMENTE al autor con código " + idAutor + "?\nEsta acción no se puede deshacer.",
+                    "Confirmar Eliminación Física", JOptionPane.YES_NO_OPTION);
+
             if (confirm == JOptionPane.YES_OPTION) {
-                // Asumiendo que eliminarAutor hace una eliminación lógica (cambiar estado a FALSE)
-                autor.modificar(
-                        Integer.parseInt(txtCodigo.getText()),
-                        txtNombres.getText(),
-                        txtAPaterno.getText(),
-                        txtAMaterno.getText(),
-                        txtDescripcion.getText(),
-                        false // ⭐ Estado FALSE (Inactivo) al eliminar lógicamente
-                );
+                autor.eliminarFisico(idAutor); // Usamos el nuevo método de borrado físico
                 listarAutor();
                 limpiarControles();
-                JOptionPane.showMessageDialog(this, "Autor eliminado lógicamente (Estado: Inactivo) correctamente.");
+                JOptionPane.showMessageDialog(this, "Autor eliminado permanentemente del sistema.");
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El código no es válido.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al eliminar autor: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
         }
@@ -429,11 +429,12 @@ public class ManAutor extends javax.swing.JPanel {
             txtAMaterno.setText(tblAutor.getValueAt(fila, 3).toString());
             txtDescripcion.setText(tblAutor.getValueAt(fila, 4).toString());
 
-            // ⭐ Cargar el estado de vigencia del JTable al chkVigente
-            // El estado está en la columna 5
-            boolean estadoVigente = (boolean) tblAutor.getValueAt(fila, 5);
+            // CORRECCIÓN: Recuperar como String y comparar
+            String estadoTexto = tblAutor.getValueAt(fila, 5).toString();
+            boolean estadoVigente = estadoTexto.equals("Vigente");
+            
             chkVigente.setSelected(estadoVigente);
-            txtCodigo.setEditable(true); // Habilita la edición del código para la búsqueda
+            txtCodigo.setEditable(true);
         }
     }//GEN-LAST:event_tblAutorMouseClicked
 
@@ -449,9 +450,45 @@ public class ManAutor extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAMaternoActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnDarBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarBajaActionPerformed
+        try {
+            if (txtCodigo.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un autor para dar de baja.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int idAutor = Integer.parseInt(txtCodigo.getText());
+
+            // 1. VALIDACIÓN SOLICITADA (Incluso para dar de baja, según tus instrucciones)
+            if (autor.tieneLibrosAsignados(idAutor)) {
+                JOptionPane.showMessageDialog(this, "El autor tiene asignado un libro, primero elimine el libro para eliminar el autor", "Error de Dependencia", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Confirmación de BAJA LÓGICA
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "¿Está seguro que desea DAR DE BAJA (Inactivar) al autor con código " + idAutor + "?",
+                    "Confirmar Baja", JOptionPane.YES_NO_OPTION);
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Eliminación lógica: Update estado = false
+                autor.modificar(
+                        idAutor,
+                        txtNombres.getText(),
+                        txtAPaterno.getText(),
+                        txtAMaterno.getText(),
+                        txtDescripcion.getText(),
+                        false 
+                );
+                listarAutor();
+                limpiarControles();
+                JOptionPane.showMessageDialog(this, "Autor dado de baja correctamente (Estado: No Vigente).");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al dar de baja al autor: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDarBajaActionPerformed
 
     private void listarAutor() {
         ResultSet rs = null;
@@ -529,12 +566,12 @@ public class ManAutor extends javax.swing.JPanel {
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnDarBaja;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btneliminar;
     private javax.swing.JButton btnlimpiar;
     private javax.swing.JButton btnmodificar;
     private javax.swing.JCheckBox chkVigente;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;

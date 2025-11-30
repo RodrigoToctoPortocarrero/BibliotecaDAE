@@ -169,4 +169,27 @@ public class Autor {
             throw new Exception("Error al filtrar autores: " + e.getMessage());
         }
     }
+    
+    // Método para verificar si el autor está presente en la tabla ASIGNAR_LIBRO_AUTOR
+    public boolean tieneLibrosAsignados(Integer idAutor) throws Exception {
+        strSQL = "SELECT COUNT(*) AS total FROM ASIGNAR_LIBRO_AUTOR WHERE idautor = " + idAutor;
+        try {
+            rs = objConectar.consultarBD(strSQL);
+            if (rs.next()) {
+                return rs.getInt("total") > 0;
+            }
+            return false;
+        } catch (Exception e) {
+            throw new Exception("Error al verificar asignación de libros: " + e.getMessage());
+        }
+    }
+
+    public void eliminarFisico(Integer id) throws Exception {
+        strSQL = "DELETE FROM AUTOR WHERE idautor = " + id;
+        try {
+            objConectar.ejecutarBD(strSQL);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar físicamente al autor: " + e.getMessage());
+        }
+    }
 }
