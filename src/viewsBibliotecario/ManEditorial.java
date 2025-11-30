@@ -121,39 +121,51 @@ public class ManEditorial extends javax.swing.JPanel {
         try {
             String codigoStr = txtcodigo.getText().trim();
 
-            // 🚨 CRÍTICO: Si la cadena está vacía, no se intenta nada y se detiene.
+            // Validación de Código (ID)
             if (codigoStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "El campo Código es obligatorio.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
-
-            // Asignar el ID solo después de verificar que no está vacío
             int id = Integer.parseInt(codigoStr);
             editorial.setIdeditorial(id);
 
-            // (Validaciones de otros campos... se asume que pasan o están correctamente implementadas)
-            if (txtnombre.getText().trim().isEmpty()
-                    || txttelefono.getText().trim().isEmpty()
-                    || txtcorreo.getText().trim().isEmpty()) {
+            // Obtenemos los textos para validar
+            String nombre = txtnombre.getText().trim();
+            String telefono = txttelefono.getText().trim();
+            String correo = txtcorreo.getText().trim();
 
+            // 1. Validar campos vacíos
+            if (nombre.isEmpty() || telefono.isEmpty() || correo.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Todos los campos de texto son obligatorios.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
 
-            editorial.setNombre(txtnombre.getText().trim());
-            editorial.setTelefono(txttelefono.getText().trim());
-            editorial.setCorreo(txtcorreo.getText().trim());
+            // 2. VALIDACIÓN DE TELÉFONO (9 dígitos y solo números)
+            if (!telefono.matches("\\d{9}")) {
+                JOptionPane.showMessageDialog(this, "El teléfono debe tener exactamente 9 dígitos numéricos.", "Formato Inválido", JOptionPane.WARNING_MESSAGE);
+                return null; // Detenemos el proceso
+            }
+
+            // 3. VALIDACIÓN DE CORREO (@ y .com)
+            // La expresión regular verifica que tenga texto + @ + texto + .com
+            if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$") || !correo.contains(".com")) {
+                JOptionPane.showMessageDialog(this, "El correo debe ser válido (ejemplo@dominio.com).", "Formato Inválido", JOptionPane.WARNING_MESSAGE);
+                return null; // Detenemos el proceso
+            }
+
+            // Si pasa todas las validaciones, llenamos el objeto
+            editorial.setNombre(nombre);
+            editorial.setTelefono(telefono);
+            editorial.setCorreo(correo);
             editorial.setEstado(cbxVigencia.isSelected());
 
             return editorial;
 
         } catch (NumberFormatException e) {
-            // Captura si el usuario puso letras en el campo de código
             JOptionPane.showMessageDialog(this, "El Código debe ser un número entero válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
             return null;
         } catch (Exception e) {
-            // Para cualquier otro error durante la captura de datos
-            JOptionPane.showMessageDialog(this, "Error al obtener datos de los campos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al obtener datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
@@ -490,68 +502,73 @@ public class ManEditorial extends javax.swing.JPanel {
             // FASE 1: Preparar para la inserción (Botón dice NUEVO)
             if (btnnuevo.getText().equals("NUEVO")) {
                 limpiarCampos();
-                txtcodigo.setEnabled(true); // Permitir que el usuario ingrese el ID
+                
+                // --- NUEVO: Generar ID Automático ---
+                // Llamamos a la función que agregaste en la capa lógica
+                int nuevoId = objEditorial.generarSiguienteId();
+                txtcodigo.setText(String.valueOf(nuevoId));
+                
+                // Bloqueamos el campo para que nadie lo cambie y rompa la secuencia
+                txtcodigo.setEditable(false);
+                txtcodigo.setEnabled(false);
+                
+                // Cambiamos el texto del botón
                 btnnuevo.setText("GUARDAR");
 
-                // FASE 2: Insertar la Editorial (Botón dice GUARDAR)
+            // FASE 2: Insertar la Editorial (Botón dice GUARDAR)
             } else {
 
-                // 🚨 1. VALIDACIÓN CRÍTICA DEL CÓDIGO Y OTROS CAMPOS (Evita Error NULL)
-                String codigoStr = txtcodigo.getText().trim();
-
-                if (codigoStr.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Debe ingresar un Código (ID) para la Editorial antes de guardar.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Validar que sea un número (para evitar NumberFormatException)
-                int idEditorial;
-                try {
-                    idEditorial = Integer.parseInt(codigoStr);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "El Código debe ser un número entero válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                // Validar campos de texto restantes
+                // 1. Validar campos obligatorios (Nombre, Teléfono, Correo)
+                // Ya no validamos el código porque se generó solo
                 if (txtnombre.getText().trim().isEmpty()
                         || txttelefono.getText().trim().isEmpty()
                         || txtcorreo.getText().trim().isEmpty()) {
 
-                    JOptionPane.showMessageDialog(this, "Nombre, Teléfono y Correo son obligatorios.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                // 2. Obtener el objeto Editorial (ya validado)
+                // 2. Obtener el objeto Editorial
+                // Como el campo código está deshabilitado, debemos asegurarnos de leerlo bien
+                // OJO: Tu método 'obtenerEditorialDesdeCampos' intenta leer txtcodigo.
+                // Como ya tiene el número puesto, funcionará bien.
                 Editorial nuevaEditorial = obtenerEditorialDesdeCampos();
+                
                 if (nuevaEditorial == null) {
                     return;
                 }
 
-                // 3. Verificación de existencia (Maneja el error de "Ya existe...")
-                // Usamos .next() para ver si el ResultSet tiene datos.
+                // 3. Verificación de duplicados (Seguridad extra)
+                // Aunque generamos el ID, si alguien más insertó justo ahora, esto nos avisa.
                 if (objEditorial.buscarPorCodigo(nuevaEditorial.getIdeditorial()).next()) {
-                    JOptionPane.showMessageDialog(this, "Ya existe una Editorial con este Código (" + nuevaEditorial.getIdeditorial() + "). Debe ingresar un ID diferente.", "Error de Registro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "El ID " + nuevaEditorial.getIdeditorial() + " ya fue ocupado. Intente de nuevo.", "Error de Concurrencia", JOptionPane.ERROR_MESSAGE);
+                    // Si falla, reiniciamos el proceso para que genere el siguiente ID
+                    btnnuevo.setText("NUEVO");
+                    btnnuevo.doClick(); 
                     return;
                 }
 
-                // 4. Insertamos
+                // 4. Insertar en BD
                 objEditorial.registrar(nuevaEditorial);
 
-                JOptionPane.showMessageDialog(this, "Editorial registrada con éxito.", "Registro", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Editorial registrada con éxito (ID: " + nuevaEditorial.getIdeditorial() + ").", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
 
-                // 5. Volver a la normalidad
+                // 5. Resetear formulario
                 btnnuevo.setText("NUEVO");
                 limpiarCampos();
                 cargarTabla();
+                
+                // Restaurar estado normal de los campos
+                txtcodigo.setEditable(true);
+                txtcodigo.setEnabled(true);
             }
         } catch (Exception e) {
-            // Capturamos cualquier error de BD restante.
-            JOptionPane.showMessageDialog(this, "Error al insertar Editorial: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
-
-            // Dejar el botón en modo NUEVO después de la falla.
+            JOptionPane.showMessageDialog(this, "Error al procesar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            
+            // Si hubo error, restaurar botón
             btnnuevo.setText("NUEVO");
             txtcodigo.setEnabled(true);
+            txtcodigo.setEditable(true);
         }
     }//GEN-LAST:event_btnnuevoActionPerformed
 

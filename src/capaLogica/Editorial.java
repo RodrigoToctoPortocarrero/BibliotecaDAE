@@ -340,4 +340,27 @@ public boolean tieneLibrosActivos(int idEditorial) {
     }
     return false;
 }
+
+    public int generarSiguienteId() {
+        int siguienteId = 1; // Valor por defecto si la tabla está vacía
+        
+        // Consulta para obtener el máximo ID y sumarle 1
+        String sql = "SELECT COALESCE(MAX(ideditorial), 0) + 1 FROM EDITORIAL";
+        
+        try {
+            // Instanciamos la conexión
+            capaDatos.clsJDBC objCon = new capaDatos.clsJDBC();
+            java.sql.ResultSet rs = objCon.consultarBD(sql);
+            
+            if (rs.next()) {
+                siguienteId = rs.getInt(1);
+            }
+            objCon.desconectar();
+            
+        } catch (Exception e) {
+            System.out.println("Error al generar ID: " + e.getMessage());
+        }
+        
+        return siguienteId;
+    }
 }

@@ -6,6 +6,8 @@ package viewsUsuario;
 
 import capaDatos.clsJDBC;
 import java.sql.*;
+import java.text.SimpleDateFormat; // Importante para formatear la fecha
+import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 /**
@@ -24,30 +26,92 @@ public class DevolucionUsuario extends javax.swing.JPanel {
         this.idUsuarioLogueado = idUsuario;
         initComponents();
         configurarTabla();
+        // Configurar formato del JDateChooser (Opcional pero recomendado)
+        txtFecha.setDateFormatString("yyyy-MM-dd");
         
-        System.out.println("DEBUG: Panel Historial abierto con ID Usuario: " + idUsuario);
+        System.out.println("DEBUG: Panel Historial abierto con ID Usuario: " + idUsuario); 
+        // --- CARGA AUTOMÁTICA AL INICIAR ---
+        // Llamamos al método pasando null para que traiga todo el historial
+        cargarHistorial(null);
     }
     private void configurarTabla() {
         modelo = new DefaultTableModel();
         modelo.addColumn("F. Devolución");
-        modelo.addColumn("Libro");
+        modelo.addColumn("Libro Entregado");
         modelo.addColumn("Estado Físico");
         modelo.addColumn("Multa Pagada");
         modelo.addColumn("Observaciones");
         tblResultados.setModel(modelo);
     }
+    private void cargarHistorial(String fechaFiltro) {
+        
+        // Consulta SQL Base (Trae el historial del usuario)
+        String sql = "SELECT d.fechadevolucionreal, l.titulo, dd.estado, dd.multa, dd.observaciones " +
+                     "FROM DEVOLUCION d " +
+                     "INNER JOIN PRESTAMO p ON d.idprestamo = p.idprestamo " +
+                     "INNER JOIN DETALLE_DEVOLUCION dd ON d.iddevolucion = dd.iddevolucion " +
+                     "INNER JOIN EJEMPLAR e ON dd.idejemplar = e.idejemplar " +
+                     "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
+                     "WHERE p.idusuariolector = " + idUsuarioLogueado;
+
+        // Si nos pasaron una fecha, agregamos el filtro
+        if (fechaFiltro != null && !fechaFiltro.isEmpty()) {
+            sql += " AND d.fechadevolucionreal = '" + fechaFiltro + "'";
+        }
+        
+        // Ordenar por fecha más reciente
+        sql += " ORDER BY d.fechadevolucionreal DESC";
+
+        System.out.println("SQL Ejecutado: " + sql);
+
+        try {
+            ResultSet rs = jdbc.consultarBD(sql);
+            modelo.setRowCount(0); // Limpiar tabla antes de llenar
+            boolean encontro = false;
+
+            while (rs.next()) {
+                encontro = true;
+                
+                boolean estadoBool = rs.getBoolean("estado");
+                String estadoTexto = estadoBool ? "Buen Estado" : "DAÑADO";
+                
+                modelo.addRow(new Object[]{
+                    rs.getDate("fechadevolucionreal"),
+                    rs.getString("titulo"),
+                    estadoTexto,
+                    "S/. " + rs.getDouble("multa"),
+                    rs.getString("observaciones")
+                });
+            }
+            
+            jdbc.desconectar();
+
+            // Solo mostramos mensaje si se filtró por fecha y no hubo nada.
+            // Si es la carga inicial (null) y no hay datos, simplemente sale vacía (es menos molesto).
+            if (!encontro && fechaFiltro != null) {
+                JOptionPane.showMessageDialog(this, "No tienes devoluciones registradas en la fecha: " + fechaFiltro);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar historial: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     private void buscarDevolucion() {
         
-        String fecha = txtFecha.getText().trim();
-
-        // 1. Validar formato fecha
-        if (!fecha.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            JOptionPane.showMessageDialog(this, "Formato incorrecto. Use: AAAA-MM-DD (Ej: 2025-01-22)");
+        // 1. Obtener fecha del JDateChooser
+        Date fechaSeleccionada = txtFecha.getDate();
+        
+        if (fechaSeleccionada == null) {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione una fecha válida en el calendario.");
             return;
         }
 
-        // 2. SQL: Cruzamos DEVOLUCION -> PRESTAMO -> DETALLE -> LIBRO
-        // Importante: Filtramos por fechadevolucionreal
+        // 2. Convertir Date a String (Formato SQL: yyyy-MM-dd)
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaString = sdf.format(fechaSeleccionada);
+
+        // 3. Consulta SQL
         String sql = "SELECT d.fechadevolucionreal, l.titulo, dd.estado, dd.multa, dd.observaciones " +
                      "FROM DEVOLUCION d " +
                      "INNER JOIN PRESTAMO p ON d.idprestamo = p.idprestamo " +
@@ -55,7 +119,7 @@ public class DevolucionUsuario extends javax.swing.JPanel {
                      "INNER JOIN EJEMPLAR e ON dd.idejemplar = e.idejemplar " +
                      "INNER JOIN LIBROS l ON e.idlibro = l.idlibro " +
                      "WHERE p.idusuariolector = " + idUsuarioLogueado + " " +
-                     "AND d.fechadevolucionreal = '" + fecha + "'";
+                     "AND d.fechadevolucionreal = '" + fechaString + "'";
 
         System.out.println("SQL: " + sql);
 
@@ -67,9 +131,8 @@ public class DevolucionUsuario extends javax.swing.JPanel {
             while (rs.next()) {
                 encontro = true;
                 
-                // Convertir booleano a texto
                 boolean estadoBool = rs.getBoolean("estado");
-                String estadoTexto = estadoBool ? "Bueno" : "Dañado";
+                String estadoTexto = estadoBool ? "Buen Estado" : "DAÑADO";
                 
                 modelo.addRow(new Object[]{
                     rs.getDate("fechadevolucionreal"),
@@ -83,11 +146,12 @@ public class DevolucionUsuario extends javax.swing.JPanel {
             jdbc.desconectar();
 
             if (!encontro) {
-                JOptionPane.showMessageDialog(this, "No tienes devoluciones registradas en la fecha: " + fecha);
+                JOptionPane.showMessageDialog(this, "No tienes devoluciones registradas en la fecha: " + fechaString);
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
    
@@ -110,11 +174,11 @@ public class DevolucionUsuario extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtFecha = new javax.swing.JTextField();
         btnDevolver = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblResultados = new javax.swing.JTable();
+        txtFecha = new com.toedter.calendar.JDateChooser();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -193,12 +257,11 @@ public class DevolucionUsuario extends javax.swing.JPanel {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(20, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnDevolver, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnDevolver, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(126, 126, 126))))
@@ -263,6 +326,6 @@ public class DevolucionUsuario extends javax.swing.JPanel {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable tblResultados;
-    private javax.swing.JTextField txtFecha;
+    private com.toedter.calendar.JDateChooser txtFecha;
     // End of variables declaration//GEN-END:variables
 }
