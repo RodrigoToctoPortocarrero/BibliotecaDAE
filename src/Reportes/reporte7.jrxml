@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte7" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb9ebd70-0f07-4703-a2b9-4899d11374ea">
+	<property name="ireport.zoom" value="1.6105100000000014"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="154"/>
+	<parameter name="p_nombreAutor" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     a.nombres || ' ' || a.apepaterno || ' ' || a.apematerno AS "Nombre Completo Autor",
+     l.titulo AS "Título del Libro",
+     l.aniopublicacion AS "Año",
+     c.nombrecategoria AS "Categoría"
+FROM AUTOR a
+INNER JOIN ASIGNAR_LIBRO_AUTOR ala ON a.idautor = ala.idautor
+INNER JOIN LIBROS l ON ala.idlibro = l.idlibro
+INNER JOIN CATEGORIA c ON l.idcategoria = c.idcategoria
+WHERE
+    -- Aquí usamos el NUEVO parámetro p_nombreAutor
+    (a.nombres || ' ' || a.apepaterno || ' ' || a.apematerno) ILIKE '%' || $P{p_nombreAutor} || '%']]>
+	</queryString>
+	<field name="Nombre Completo Autor" class="java.lang.String"/>
+	<field name="Título del Libro" class="java.lang.String"/>
+	<field name="Año" class="java.lang.String"/>
+	<field name="Categoría" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="133" y="15" width="318" height="42" uuid="50eedfd5-c725-4557-a298-d7766c0d1658"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Libros Escritos por Autor]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="49" splitType="Stretch">
+			<textField>
+				<reportElement x="33" y="15" width="164" height="20" uuid="a7e83c31-43f8-4a92-8d78-bbc0afb8482f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nombre Completo Autor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="330" y="15" width="214" height="20" uuid="ffe2c9ab-646b-45f8-866c-2e13d7d3cc71"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="81" y="22" width="100" height="20" uuid="6ad9f30b-d04a-4f4c-afc4-4fadbe98c374"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título del Libro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="22" width="67" height="20" uuid="8f656651-55af-478d-a6f8-81157a005d10"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="354" y="22" width="80" height="20" uuid="ce2a2603-cd52-4bb1-9d86-2932e73a5739"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Categoría]]></text>
+			</staticText>
+			<line>
+				<reportElement x="81" y="42" width="353" height="1" uuid="cf5b6bff-e6bb-451d-a84b-0987b99cbd39"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="78" splitType="Stretch">
+			<textField>
+				<reportElement x="81" y="29" width="100" height="20" uuid="4a79cb74-dda9-4d01-b58f-aa4bd138efbc"/>
+				<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="239" y="29" width="67" height="20" uuid="950c882c-5749-43c8-b2a4-bbc6933a8716"/>
+				<textFieldExpression><![CDATA[$F{Año}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="354" y="29" width="80" height="20" uuid="a26bc9dc-5266-4375-bb19-82b0958dee8e"/>
+				<textFieldExpression><![CDATA[$F{Categoría}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="81" y="52" width="353" height="1" uuid="78866325-f146-4f26-b491-c911b679c006"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement x="434" y="34" width="70" height="20" uuid="722d03ef-2c7c-4fd5-b9e3-114f7e5a7303"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="504" y="34" width="40" height="20" uuid="e5119590-d30b-4334-944c-7724aab6b70e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="47" y="33" width="192" height="20" uuid="7ddd41b2-c0f5-49de-bed7-df7a20cde6c9"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
