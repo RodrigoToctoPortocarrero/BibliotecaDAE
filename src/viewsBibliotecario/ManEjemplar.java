@@ -365,18 +365,30 @@ public class ManEjemplar extends javax.swing.JPanel {
                 return;
             }
 
-            // Verificar si tiene historial de préstamos
-            boolean tieneHistorial = ejem.ejemplarTieneDetallesPrestamo(id);
-            String mensaje = tieneHistorial
-                    ? "¿Está seguro de eliminar este ejemplar?\n"
-                    + "ADVERTENCIA: Este ejemplar tiene historial de préstamos.\n"
-                    + "Se eliminará el ejemplar y todo su historial de préstamos.\n"
-                    + "Esta acción no se puede deshacer."
-                    : "¿Está seguro de eliminar este ejemplar?\n"
-                    + "Esta acción no se puede deshacer.";
+            // Verificar si tiene historial
+            boolean tieneHistorialPrestamos = ejem.ejemplarTieneDetallesPrestamo(id);
+            boolean tieneHistorialDevoluciones = ejem.ejemplarTieneDetallesDevolucion(id);
+            boolean tieneHistorial = tieneHistorialPrestamos || tieneHistorialDevoluciones;
+
+            // Construir mensaje según el historial
+            StringBuilder mensaje = new StringBuilder();
+            mensaje.append("¿Está seguro de eliminar este ejemplar?\n\n");
+
+            if (tieneHistorial) {
+                mensaje.append("⚠️ ADVERTENCIA: Este ejemplar tiene historial registrado:\n");
+                if (tieneHistorialPrestamos) {
+                    mensaje.append("  • Historial de préstamos\n");
+                }
+                if (tieneHistorialDevoluciones) {
+                    mensaje.append("  • Historial de devoluciones\n");
+                }
+                mensaje.append("\nSe eliminará el ejemplar y TODO su historial.\n");
+            }
+
+            mensaje.append("\n⚠️ Esta acción NO se puede deshacer.");
 
             int confirmacion = JOptionPane.showConfirmDialog(this,
-                    mensaje,
+                    mensaje.toString(),
                     "Confirmar eliminación",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
@@ -384,9 +396,12 @@ public class ManEjemplar extends javax.swing.JPanel {
             if (confirmacion == JOptionPane.YES_OPTION) {
                 ejem.eliminarEjemplar(id);
 
-                JOptionPane.showMessageDialog(this,
-                        "Ejemplar eliminado correctamente"
-                        + (tieneHistorial ? "\n(Se eliminó también el historial de préstamos)" : ""));
+                String mensajeExito = "Ejemplar eliminado correctamente";
+                if (tieneHistorial) {
+                    mensajeExito += "\n(Se eliminó también todo el historial asociado)";
+                }
+
+                JOptionPane.showMessageDialog(this, mensajeExito);
                 LimpiarCampos();
                 cargarEjemplares();
             }

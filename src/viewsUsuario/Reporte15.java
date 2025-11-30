@@ -4,86 +4,78 @@
  */
 package viewsUsuario;
 
-import capaDatos.clsJDBC;
-import capaLogica.Libro;
 import capaLogica.Reportes;
 import java.awt.BorderLayout;
 import java.awt.Container;
-import javax.swing.DefaultComboBoxModel;
-import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.swing.JRViewer;
-import org.apache.commons.jocl.JOCLContentHandler;
 
 /**
  *
  * @author Tocto Portocarrero Rodrigo Jesús
  */
-public class Reporte14 extends javax.swing.JPanel {
+public class Reporte15 extends javax.swing.JPanel {
 
-    public Reporte14() {
+    /**
+     * Creates new form Reporte15
+     */
+    public Reporte15() {
         initComponents();
-        MostrarTodo();
+        Mostrar();
     }
 
-    private void MostrarTodo() {
+    private void Mostrar() {
         try {
-            // Pedir fecha inicio
-            String inputInicio = JOptionPane.showInputDialog(
+
+            // Pedir el año por JOptionPane
+            String inputAnio = JOptionPane.showInputDialog(
                     this,
-                    "Ingrese la FECHA DE INICIO (formato: yyyy-MM-dd)",
-                    "Fecha Inicial",
+                    "Ingrese el AÑO del reporte (formato: YYYY)",
+                    "Ingresar Año",
                     JOptionPane.QUESTION_MESSAGE
             );
 
-            if (inputInicio == null || inputInicio.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar la fecha inicial.");
-                return;
-            }
-
-            // Pedir fecha final
-            String inputFinal = JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese la FECHA FINAL (formato: yyyy-MM-dd)",
-                    "Fecha Final",
-                    JOptionPane.QUESTION_MESSAGE
-            );
-
-            if (inputFinal == null || inputFinal.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar la fecha final.");
-                return;
-            }
-
-            // Convertir a Date
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-            sdf.setLenient(false); // valida fechas reales
-
-            Date fInicio = sdf.parse(inputInicio);
-            Date fFinal = sdf.parse(inputFinal);
-
-            // Validar orden
-            if (fFinal.before(fInicio)) {
+            // Validar cancelación o vacío
+            if (inputAnio == null || inputAnio.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                        "La fecha final debe ser mayor o igual que la fecha inicial.",
+                        "Debe ingresar un año válido.",
                         "Validación",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // Crear parámetros (Timestamp porque iReport así lo usa)
-            Map<String, Object> parametros = new HashMap<>();
-            parametros.put("fechainicio", new java.sql.Timestamp(fInicio.getTime()));
-            parametros.put("fechafinal", new java.sql.Timestamp(fFinal.getTime()));
+            // Validar que sea número
+            if (!inputAnio.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this,
+                        "El año debe contener solo números.",
+                        "Validación",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-            // Mostrar el reporte en el JDesktopPane
+            // Validar longitud correcta
+            if (inputAnio.length() != 4) {
+                JOptionPane.showMessageDialog(this,
+                        "El año debe tener 4 dígitos (ejemplo: 2024).",
+                        "Validación",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Enviar parámetro al reporte
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("anio", inputAnio);
+
+            // Mostrar el reporte en el contenedor
             Container cont = this.contenedor;
             cont.setLayout(new BorderLayout());
             cont.removeAll();
 
-            JRViewer viewer = new Reportes().reporteInterno("rp14tocto.jasper", parametros);
+            JRViewer viewer = new Reportes().reporteInterno("rp15tocto.jasper", parametros);
+
             cont.add(viewer);
             cont.revalidate();
             cont.repaint();
@@ -91,7 +83,7 @@ public class Reporte14 extends javax.swing.JPanel {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Error: " + e.getMessage(),
+                    "Error al generar el reporte: " + e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }

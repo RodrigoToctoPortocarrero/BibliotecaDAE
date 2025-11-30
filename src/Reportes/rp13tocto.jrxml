@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp13tocto" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ec999615-061b-4889-a078-90db44d42e8b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+    u.nombre || ' ' || u.ap_paterno || ' '|| u.ap_materno AS Lector,
+    COUNT(*) AS cantidad_de_retrasos,
+    MAX(info.dias_retraso) AS mayor_cantidad_dias_retraso,
+    STRING_AGG(
+        'Prestamo: ' || info.fechaprestamo
+        || ' | Limite: ' || info.fechadev_estimada
+        || ' | Devuelto: ' || info.fechadev_real,
+        ' || '
+    ) AS detalle_fechas
+FROM (
+    SELECT
+        d.iddevolucion,
+        p.idusuariolector,
+        p.fechaprestamo,
+        p.fechadevolucionestimada AS fechadev_estimada,
+        d.fechadevolucionreal AS fechadev_real,
+        (d.fechadevolucionreal - p.fechadevolucionestimada) AS dias_retraso
+    FROM DEVOLUCION d
+    INNER JOIN PRESTAMO p ON p.idprestamo = d.idprestamo
+    WHERE d.fechadevolucionreal > p.fechadevolucionestimada
+) info
+INNER JOIN USUARIO u ON u.idusuario = info.idusuariolector
+GROUP BY u.idusuario, Lector
+ORDER BY cantidad_de_retrasos DESC
+LIMIT 3;]]>
+	</queryString>
+	<field name="lector" class="java.lang.String"/>
+	<field name="cantidad_de_retrasos" class="java.lang.Long"/>
+	<field name="mayor_cantidad_dias_retraso" class="java.lang.Integer"/>
+	<field name="detalle_fechas" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="77" y="21" width="437" height="20" uuid="90f5c56a-f24a-493f-9ab5-9ddfb46ab47a"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Top 3 Lectores con Mayor Número de Devoluciones Tardías]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="59" splitType="Stretch">
+			<staticText>
+				<reportElement x="18" y="14" width="242" height="20" uuid="458d28eb-3658-45ef-84ba-19233f49cae3"/>
+				<text><![CDATA[Elaborado por: Tocto Portocarrero Rdorigo Jesús]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="424" y="14" width="80" height="20" uuid="39989139-df26-44b2-ab10-0a98f99f35d5"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="504" y="14" width="40" height="20" uuid="012ddac9-9ef7-49a9-905e-efad54f87a3d"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="2" width="100" height="20" uuid="85c65138-6b21-4229-9755-28c34db92b17"/>
+				<text><![CDATA[Lector]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="148" y="2" width="100" height="20" uuid="08d00f0a-d835-47f0-9833-722a59742293"/>
+				<text><![CDATA[Cantidad de retrasos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="2" width="124" height="20" uuid="9ee5eb0b-9f7c-4d50-96a7-0cb2e2e0a228"/>
+				<text><![CDATA[Dias reteasados máximos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="0" width="162" height="20" uuid="7ecc4d74-6f8c-4fef-9825-0134b028de98"/>
+				<text><![CDATA[Detalle]]></text>
+			</staticText>
+			<line>
+				<reportElement x="4" y="48" width="551" height="1" uuid="1052415e-4148-47a1-b71b-f16615e9b1f7"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="110" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="8" width="135" height="20" uuid="915aa77f-3525-446a-841b-31f5762499c9"/>
+				<textFieldExpression><![CDATA[$F{lector}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="148" y="8" width="62" height="20" uuid="c43f8b1e-4a14-426e-a922-9525ecfeecef"/>
+				<textFieldExpression><![CDATA[$F{cantidad_de_retrasos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="8" width="48" height="20" uuid="d529c93e-2295-47cc-a44e-6e8fa93d0375"/>
+				<textFieldExpression><![CDATA[$F{mayor_cantidad_dias_retraso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="393" y="8" width="162" height="94" uuid="11e78a4f-001b-4ae5-b6c3-e5240724d571"/>
+				<textFieldExpression><![CDATA[$F{detalle_fechas}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="16" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="7" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="220" splitType="Stretch">
+			<barChart>
+				<chart>
+					<reportElement x="77" y="0" width="414" height="201" uuid="da1b0753-1782-4988-b31f-1af65605db6d"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Cantidad de retrasos"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{lector}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{cantidad_de_retrasos}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+		</band>
+	</summary>
+</jasperReport>

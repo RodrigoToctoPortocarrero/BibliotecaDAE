@@ -220,6 +220,43 @@ public class Ejemplar {
     }
 
     // ============================
+// ELIMINAR DETALLES DE DEVOLUCIÓN DE UN EJEMPLAR
+// ============================
+    private void eliminarDetallesDevolucion(int idEjemplar) throws Exception {
+        String sqlDelete = "DELETE FROM detalle_devolucion WHERE idejemplar = ?";
+
+        try {
+            PreparedStatement pst = con.conectar().prepareStatement(sqlDelete);
+            pst.setInt(1, idEjemplar);
+            pst.executeUpdate();
+
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar detalles de devolución: " + e.getMessage());
+        }
+    }
+
+    // ============================
+// VERIFICAR SI EJEMPLAR TIENE REGISTROS EN DETALLE_DEVOLUCION
+// ============================
+    public boolean ejemplarTieneDetallesDevolucion(int idEjemplar) throws Exception {
+        String sqlCheck = "SELECT COUNT(*) AS total FROM detalle_devolucion WHERE idejemplar = ?";
+
+        try {
+            PreparedStatement pst = con.conectar().prepareStatement(sqlCheck);
+            pst.setInt(1, idEjemplar);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("total") > 0;
+            }
+            return false;
+
+        } catch (Exception e) {
+            throw new Exception("Error al verificar detalles de devolución: " + e.getMessage());
+        }
+    }
+
+    // ============================
     // INSERTAR EJEMPLAR
     // ============================
     public int insertarEjemplar(int idlibro, String nroejemplar, boolean estado) throws Exception {
@@ -290,9 +327,8 @@ public class Ejemplar {
         }
     }
 
-    // ============================
-    // ELIMINAR EJEMPLAR (FÍSICO) CON VALIDACIÓN
-    // ============================
+// ELIMINAR EJEMPLAR (FÍSICO) CON VALIDACIÓN
+// ============================
     public int eliminarEjemplar(int idEjemplar) throws Exception {
         Connection cn = null;
         try {
@@ -304,12 +340,17 @@ public class Ejemplar {
                 throw new Exception("No se puede eliminar. El ejemplar está actualmente prestado. Debe estar disponible para eliminarlo.");
             }
 
-            // 2. SI TIENE DETALLES DE PRÉSTAMO (histórico), ELIMINARLOS PRIMERO
+            // 2. ELIMINAR PRIMERO LOS DETALLES DE DEVOLUCIÓN (si existen)
+            if (ejemplarTieneDetallesDevolucion(idEjemplar)) {
+                eliminarDetallesDevolucion(idEjemplar);
+            }
+
+            // 3. ELIMINAR LOS DETALLES DE PRÉSTAMO (si existen)
             if (ejemplarTieneDetallesPrestamo(idEjemplar)) {
                 eliminarDetallesPrestamo(idEjemplar);
             }
 
-            // 3. ELIMINAR EL EJEMPLAR
+            // 4. FINALMENTE ELIMINAR EL EJEMPLAR
             sql = "DELETE FROM ejemplar WHERE idejemplar = ?";
             PreparedStatement pst = cn.prepareStatement(sql);
             pst.setInt(1, idEjemplar);

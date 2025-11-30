@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp15tocto" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4861964c-3d25-49df-a575-79dd6b183755">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="25"/>
+	<parameter name="anio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    TO_CHAR(d.fechadevolucionreal, 'YYYY') AS anio,
+    TO_CHAR(d.fechadevolucionreal, 'MM') AS mes_numero,
+    INITCAP(TO_CHAR(d.fechadevolucionreal, 'TMMonth')) AS mes_nombre,
+
+    COUNT(*) AS cantidad_multas,
+    SUM(dd.multa) AS monto_total_generado
+
+FROM DETALLE_DEVOLUCION dd
+INNER JOIN DEVOLUCION d
+        ON d.iddevolucion = dd.iddevolucion
+
+WHERE TO_CHAR(d.fechadevolucionreal, 'YYYY') = $P{anio}
+
+GROUP BY anio, mes_numero, mes_nombre
+ORDER BY mes_numero;]]>
+	</queryString>
+	<field name="anio" class="java.lang.String"/>
+	<field name="mes_numero" class="java.lang.String"/>
+	<field name="mes_nombre" class="java.lang.String"/>
+	<field name="cantidad_multas" class="java.lang.Long"/>
+	<field name="monto_total_generado" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="27" y="14" width="508" height="20" uuid="e5308811-dbd0-4fbc-ba46-458b5b7eb35e"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dado el año mostrar la cantidad de multas y el monto total generado]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="76" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="14" width="239" height="20" uuid="c6ec9bd4-9c10-4831-9b69-beef396c90ea"/>
+				<text><![CDATA[Elaborado por : Tocto Portocarrero Rodrigo]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="417" y="14" width="80" height="20" uuid="231c29af-4f5a-454b-bdf8-5f9ad06de824"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="497" y="14" width="40" height="20" uuid="9ab3cd62-a340-444e-9c07-8ce0ea03c084"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="56" width="100" height="20" uuid="b07be1b6-3db7-4cf1-8f38-a0d829e7d37b"/>
+				<text><![CDATA[Año a evaluar: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="56" width="100" height="20" uuid="193fe706-44c8-4eca-9dc9-f246b4ff3877"/>
+				<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="67" splitType="Stretch">
+			<staticText>
+				<reportElement x="27" y="21" width="100" height="20" uuid="0904ecfd-2473-415a-9820-4f0abd1c839c"/>
+				<text><![CDATA[Número de Mes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="139" y="21" width="100" height="20" uuid="f695e866-ebd1-407e-8962-84264c3a61a6"/>
+				<text><![CDATA[Mes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="284" y="21" width="100" height="20" uuid="e0dbc202-ca73-45f5-9640-567c463b4d8c"/>
+				<text><![CDATA[Cantidad de Multas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="426" y="21" width="111" height="20" uuid="fc7ed01b-9f48-44f4-96ef-739419f2d016"/>
+				<text><![CDATA[Monto total generado]]></text>
+			</staticText>
+			<line>
+				<reportElement x="27" y="56" width="510" height="1" uuid="d573914f-dfed-4e6a-bedb-27e2d8a5c776"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="64" splitType="Stretch">
+			<textField>
+				<reportElement x="27" y="12" width="100" height="20" uuid="b99f5bf2-40fc-4c55-99ab-d1e61c6d49cd"/>
+				<textFieldExpression><![CDATA[$F{mes_numero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="139" y="12" width="131" height="20" uuid="ec6cffb8-0d30-4793-b32d-2b0610e5b87a"/>
+				<textFieldExpression><![CDATA[$F{mes_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="284" y="12" width="100" height="20" uuid="1cfa3fa3-17c6-4072-a419-38cc79cb49f2"/>
+				<textFieldExpression><![CDATA[$F{cantidad_multas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="426" y="12" width="100" height="20" uuid="de6c622e-feb3-42f4-b1d6-b125d5653790"/>
+				<textFieldExpression><![CDATA[$F{monto_total_generado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="30" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="273" splitType="Stretch">
+			<pieChart>
+				<chart>
+					<reportElement x="69" y="11" width="428" height="262" uuid="312ab1e7-3dee-4ee0-961c-62ce7855051e"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{mes_nombre}]]></keyExpression>
+					<valueExpression><![CDATA[$F{cantidad_multas}]]></valueExpression>
+				</pieDataset>
+				<piePlot>
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>

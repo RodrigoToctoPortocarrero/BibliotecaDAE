@@ -12,7 +12,7 @@ import net.sf.jasperreports.swing.JRViewer;
 
 /**
  *
- * @author LENOVO
+ * @author Tocto Portocarrero Rodrigo Jesús
  */
 public class Reporte13 extends javax.swing.JPanel {
 
@@ -26,7 +26,7 @@ public class Reporte13 extends javax.swing.JPanel {
             contenedor.setLayout(new BorderLayout());
             contenedor.removeAll();
 
-            JRViewer objReporte = new Reportes().reporteInterno("rp_tocto_13}.jasper", null);
+            JRViewer objReporte = new Reportes().reporteInterno("rp13tocto.jasper", null);
             contenedor.add(objReporte);
             contenedor.revalidate();
             contenedor.repaint();

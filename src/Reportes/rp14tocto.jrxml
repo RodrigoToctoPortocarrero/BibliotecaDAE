@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp14tocto" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7c33f805-dead-43ba-a95c-4a02f6389d2b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fechainicio" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechafinal" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno AS lector,
+
+    'Préstamo: ' || p.fechaprestamo::date ||
+    ' | Límite: ' || p.fechadevolucionestimada::date ||
+    ' | Devuelto: ' || d.fechadevolucionreal::date
+    AS detalle_fechas,
+
+    (d.fechadevolucionreal::date - p.fechadevolucionestimada::date) AS dias_de_retraso,
+
+    dd.observaciones AS motivo_multa,
+    dd.multa AS monto_multa,
+
+    CASE
+        WHEN m.pagado = TRUE THEN 'Sí'
+        ELSE 'No'
+    END AS multa_pagada,
+
+    m.fechagenerada::date AS fecha_multa_generada
+
+FROM MULTA m
+INNER JOIN USUARIO u ON u.idusuario = m.idusuario
+INNER JOIN PRESTAMO p ON p.idprestamo = m.idprestamo
+INNER JOIN DEVOLUCION d ON d.idprestamo = p.idprestamo
+INNER JOIN DETALLE_DEVOLUCION dd ON dd.iddevolucion = d.iddevolucion
+
+WHERE m.fechagenerada::date
+      BETWEEN $P{fechainicio}::date AND $P{fechafinal}::date
+
+ORDER BY m.fechagenerada::date;
+]]>
+	</queryString>
+	<field name="lector" class="java.lang.String"/>
+	<field name="detalle_fechas" class="java.lang.String"/>
+	<field name="dias_de_retraso" class="java.lang.Integer"/>
+	<field name="motivo_multa" class="java.lang.String"/>
+	<field name="monto_multa" class="java.math.BigDecimal"/>
+	<field name="multa_pagada" class="java.lang.String"/>
+	<field name="fecha_multa_generada" class="java.sql.Date"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="137" y="20" width="300" height="20" uuid="412a6b81-3e15-43db-9f6b-98c7c278110a"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Multas generadas por rango de fechas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="15" width="239" height="20" uuid="1ec3ac27-acb5-412d-ad30-e21b24255716"/>
+				<text><![CDATA[Elaborado por : Tocto Portocarrero Rodrigo]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="399" y="15" width="80" height="20" uuid="a461228a-1ba4-40d7-8371-44dcb6489582"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="479" y="15" width="40" height="20" uuid="0ea89da6-6d81-4040-be3e-5d0d6094bb83"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="43" width="555" height="1" uuid="fe2267f4-92c3-4d9a-ad03-f0399a82e2e0"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="13" width="100" height="20" uuid="0c8f9d6e-f4b4-4697-b495-3a7facf35cbb"/>
+				<text><![CDATA[Lector]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="139" y="13" width="100" height="20" uuid="1725d786-a11f-4e23-ae46-2408e1c34097"/>
+				<text><![CDATA[Detalle Fechas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="278" y="13" width="49" height="20" uuid="7ea358d1-1479-4ed1-ba6e-193f2e0278fd"/>
+				<text><![CDATA[Motivo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="373" y="13" width="50" height="20" uuid="313d8ec2-8bf3-413f-a1f9-6ade49b88b7b"/>
+				<text><![CDATA[Monto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="13" width="100" height="20" uuid="c8b9bc00-be23-410e-80f4-1b719a6e89bb"/>
+				<text><![CDATA[¿Multa Pagada?]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="117" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="17" width="119" height="20" uuid="9c4196a9-81a4-4009-947a-1560a53ab289"/>
+				<textFieldExpression><![CDATA[$F{lector}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="139" y="17" width="100" height="88" uuid="71a22b57-92df-42c5-9b86-540bf08e5298"/>
+				<textFieldExpression><![CDATA[$F{detalle_fechas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="17" width="88" height="88" uuid="f2986c7e-d57b-4a33-b82b-5f472693797c"/>
+				<textFieldExpression><![CDATA[$F{motivo_multa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="373" y="17" width="50" height="20" uuid="8314d429-783a-4a32-ad6d-7bcf2f058671"/>
+				<textFieldExpression><![CDATA[$F{monto_multa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="17" width="76" height="20" uuid="7549eb59-5c03-4ed3-a79a-92e4d1941ae1"/>
+				<textFieldExpression><![CDATA[$F{multa_pagada}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
