@@ -183,12 +183,12 @@ public class ManAutor extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(329, 329, 329)
-                                .addComponent(btnDarBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDarBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
                                 .addComponent(btnlimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -200,7 +200,7 @@ public class ManAutor extends javax.swing.JPanel {
                                 .addGap(31, 31, 31)
                                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(126, 126, 126)
-                                .addComponent(btneliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btneliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnmodificar))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 698, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -353,43 +353,47 @@ public class ManAutor extends javax.swing.JPanel {
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         try {
-            if (btnNuevo.getText().equals("Nuevo")) {
+            // CORRECCIÓN: Usamos equalsIgnoreCase para que detecte "NUEVO" o "Nuevo"
+            if (btnNuevo.getText().equalsIgnoreCase("Nuevo")) {
                 btnNuevo.setText("Guardar");
                 limpiarControles();
 
                 // Lógica para generar el nuevo código y forzar el estado a Vigente
                 txtCodigo.setText(autor.generarCodigoAutor().toString());
-                chkVigente.setSelected(true); // ⭐ Nuevo registro por defecto es Vigente
+                chkVigente.setSelected(true); 
 
                 txtCodigo.setEditable(false);
                 txtNombres.requestFocus();
             } else {
+                // Lógica de GUARDAR (cuando el botón dice "Guardar")
+                
                 // Validaciones mínimas
                 if (txtNombres.getText().isEmpty() || txtAPaterno.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Debe llenar nombres y apellido paterno.", "Advertencia", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
-                // ⭐ Obtener el estado de vigencia del chkVigente
                 int idAutor = Integer.parseInt(txtCodigo.getText());
                 boolean estado = chkVigente.isSelected();
+                
                 autor.registrar(
-                        idAutor, // <-- AÑADIDO: El ID que se generó y se mostró en el campo de texto
+                        idAutor,
                         txtNombres.getText(),
                         txtAPaterno.getText(),
                         txtAMaterno.getText(),
                         txtDescripcion.getText(),
                         estado
                 );
+                
                 JOptionPane.showMessageDialog(this, "Autor registrado correctamente.");
                 btnNuevo.setText("Nuevo");
                 listarAutor();
                 limpiarControles();
-                txtCodigo.setEditable(true); // Se vuelve editable para nueva busqueda/modificacion
+                txtCodigo.setEditable(true);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al registrar autor: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
-            btnNuevo.setText("Nuevo");
+            btnNuevo.setText("Nuevo"); // Resetear en caso de error
         }
     }//GEN-LAST:event_btnNuevoActionPerformed
 
@@ -461,7 +465,7 @@ public class ManAutor extends javax.swing.JPanel {
 
             // 1. VALIDACIÓN SOLICITADA (Incluso para dar de baja, según tus instrucciones)
             if (autor.tieneLibrosAsignados(idAutor)) {
-                JOptionPane.showMessageDialog(this, "El autor tiene asignado un libro, primero elimine el libro para eliminar el autor", "Error de Dependencia", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "El autor tiene asignado un libro, primero dé de baja el libro para eliminar el autor", "Error de Dependencia", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
