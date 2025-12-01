@@ -4,6 +4,7 @@
  */
 package capaPrincipal;
 
+import capaLogica.Sesion;
 import capaLogica.Usuario;
 import capaLogica.UsuarioSesion;
 import java.awt.Image;
@@ -213,7 +214,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
             if (sesion != null) {
                 // --- LOGIN EXITOSO ---
                 JOptionPane.showMessageDialog(this, "¡Bienvenido/a, " + sesion.getNombre() + "!");
-
+                Sesion.setUsuario(sesion);
                 // El 'usuario' que pasabas antes era el nomusuario.
                 String nombreUser = sesion.getNomusuario();
                 int idUser = sesion.getIdusuario(); // <--- IMPORTANTE: OBTENER EL ID
