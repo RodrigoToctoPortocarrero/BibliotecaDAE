@@ -387,35 +387,6 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDevolucionesUsuario1ActionPerformed
 
     private void btnPrestamosUsuario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuario2ActionPerformed
-        try {
-            // --- 1. VERIFICACIÓN DE DEUDA ---
-
-            // Usamos la variable 'this.idUsuario' que ya definiste en el constructor de esta clase.
-            // (Esto evita errores de getters en UsuarioSesion)
-            int idParaVerificar = this.idUsuario;
-
-            // Instanciamos la clase Multa
-            capaLogica.Multa objMulta = new capaLogica.Multa();
-
-            // Llamamos al método corregido que mira 'pagado = false'
-            boolean esMoroso = objMulta.verificarDeudaPendiente(idParaVerificar);
-
-            if (esMoroso) {
-                // Si tiene deuda, mostramos el aviso y DETENEMOS el código con 'return'
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Usted no puede realizar préstamos porque tiene multas pendientes de pago.",
-                        "Acceso Denegado por Morosidad",
-                        javax.swing.JOptionPane.WARNING_MESSAGE);
-                return; // <--- ESTO ES VITAL: Evita que se abra la ventana de abajo
-            }
-
-        } catch (Exception e) {
-            // Si falla la conexión, mostramos error y por seguridad tampoco abrimos
-            javax.swing.JOptionPane.showMessageDialog(this, "Ocurrió un error al verificar su estado: " + e.getMessage());
-            return;
-        }
-
-        // --- 2. ABRIR VENTANA (Solo se ejecuta si no entró al 'if' de arriba) ---
         viewsUsuario.PrestamosUsuarios panel = new viewsUsuario.PrestamosUsuarios();
 
         panel.setSize(750, 430);
