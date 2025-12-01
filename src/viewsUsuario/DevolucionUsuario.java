@@ -28,9 +28,6 @@ public class DevolucionUsuario extends javax.swing.JPanel {
         configurarTabla();
         // Configurar formato del JDateChooser (Opcional pero recomendado)
         txtFecha.setDateFormatString("yyyy-MM-dd");
-        
-        System.out.println("DEBUG: Panel Historial abierto con ID Usuario: " + idUsuario); 
-        // --- CARGA AUTOMÁTICA AL INICIAR ---
         // Llamamos al método pasando null para que traiga todo el historial
         cargarHistorial(null);
     }
@@ -62,7 +59,6 @@ public class DevolucionUsuario extends javax.swing.JPanel {
         // Ordenar por fecha más reciente
         sql += " ORDER BY d.fechadevolucionreal DESC";
 
-        System.out.println("SQL Ejecutado: " + sql);
 
         try {
             ResultSet rs = jdbc.consultarBD(sql);
@@ -121,7 +117,6 @@ public class DevolucionUsuario extends javax.swing.JPanel {
                      "WHERE p.idusuariolector = " + idUsuarioLogueado + " " +
                      "AND d.fechadevolucionreal = '" + fechaString + "'";
 
-        System.out.println("SQL: " + sql);
 
         try {
             ResultSet rs = jdbc.consultarBD(sql);

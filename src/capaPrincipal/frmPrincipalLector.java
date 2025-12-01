@@ -29,7 +29,6 @@ public class frmPrincipalLector extends javax.swing.JFrame {
         this.nombreUsuario = nombreUsuario.toUpperCase();
         this.idUsuario = idRecibido; // <--- GUARDAMOS EL ID CORRECTO AQUÍ
         // Debug para que veas en la consola que ahora sí tienes el ID 2
-        System.out.println("FRM PRINCIPAL: ID Guardado = " + this.idUsuario);
         SetDate();
         InitContent();
         // Mostrar el nombre del usuario en el label
