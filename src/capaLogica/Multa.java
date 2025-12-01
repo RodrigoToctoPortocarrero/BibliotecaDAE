@@ -62,24 +62,4 @@ public class Multa {
             throw new Exception("Error al pagar la multa: " + e.getMessage());
         }
     }
-
-    public boolean verificarDeudaPendiente(int idUsuario) throws Exception {
-        // CORRECCIÓN BASADA EN TU TXT: 
-        // 1. La tabla es 'multa'.
-        // 2. La columna del usuario es 'idusuario'.
-        // 3. Para saber si debe, miramos si 'pagado' es FALSE.
-        String strSQL = "SELECT COUNT(*) as total FROM multa WHERE idusuario = " + idUsuario + " AND pagado = false";
-
-        ResultSet rs = null;
-        try {
-            rs = objConectar.consultarBD(strSQL);
-            if (rs.next()) {
-                int cantidad = rs.getInt("total");
-                return cantidad > 0; // Si hay 1 o más multas sin pagar, retorna true (es moroso)
-            }
-        } catch (Exception e) {
-            throw new Exception("Error al verificar deuda en BD: " + e.getMessage());
-        }
-        return false;
-    }
 }
