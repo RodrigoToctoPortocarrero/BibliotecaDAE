@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author laboratorio_computo
@@ -17,22 +18,101 @@ import javax.swing.table.DefaultTableModel;
 public class ManCategoria extends javax.swing.JPanel {
 
     Categoria cat = new Categoria();
+
     public ManCategoria() {
         initComponents();
         ListarCategoria();
+        habilitarBotones("INICIAL");
     }
 
-    
-    private void LimpiarCampos(){
+    private void habilitarBotones(String estado) {
+        switch (estado) {
+            case "INICIAL":
+                // Estado inicial: solo NUEVO está habilitado
+                btnNuevo.setEnabled(true);
+                btnBuscar.setEnabled(true);
+                btnEliminar.setEnabled(false);
+                btnActualizar.setEnabled(false);
+                btnDarBaja.setEnabled(false);
+                btnLimpiar.setEnabled(true);
+
+                // Campos deshabilitados excepto código para buscar
+                txtCodigoCategoria.setEditable(true);
+                txtNombreCategoria.setEditable(false);
+                txtDescripcion.setEditable(false);
+                checkVigencia.setEnabled(false);
+                break;
+
+            case "CREANDO":
+                // Modo creación: solo GUARDAR y LIMPIAR habilitados
+                btnNuevo.setEnabled(true); // Cambiará a "GUARDAR"
+                btnBuscar.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                btnActualizar.setEnabled(false);
+                btnDarBaja.setEnabled(false);
+                btnLimpiar.setEnabled(true);
+
+                // Campos habilitados para edición
+                txtCodigoCategoria.setEditable(false); // Código autogenerado
+                txtNombreCategoria.setEditable(true);
+                txtDescripcion.setEditable(true);
+                checkVigencia.setEnabled(true);
+                break;
+
+            case "CONSULTADO":
+                // Después de buscar: habilitar acciones sobre el registro
+                btnNuevo.setEnabled(true);
+                btnBuscar.setEnabled(true);
+                btnEliminar.setEnabled(true);
+                btnActualizar.setEnabled(true);
+                btnDarBaja.setEnabled(true);
+                btnLimpiar.setEnabled(true);
+
+                // Campos habilitados para edición (excepto código)
+                txtCodigoCategoria.setEditable(false);
+                txtNombreCategoria.setEditable(true);
+                txtDescripcion.setEditable(true);
+                checkVigencia.setEnabled(true);
+                break;
+
+            case "PROCESANDO":
+                // Durante operaciones de BD: deshabilitar todo
+                btnNuevo.setEnabled(false);
+                btnBuscar.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                btnActualizar.setEnabled(false);
+                btnDarBaja.setEnabled(false);
+                btnLimpiar.setEnabled(false);
+
+                txtCodigoCategoria.setEditable(false);
+                txtNombreCategoria.setEditable(false);
+                txtDescripcion.setEditable(false);
+                checkVigencia.setEnabled(false);
+                break;
+        }
+    }
+
+// ============================================
+// MÉTODOS ACTUALIZADOS CON VALIDACIONES
+// ============================================
+    private void LimpiarCampos() {
         txtCodigoCategoria.setText("");
         txtNombreCategoria.setText("");
         txtDescripcion.setText("");
         checkVigencia.setSelected(false);
+
+        // Restaurar estado del botón NUEVO si estaba en modo GUARDAR
+        if (btnNuevo.getText().equals("GUARDAR")) {
+            btnNuevo.setText("NUEVO");
+        }
+
+        // Volver al estado inicial
+        habilitarBotones("INICIAL");
     }
-    
-    private void ListarCategoria(){
-        try{
-            
+
+    private void ListarCategoria() {
+        try {
+
             ResultSet categorias = cat.listarCategoria();
             DefaultTableModel tabla = new DefaultTableModel();
             Vector fila = null;
@@ -41,32 +121,33 @@ public class ManCategoria extends javax.swing.JPanel {
             tabla.addColumn("nombre categoria");
             tabla.addColumn("descripcion");
             tabla.addColumn("Vigencia");
-            while(categorias.next()){
+            while (categorias.next()) {
                 int codigo = categorias.getInt("idcategoria");
                 String nombre = categorias.getString("nombrecategoria");
                 String descripcion = categorias.getString("descripcion");
                 Boolean vig = categorias.getBoolean("estado");
-                if(vig){
+                if (vig) {
                     vigente = "Vigente";
-                }else{
+                } else {
                     vigente = "No Vigente";
                 }
-                
+
                 fila = new Vector();
-                fila.add(0,codigo);
-                fila.add(1,nombre);
+                fila.add(0, codigo);
+                fila.add(1, nombre);
                 fila.add(2, descripcion);
                 fila.add(3, vigente);
-                
+
                 tabla.addRow(fila);
             }
-            
+
             tblCategoria.setModel(tabla);
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Error al listar categoria: "+e.getMessage());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al listar categoria: " + e.getMessage());
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -275,54 +356,125 @@ public class ManCategoria extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        try{
-            if(txtCodigoCategoria.getText().trim().equals("")){
-                JOptionPane.showMessageDialog(this, "Debe llenar el campo de codigo de categoria");
+        try {
+            if (txtCodigoCategoria.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Debe ingresar el código de categoría para buscar",
+                        "Campo Vacío",
+                        JOptionPane.WARNING_MESSAGE);
+                txtCodigoCategoria.requestFocus();
                 return;
             }
-            
+
+            // Deshabilitar durante búsqueda
+            habilitarBotones("PROCESANDO");
+
             ResultSet rs = cat.buscarCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 txtCodigoCategoria.setText(String.valueOf(rs.getInt("idcategoria")));
                 txtNombreCategoria.setText(rs.getString("nombrecategoria"));
                 txtDescripcion.setText(rs.getString("descripcion"));
                 checkVigencia.setSelected(rs.getBoolean("estado"));
+
+                // Habilitar botones de acción sobre el registro
+                habilitarBotones("CONSULTADO");
+
+                JOptionPane.showMessageDialog(this,
+                        "Categoría encontrada",
+                        "Búsqueda Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontró ninguna categoría con ese código",
+                        "No Encontrado",
+                        JOptionPane.INFORMATION_MESSAGE);
+                habilitarBotones("INICIAL");
             }
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Error al buscar la categoria: "+e.getMessage());
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "El código debe ser un número válido",
+                    "Error de Formato",
+                    JOptionPane.ERROR_MESSAGE);
+            habilitarBotones("INICIAL");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar la categoría:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            habilitarBotones("INICIAL");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        try{
-            
-            if(btnNuevo.getText().equals("NUEVO")){
-                //Se crea un nuevo codigo
+        try {
+            if (btnNuevo.getText().equals("NUEVO")) {
+                // Cambiar a modo CREANDO
+                habilitarBotones("CREANDO");
+
+                // Se crea un nuevo codigo
                 txtCodigoCategoria.setText(String.valueOf(cat.crearCodigoCategoria()));
-                //Cambiamos el nombre del boton
                 btnNuevo.setText("GUARDAR");
-            }else{
-                
-                ///Ahora si insertamos
-                if(txtCodigoCategoria.getText().equals("") || txtNombreCategoria.getText().equals("") || txtDescripcion.getText().equals("")){
-                    JOptionPane.showMessageDialog(this, "Los campos codigo, nombre y descripcion no pueden estar vacios");
+
+                // Dar foco al nombre
+                txtNombreCategoria.requestFocus();
+
+            } else {
+                // Validar campos antes de insertar
+                if (txtNombreCategoria.getText().trim().equals("")) {
+                    JOptionPane.showMessageDialog(this,
+                            "El campo Nombre de Categoría es obligatorio",
+                            "Validación",
+                            JOptionPane.WARNING_MESSAGE);
+                    txtNombreCategoria.requestFocus();
                     return;
                 }
-                cat.insertarCategoria(Integer.parseInt(txtCodigoCategoria.getText()), 
-                        txtNombreCategoria.getText(), 
-                        txtDescripcion.getText(),
-                        this.checkVigencia.isSelected());
-                
-                JOptionPane.showMessageDialog(this, "Se inserto correctamente");
-                btnNuevo.setText("NUEVO");
-                LimpiarCampos();
-                ListarCategoria();
-                
+
+                if (txtDescripcion.getText().trim().equals("")) {
+                    JOptionPane.showMessageDialog(this,
+                            "El campo Descripción es obligatorio",
+                            "Validación",
+                            JOptionPane.WARNING_MESSAGE);
+                    txtDescripcion.requestFocus();
+                    return;
+                }
+
+                // Confirmar inserción
+                int opcion = JOptionPane.showConfirmDialog(this,
+                        "¿Desea guardar esta nueva categoría?",
+                        "Confirmar Inserción",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (opcion == JOptionPane.YES_OPTION) {
+                    // Deshabilitar todo durante el proceso
+                    habilitarBotones("PROCESANDO");
+
+                    cat.insertarCategoria(
+                            Integer.parseInt(txtCodigoCategoria.getText()),
+                            txtNombreCategoria.getText().trim(),
+                            txtDescripcion.getText().trim(),
+                            checkVigencia.isSelected()
+                    );
+
+                    JOptionPane.showMessageDialog(this,
+                            "Categoría registrada exitosamente",
+                            "Registro Exitoso",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    btnNuevo.setText("NUEVO");
+                    LimpiarCampos();
+                    ListarCategoria();
+                    habilitarBotones("INICIAL");
+                }
             }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Error al insertar una nueva cateogira: "+e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al insertar la categoría:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            btnNuevo.setText("NUEVO");
+            habilitarBotones("INICIAL");
         }
     }//GEN-LAST:event_btnNuevoActionPerformed
 
@@ -331,72 +483,194 @@ public class ManCategoria extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        try{
-            
-            if(txtCodigoCategoria.getText().trim().equals("")){
-                JOptionPane.showMessageDialog(this, "Busque un codigo a eliminar");
+        try {
+            if (txtCodigoCategoria.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Debe buscar o seleccionar una categoría para eliminar",
+                        "Campo Vacío",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
-    
-            int opcion = JOptionPane.showConfirmDialog(null, "ELIMINAR","¿DESEA ELIMINAR?", JOptionPane.YES_NO_OPTION);
-            
-            if(opcion==0){
-                //Elimino
-                cat.eliminarCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
-                JOptionPane.showMessageDialog(this, "Se elimino correctamente");
-                ListarCategoria();
+
+            // Verificar que existe
+            ResultSet rs = cat.buscarCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(this,
+                        "La categoría no existe en el sistema",
+                        "Categoría No Encontrada",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Error al eliminar una categoria: "+e.getMessage());
+
+            String mensaje = "¿Está seguro que desea ELIMINAR esta categoría?\n\n"
+                    + "• Si tiene libros asociados: Se desactivará la categoría y sus libros\n"
+                    + "• Si NO tiene libros: Se eliminará permanentemente del sistema";
+
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    mensaje,
+                    "Confirmar Eliminación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                // Deshabilitar durante el proceso
+                habilitarBotones("PROCESANDO");
+
+                cat.eliminarCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
+
+                JOptionPane.showMessageDialog(this,
+                        "Categoría procesada correctamente.\n"
+                        + "Si tenía libros asociados, fueron desactivados junto con la categoría.",
+                        "Operación Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                LimpiarCampos();
+                ListarCategoria();
+                habilitarBotones("INICIAL");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al eliminar la categoría:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            habilitarBotones("CONSULTADO"); // Volver al estado anterior
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        try{
-            if(txtCodigoCategoria.getText().equals("") || txtNombreCategoria.getText().equals("") || txtDescripcion.getText().equals("")){
-                    JOptionPane.showMessageDialog(this, "Debe buscar un registro");
-                    return;
+        try {
+            if (txtCodigoCategoria.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Debe buscar una categoría primero",
+                        "Validación",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
             }
-            int opcion = JOptionPane.showConfirmDialog(null, "ACTUALIZAR","¿DESEA ACTUALIZAR?", JOptionPane.YES_NO_OPTION);
-            
-            if(opcion==0){
-                //ACTUALIZO
-                cat.ActualizarCategoria(Integer.parseInt(txtCodigoCategoria.getText()), txtNombreCategoria.getText(),
-                        txtDescripcion.getText(), this.checkVigencia.isSelected());
-                JOptionPane.showMessageDialog(this, "Se actualizo correctamente");
+
+            if (txtNombreCategoria.getText().trim().equals("")
+                    || txtDescripcion.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Los campos Nombre y Descripción no pueden estar vacíos",
+                        "Validación",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String mensaje = "¿Desea actualizar esta categoría?";
+            if (!checkVigencia.isSelected()) {
+                mensaje = "¿Está seguro de DESACTIVAR esta categoría?\n\n"
+                        + "ADVERTENCIA: Si tiene libros asociados, también serán desactivados.";
+            }
+
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    mensaje,
+                    "Confirmar Actualización",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                // Deshabilitar durante el proceso
+                habilitarBotones("PROCESANDO");
+
+                cat.ActualizarCategoria(
+                        Integer.parseInt(txtCodigoCategoria.getText()),
+                        txtNombreCategoria.getText().trim(),
+                        txtDescripcion.getText().trim(),
+                        checkVigencia.isSelected()
+                );
+
+                String mensajeExito = "Categoría actualizada correctamente";
+                if (!checkVigencia.isSelected()) {
+                    mensajeExito += ".\nLos libros asociados también fueron desactivados.";
+                }
+
+                JOptionPane.showMessageDialog(this,
+                        mensajeExito,
+                        "Actualización Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                LimpiarCampos();
                 ListarCategoria();
+                habilitarBotones("INICIAL");
             }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Error al actualizar una categoria: "+e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al actualizar la categoría:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            habilitarBotones("CONSULTADO"); // Volver al estado anterior
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnDarBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarBajaActionPerformed
-        try{
-            
-            if(txtCodigoCategoria.getText().equals("")){
-                JOptionPane.showMessageDialog(this, "Se necesita el codigo de la categoria para dar de baja");
+        try {
+            if (txtCodigoCategoria.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Debe buscar o seleccionar una categoría para dar de baja",
+                        "Campo Vacío",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            int opcion = JOptionPane.showConfirmDialog(null, "DAR DE BAJA","¿DESEA DAR DE BAJA?", JOptionPane.YES_NO_OPTION);
-            
-            if(opcion==0){
-                //DAR DE BAJA
-                cat.DarBajaCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
-                JOptionPane.showMessageDialog(this, "Se dio de baja correctamente");
-                ListarCategoria();
+
+            // Verificar estado actual
+            ResultSet rs = cat.buscarCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
+            if (rs.next()) {
+                boolean estadoActual = rs.getBoolean("estado");
+
+                if (!estadoActual) {
+                    JOptionPane.showMessageDialog(this,
+                            "Esta categoría ya está INACTIVA.\n"
+                            + "No es necesario darla de baja nuevamente.",
+                            "Categoría Ya Inactiva",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
             }
-            
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Ocurrio un error al dar de baja categoria: "+e.getMessage());
+
+            String mensaje = "¿Está seguro de DAR DE BAJA esta categoría?\n\n"
+                    + "Esta acción:\n"
+                    + "• Desactivará la categoría\n"
+                    + "• Desactivará TODOS los libros asociados a esta categoría\n\n"
+                    + "¿Desea continuar?";
+
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    mensaje,
+                    "Confirmar Dar de Baja",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                // Deshabilitar durante el proceso
+                habilitarBotones("PROCESANDO");
+
+                cat.DarBajaCategoria(Integer.parseInt(txtCodigoCategoria.getText()));
+
+                JOptionPane.showMessageDialog(this,
+                        "Categoría dada de baja exitosamente.\n"
+                        + "Los libros asociados también fueron desactivados.",
+                        "Operación Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                LimpiarCampos();
+                ListarCategoria();
+                habilitarBotones("INICIAL");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al dar de baja la categoría:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            habilitarBotones("CONSULTADO"); // Volver al estado anterior
         }
     }//GEN-LAST:event_btnDarBajaActionPerformed
 
     private void tblCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCategoriaMouseClicked
-        txtCodigoCategoria.setText(String.valueOf(tblCategoria.getValueAt(tblCategoria.getSelectedRow(),0)));
-        btnBuscarActionPerformed(null);
+        // Obtener el código de la fila seleccionada
+        int filaSeleccionada = tblCategoria.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            txtCodigoCategoria.setText(String.valueOf(tblCategoria.getValueAt(filaSeleccionada, 0)));
+            btnBuscarActionPerformed(null);
+        }
     }//GEN-LAST:event_tblCategoriaMouseClicked
 
 

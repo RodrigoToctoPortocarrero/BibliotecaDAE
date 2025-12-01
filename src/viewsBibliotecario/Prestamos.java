@@ -237,24 +237,31 @@ public class Prestamos extends javax.swing.JPanel {
 
     private void btnRegistrarPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarPrestamoActionPerformed
         try {
-
-            // Validar lector
+            // ===================================
+            // VALIDACIÓN 1: Lector seleccionado
+            // ===================================
             if (txtLector.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                         "Debe seleccionar un lector.",
-                        "Falta lector", JOptionPane.WARNING_MESSAGE);
+                        "Falta Lector",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // Validar fecha devolución
+            // ===================================
+            // VALIDACIÓN 2: Fecha de devolución
+            // ===================================
             if (jDateChooser1.getDate() == null) {
                 JOptionPane.showMessageDialog(this,
                         "Debe seleccionar una fecha estimada de devolución.",
-                        "Fecha faltante", JOptionPane.WARNING_MESSAGE);
+                        "Fecha Faltante",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // === VALIDAR QUE NO SEA MENOR A LA FECHA ACTUAL ===
+            // ===================================
+            // VALIDACIÓN 3: Fecha no puede ser pasada
+            // ===================================
             Date fechaSeleccionada = jDateChooser1.getDate();
             Date hoy = new Date();
 
@@ -265,79 +272,136 @@ public class Prestamos extends javax.swing.JPanel {
             if (fechaSeleccionada.before(hoy)) {
                 JOptionPane.showMessageDialog(this,
                         "La fecha de devolución no puede ser menor a la fecha actual.",
-                        "Fecha inválida",
+                        "Fecha Inválida",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // Validar ejemplares
+            // ===================================
+            // VALIDACIÓN 4: Al menos un ejemplar
+            // ===================================
             if (tblDetallePrestamo.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this,
                         "Debe agregar al menos un ejemplar.",
-                        "Sin ejemplares",
+                        "Sin Ejemplares",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
+            // ===================================
+            // VALIDACIÓN 5: Máximo 3 ejemplares
+            // ===================================
+            if (tblDetallePrestamo.getRowCount() > 3) {
+                JOptionPane.showMessageDialog(this,
+                        "Solo puede prestar un máximo de 3 ejemplares por préstamo.",
+                        "Límite Excedido",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // ===================================
+            // Crear instancias
+            // ===================================
             Prestamo objPrestamo = new Prestamo();
             Usuarios objUsuarios = new Usuarios();
 
             int idPrestamo = objPrestamo.generarCodigoPrestamo();
             int idLector = objUsuarios.obtenerIdLectorPorNombre(txtLector.getText());
 
-            // PRESTAMO ACTIVO
+            // ===================================
+            // VALIDACIÓN 6: Usuario lector vigente
+            // ===================================
+            if (!objPrestamo.usuarioEstaVigente(idLector)) {
+                JOptionPane.showMessageDialog(this,
+                        "El usuario lector no está VIGENTE.\n"
+                        + "No puede realizar préstamos hasta que sea reactivado.",
+                        "Usuario No Vigente",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // ===================================
+            // VALIDACIÓN 7: Préstamos activos
+            // ===================================
             if (objPrestamo.tienePrestamosActivos(idLector)) {
                 JOptionPane.showMessageDialog(this,
-                        "El lector tiene préstamos activos y no puede solicitar otro.",
-                        "Préstamo activo",
+                        "El lector tiene préstamos activos.\n"
+                        + "Debe devolver los libros antes de solicitar otro préstamo.",
+                        "Préstamo Activo",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // MULTAS
+            // ===================================
+            // VALIDACIÓN 8: Multas pendientes
+            // ===================================
             if (objPrestamo.tieneMultasPendientes(idLector)) {
                 JOptionPane.showMessageDialog(this,
-                        "El lector tiene multas pendientes. No puede solicitar préstamos.",
-                        "Multas pendientes",
+                        "El lector tiene multas pendientes.\n"
+                        + "Debe cancelar las multas antes de solicitar préstamos.",
+                        "Multas Pendientes",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // MÁXIMO 3 EJEMPLARES
-            if (tblDetallePrestamo.getRowCount() > 3) {
-                JOptionPane.showMessageDialog(this,
-                        "Solo puede prestar un máximo de 3 ejemplares por préstamo.",
-                        "Límite excedido",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // BIBLIOTECARIO DESDE SESIÓN
+            // ===================================
+            // Obtener ID del Bibliotecario desde Sesión
+            // ===================================
             int idBibliotecario = Sesion.getUsuario().getIdusuario();
 
-            // Convertir fecha
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String fechaDev = sdf.format(jDateChooser1.getDate());
+            // ===================================
+            // Convertir fecha a SQL (CORREGIDO)
+            // ===================================
+            java.util.Date fechaUtil = jDateChooser1.getDate();
+            java.sql.Date fechaSQL = new java.sql.Date(fechaUtil.getTime());
+            String fechaDevString = formatoCorto.format(fechaUtil); // para mostrar al usuario
 
-            // Registrar
+            // ===================================
+            // Confirmación antes de registrar
+            // ===================================
+            int confirmar = JOptionPane.showConfirmDialog(this,
+                    "¿Está seguro de registrar este préstamo?\n\n"
+                    + "Lector: " + txtLector.getText() + "\n"
+                    + "Ejemplares: " + tblDetallePrestamo.getRowCount() + "\n"
+                    + "Fecha Devolución: " + fechaDevString,
+                    "Confirmar Préstamo",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirmar != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            // ===================================
+            // REGISTRAR PRÉSTAMO (TRANSACCIÓN)
+            // ===================================
             objPrestamo.registrarPrestamo(
                     idPrestamo,
                     idLector,
                     idBibliotecario,
-                    fechaDev,
+                    fechaSQL, // ← FECHA SQL CORRECTA
                     tblDetallePrestamo
             );
 
+            // ===================================
+            // Mensaje de éxito
+            // ===================================
             JOptionPane.showMessageDialog(this,
-                    "Préstamo registrado correctamente.",
+                    "✓ Préstamo registrado correctamente.\n\n"
+                    + "ID Préstamo: " + idPrestamo + "\n"
+                    + "Fecha Préstamo: HOY\n"
+                    + "Fecha Devolución Estimada: " + fechaDevString + "\n"
+                    + "Ejemplares prestados: " + tblDetallePrestamo.getRowCount(),
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
 
+            // ===================================
+            // Limpiar formulario
+            // ===================================
             limpiarFormulario();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Error al registrar préstamo: " + e.getMessage(),
+                    "❌ Error al registrar préstamo:\n" + e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }

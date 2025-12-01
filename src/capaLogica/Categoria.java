@@ -64,161 +64,213 @@ public class Categoria {
         return 0;
     }
 
-    //Necesito un metodo que me elimine
+    // Método eliminarCategoria MEJORADO
     public void eliminarCategoria(int idcategoria) throws Exception {
+        PreparedStatement pstCount = null;
+        PreparedStatement pstLibros = null;
+        PreparedStatement pstCategoria = null;
+        PreparedStatement pstDelete = null;
+        ResultSet rs = null;
+
         try {
             // 1. Contar la cantidad de libros asociados
             String sqlCount = "SELECT COUNT(*) AS cantidad FROM LIBROS WHERE idcategoria = ?";
-            PreparedStatement pstCount = con.conectar().prepareStatement(sqlCount);
+            pstCount = con.conectar().prepareStatement(sqlCount);
             pstCount.setInt(1, idcategoria);
-            ResultSet rs = pstCount.executeQuery();
+            rs = pstCount.executeQuery();
 
             int cantidad = 0;
-            // ¡CORRECCIÓN CRÍTICA! Es necesario mover el cursor con rs.next() para leer los datos
             if (rs.next()) {
                 cantidad = rs.getInt("cantidad");
             }
-
-            // Cierre de recursos del conteo
-            rs.close();
-            pstCount.close();
 
             if (cantidad > 0) {
                 // Eliminación LÓGICA (Tiene libros asociados)
 
                 // Desactivar libros
                 String sqlLibros = "UPDATE LIBROS SET estado = false WHERE idcategoria = ?";
-                PreparedStatement pstLibros = con.conectar().prepareStatement(sqlLibros);
+                pstLibros = con.conectar().prepareStatement(sqlLibros);
                 pstLibros.setInt(1, idcategoria);
                 pstLibros.executeUpdate();
-                pstLibros.close();
 
                 // Desactivar categoría
                 String sqlCategoria = "UPDATE CATEGORIA SET estado = false WHERE idcategoria = ?";
-                PreparedStatement pstCategoria = con.conectar().prepareStatement(sqlCategoria);
+                pstCategoria = con.conectar().prepareStatement(sqlCategoria);
                 pstCategoria.setInt(1, idcategoria);
                 pstCategoria.executeUpdate();
-                pstCategoria.close();
 
             } else {
                 // Eliminación FÍSICA (No tiene libros asociados)
                 String sqlDelete = "DELETE FROM CATEGORIA WHERE idcategoria = ?";
-                PreparedStatement pstDelete = con.conectar().prepareStatement(sqlDelete);
+                pstDelete = con.conectar().prepareStatement(sqlDelete);
                 pstDelete.setInt(1, idcategoria);
                 pstDelete.executeUpdate();
-                pstDelete.close();
             }
+
         } catch (Exception e) {
             throw new Exception("Error al eliminar categoría: " + e.getMessage());
+        } finally {
+            // Cerrar todos los recursos
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstCount != null) {
+                    pstCount.close();
+                }
+                if (pstLibros != null) {
+                    pstLibros.close();
+                }
+                if (pstCategoria != null) {
+                    pstCategoria.close();
+                }
+                if (pstDelete != null) {
+                    pstDelete.close();
+                }
+            } catch (SQLException ex) {
+                // Log error but don't throw
+            }
         }
     }
 
-    //Actualizar categoria
     public void ActualizarCategoria(int idcategoria, String nombrecategoria, String descripcion, Boolean vigencia) throws Exception {
+        PreparedStatement pstUpdateCat = null;
+        PreparedStatement pstCount = null;
+        PreparedStatement pstLibros = null;
+        ResultSet rs = null;
+
         try {
-            // 1. Actualizar la CATEGORIA con los nuevos datos (incluyendo la vigencia)
+            // 1. Actualizar la CATEGORIA con los nuevos datos
             String sqlUpdateCat = "UPDATE CATEGORIA SET nombrecategoria = ?, descripcion = ?, estado = ? WHERE idcategoria=?";
-            PreparedStatement pstUpdateCat = con.conectar().prepareStatement(sqlUpdateCat);
+            pstUpdateCat = con.conectar().prepareStatement(sqlUpdateCat);
             pstUpdateCat.setString(1, nombrecategoria);
             pstUpdateCat.setString(2, descripcion);
             pstUpdateCat.setBoolean(3, vigencia);
             pstUpdateCat.setInt(4, idcategoria);
             pstUpdateCat.executeUpdate();
-            pstUpdateCat.close();
 
-            // 2. Si la nueva vigencia es FALSE, revisar si tiene libros y desactivarlos
+            // 2. Si la nueva vigencia es FALSE, desactivar los libros asociados
             if (!vigencia) {
-
                 // a. Contar la cantidad de libros asociados
                 String sqlCount = "SELECT COUNT(*) AS cantidad FROM LIBROS WHERE idcategoria = ?";
-                PreparedStatement pstCount = con.conectar().prepareStatement(sqlCount);
+                pstCount = con.conectar().prepareStatement(sqlCount);
                 pstCount.setInt(1, idcategoria);
-                ResultSet rs = pstCount.executeQuery();
+                rs = pstCount.executeQuery();
 
                 int cantidad = 0;
-                // ¡CORRECCIÓN CRÍTICA! Mover el cursor para leer
                 if (rs.next()) {
                     cantidad = rs.getInt("cantidad");
                 }
-                rs.close();
-                pstCount.close();
 
                 // b. Si tiene libros, desactivarlos también
                 if (cantidad > 0) {
                     String sqlLibros = "UPDATE LIBROS SET estado = false WHERE idcategoria = ?";
-                    PreparedStatement pstLibros = con.conectar().prepareStatement(sqlLibros);
+                    pstLibros = con.conectar().prepareStatement(sqlLibros);
                     pstLibros.setInt(1, idcategoria);
                     pstLibros.executeUpdate();
-                    pstLibros.close();
                 }
             }
-            // Nota: Si la vigencia es TRUE, se asume que los libros asociados (si los hay)
-            // se manejan por separado o se actualizan a TRUE de manera explícita si el negocio lo requiere.
-            // Aquí solo se sincroniza la desactivación.
-            //NOTA DE RODRIGO: TIENES RAZÓN MI ESTIMADO
 
         } catch (Exception e) {
             throw new Exception("Error al actualizar categoria: " + e.getMessage());
+        } finally {
+            // Cerrar todos los recursos
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstUpdateCat != null) {
+                    pstUpdateCat.close();
+                }
+                if (pstCount != null) {
+                    pstCount.close();
+                }
+                if (pstLibros != null) {
+                    pstLibros.close();
+                }
+            } catch (SQLException ex) {
+                // Log error but don't throw
+            }
         }
     }
 
-    //Dar de baja la categoria
+    // Método DarBajaCategoria MEJORADO
     public void DarBajaCategoria(int idcategoria) throws Exception {
+        PreparedStatement pstVigencia = null;
+        PreparedStatement pstCount = null;
+        PreparedStatement pstLibros = null;
+        PreparedStatement pstCategoria = null;
+        ResultSet rsVigencia = null;
+        ResultSet rsCount = null;
+
         try {
-            // 1. Encontrar la vigencia ACTUAL de la categoría
+            // 1. Verificar la vigencia ACTUAL de la categoría
             String sqlVigencia = "SELECT estado FROM CATEGORIA WHERE idcategoria = ?";
-            PreparedStatement pstVigencia = con.conectar().prepareStatement(sqlVigencia);
+            pstVigencia = con.conectar().prepareStatement(sqlVigencia);
             pstVigencia.setInt(1, idcategoria);
-            ResultSet rsVigencia = pstVigencia.executeQuery();
+            rsVigencia = pstVigencia.executeQuery();
 
             boolean vigenciaActual = false;
-            // ¡CORRECCIÓN CRÍTICA! Mover el cursor para leer
             if (rsVigencia.next()) {
                 vigenciaActual = rsVigencia.getBoolean("estado");
             }
-            rsVigencia.close();
-            pstVigencia.close();
 
-            if (vigenciaActual) {
-                // La categoría está activa, procedemos a desactivarla y a los libros
-
-                // a. Contar libros (Para determinar si se debe actualizar LIBROS)
-                String sqlCount = "SELECT COUNT(*) AS cantidad FROM LIBROS WHERE idcategoria = ?";
-                PreparedStatement pstCount = con.conectar().prepareStatement(sqlCount);
-                pstCount.setInt(1, idcategoria);
-                ResultSet rsCount = pstCount.executeQuery();
-
-                int cantidad = 0;
-                // ¡CORRECCIÓN CRÍTICA! Mover el cursor para leer
-                if (rsCount.next()) {
-                    cantidad = rsCount.getInt("cantidad");
-                }
-                rsCount.close();
-                pstCount.close();
-
-                // b. Si tiene libros, desactivarlos también (Asumo que la tabla es LIBROS, como en otros métodos)
-                if (cantidad > 0) {
-                    String sqlLibros = "UPDATE LIBROS SET estado = false WHERE idcategoria = ?";
-                    PreparedStatement pstLibros = con.conectar().prepareStatement(sqlLibros);
-                    pstLibros.setInt(1, idcategoria);
-                    pstLibros.executeUpdate();
-                    pstLibros.close();
-                }
-
-                // c. Desactivar la categoría (Esto siempre ocurre si vigenciaActual era TRUE)
-                String sqlCategoria = "UPDATE CATEGORIA SET estado = FALSE WHERE idcategoria= ?";
-                PreparedStatement pstCategoria = con.conectar().prepareStatement(sqlCategoria);
-                pstCategoria.setInt(1, idcategoria);
-                pstCategoria.executeUpdate();
-                pstCategoria.close();
-
-            } else {
+            if (!vigenciaActual) {
                 // La categoría ya está inactiva
-                System.out.println("La vigencia de la categoría ya fue dada de baja");
+                throw new Exception("La categoría ya está dada de baja");
             }
+
+            // 2. Contar libros asociados
+            String sqlCount = "SELECT COUNT(*) AS cantidad FROM LIBROS WHERE idcategoria = ?";
+            pstCount = con.conectar().prepareStatement(sqlCount);
+            pstCount.setInt(1, idcategoria);
+            rsCount = pstCount.executeQuery();
+
+            int cantidad = 0;
+            if (rsCount.next()) {
+                cantidad = rsCount.getInt("cantidad");
+            }
+
+            // 3. Si tiene libros, desactivarlos
+            if (cantidad > 0) {
+                String sqlLibros = "UPDATE LIBROS SET estado = false WHERE idcategoria = ?";
+                pstLibros = con.conectar().prepareStatement(sqlLibros);
+                pstLibros.setInt(1, idcategoria);
+                pstLibros.executeUpdate();
+            }
+
+            // 4. Desactivar la categoría
+            String sqlCategoria = "UPDATE CATEGORIA SET estado = FALSE WHERE idcategoria = ?";
+            pstCategoria = con.conectar().prepareStatement(sqlCategoria);
+            pstCategoria.setInt(1, idcategoria);
+            pstCategoria.executeUpdate();
 
         } catch (Exception e) {
             throw new Exception("Error al dar de baja categoría: " + e.getMessage());
+        } finally {
+            // Cerrar todos los recursos
+            try {
+                if (rsVigencia != null) {
+                    rsVigencia.close();
+                }
+                if (rsCount != null) {
+                    rsCount.close();
+                }
+                if (pstVigencia != null) {
+                    pstVigencia.close();
+                }
+                if (pstCount != null) {
+                    pstCount.close();
+                }
+                if (pstLibros != null) {
+                    pstLibros.close();
+                }
+                if (pstCategoria != null) {
+                    pstCategoria.close();
+                }
+            } catch (SQLException ex) {
+                // Log error but don't throw
+            }
         }
     }
 
