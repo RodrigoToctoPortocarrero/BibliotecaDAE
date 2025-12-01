@@ -17,6 +17,7 @@ import viewsBibliotecario.ManEjemplar;
 import viewsBibliotecario.ManLibro;
 import viewsBibliotecario.ManUsuarios;
 import viewsBibliotecario.Multa;
+import viewsBibliotecario.Prestamos;
 import viewsBibliotecario.PrincipalBibliotecario;
 import viewsUsuario.PrestamosUsuarios;
 
@@ -436,7 +437,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEjemplarActionPerformed
 
     private void btnPrestamosUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuarioActionPerformed
-        PrestamosUsuarios pres = new PrestamosUsuarios();
+        Prestamos pres = new Prestamos();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
