@@ -14,16 +14,14 @@ import viewsUsuario.PrestamosUsuarios;
 import viewsUsuario.PrincipalUsuario;
 import viewsUsuario.frmReporte;
 
-
 /**
  *
  * @author Tocto Portocarrero Rodrigo
  */
 public class frmPrincipalLector extends javax.swing.JFrame {
-private String nombreUsuario;
-private int idUsuario;
 
-   
+    private String nombreUsuario;
+    private int idUsuario;
 
     // Constructor con el nombre del usuario
     public frmPrincipalLector(String nombreUsuario, int idRecibido) {
@@ -377,7 +375,7 @@ private int idUsuario;
     private void btnDevolucionesUsuario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolucionesUsuario1ActionPerformed
         // AQUÍ ESTABA EL ERROR. Antes decia (WIDTH), ahora pasamos (this.idUsuario)
         viewsUsuario.DevolucionUsuario panel = new viewsUsuario.DevolucionUsuario(this.idUsuario);
-        
+
         panel.setSize(750, 430);
         panel.setLocation(0, 0);
 
@@ -385,11 +383,19 @@ private int idUsuario;
         content.add(panel, java.awt.BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-     
+
     }//GEN-LAST:event_btnDevolucionesUsuario1ActionPerformed
 
     private void btnPrestamosUsuario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrestamosUsuario2ActionPerformed
-        // TODO add your handling code here:
+        PrestamosUsuarios panel = new PrestamosUsuarios();
+
+        panel.setSize(750, 430);
+        panel.setLocation(0, 0);
+
+        content.removeAll();
+        content.add(panel, java.awt.BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
     }//GEN-LAST:event_btnPrestamosUsuario2ActionPerformed
 
     private void InitContent() {

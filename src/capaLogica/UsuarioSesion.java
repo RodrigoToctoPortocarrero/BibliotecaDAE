@@ -22,7 +22,7 @@ public class UsuarioSesion {
         this.nomusuario = nomusuario;
         this.tipousuario = tipousuario;
     }
-
+    
     // Getters
     public int getIdusuario() {
         return idusuario;

@@ -87,7 +87,7 @@ public class Usuarios {
     }
 
     public void modificar(Integer id, String nombre, String apPat, String apMat,
-            Date fNacimiento, String nomUsuario,
+            Date fNacimiento, String nomUsuario, String contrasenia,
             String telefono, String correo, String direccion,
             String tipoUsuario, Boolean estado) throws Exception {
 
@@ -97,6 +97,7 @@ public class Usuarios {
                 + "ap_materno = '" + apMat + "', "
                 + "f_nacimiento = '" + fNacimiento + "', "
                 + "nomusuario = '" + nomUsuario + "', "
+                + "contrasenia = MD5('" + contrasenia + "' || '" + nomUsuario + "' || 'USAT2025'), "
                 + "telefono = '" + telefono + "', "
                 + "correo = '" + correo + "', "
                 + "direccion = '" + direccion + "', "
@@ -170,4 +171,30 @@ public class Usuarios {
             throw new Exception("Error al listar usuarios por tipo: " + e.getMessage());
         }
     }
+
+    public Integer obtenerIdLectorPorNombre(String nombreCompleto) throws Exception {
+
+        nombreCompleto = nombreCompleto.trim();
+
+        strSQL = "SELECT idusuario FROM USUARIO "
+                + "WHERE TRIM(CONCAT(nombre, ' ', ap_paterno, ' ', ap_materno)) ILIKE ?";
+
+        try {
+            objConectar.conectar();
+            PreparedStatement ps = objConectar.getCon().prepareStatement(strSQL);
+            ps.setString(1, nombreCompleto);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("idusuario");
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Error al buscar ID del lector: " + e.getMessage());
+        }
+    }
+
 }

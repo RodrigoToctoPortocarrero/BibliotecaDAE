@@ -2,6 +2,8 @@ package viewsBibliotecario;
 
 import capaLogica.Usuarios;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -428,7 +430,7 @@ public class ManUsuarios extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     private void cargarDatosDesdeTabla() {
         txtId.setEnabled(false);
-        txtContrasena.setEnabled(false);
+        txtContrasena.setEnabled(true);
 
         int fila = tblUsuarios.getSelectedRow();
 
@@ -441,7 +443,6 @@ public class ManUsuarios extends javax.swing.JPanel {
             java.util.Date fecha = (java.util.Date) tblUsuarios.getValueAt(fila, 4);
             jDateChooser1.setDate(fecha);
             txtUsuario.setText(tblUsuarios.getValueAt(fila, 5).toString());
-            txtContrasena.setText(tblUsuarios.getValueAt(fila, 6).toString());
             txtTelefono.setText(tblUsuarios.getValueAt(fila, 7).toString());
             txtGmail.setText(tblUsuarios.getValueAt(fila, 8).toString());
             txtDireccion.setText(tblUsuarios.getValueAt(fila, 9).toString());
@@ -469,8 +470,10 @@ public class ManUsuarios extends javax.swing.JPanel {
     }
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        
         txtId.setEnabled(false);
-        txtContrasena.setEnabled(false);
+        txtContrasena.setEnabled(true);
+
         try {
             String idTexto = txtId.getText().trim();
             String usuarioTexto = txtUsuario.getText().trim();
@@ -493,7 +496,6 @@ public class ManUsuarios extends javax.swing.JPanel {
                 txtApPaterno.setText(rs.getString("ap_paterno"));
                 txtApMaterno.setText(rs.getString("ap_materno"));
                 txtUsuario.setText(rs.getString("nomusuario"));
-                txtContrasena.setText(rs.getString("contrasenia"));
                 txtTelefono.setText(rs.getString("telefono"));
                 txtGmail.setText(rs.getString("correo"));
                 txtDireccion.setText(rs.getString("direccion"));
@@ -580,6 +582,7 @@ public class ManUsuarios extends javax.swing.JPanel {
                 btnNuevo.setText("GUARDAR");
                 limpiarControles();
                 chkvigente.setEnabled(false);
+                txtId.setEnabled(false);
                 chkvigente.setSelected(true);
                 jDateChooser1.setCalendar(null);
                 txtId.setText(objUsuarios.generarCodigoUsuario().toString());
@@ -605,6 +608,36 @@ public class ManUsuarios extends javax.swing.JPanel {
                     return;
                 }
 
+                Date fechaSeleccionada = jDateChooser1.getDate();
+                Date hoy = new Date();
+
+                SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+                fechaSeleccionada = formato.parse(formato.format(fechaSeleccionada));
+                hoy = formato.parse(formato.format(hoy));
+
+                // No puede ser futura
+                if (fechaSeleccionada.after(hoy)) {
+                    JOptionPane.showMessageDialog(this,
+                            "La fecha de nacimiento no puede ser futura.",
+                            "Fecha inválida",
+                            JOptionPane.WARNING_MESSAGE);
+                    jDateChooser1.requestFocus();
+                    return;
+                }
+
+                // Mínimo 12 años
+                long diferenciaMS = hoy.getTime() - fechaSeleccionada.getTime();
+                long años = diferenciaMS / (1000L * 60 * 60 * 24 * 365);
+
+                if (años < 12) {
+                    JOptionPane.showMessageDialog(this,
+                            "El usuario debe tener al menos 12 años.",
+                            "Edad mínima",
+                            JOptionPane.WARNING_MESSAGE);
+                    jDateChooser1.requestFocus();
+                    return;
+                }
+
                 if (txtUsuario.getText().trim().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Debe ingresar el usuario");
                     return;
@@ -620,8 +653,30 @@ public class ManUsuarios extends javax.swing.JPanel {
                     return;
                 }
 
+                // VALIDACIÓN DE TELÉFONO
+                String telefono = txtTelefono.getText().trim();
+                if (!telefono.matches("^[0-9]{9}$")) {
+                    JOptionPane.showMessageDialog(this,
+                            "El teléfono debe contener exactamente 9 dígitos.",
+                            "Teléfono inválido",
+                            JOptionPane.WARNING_MESSAGE);
+                    txtTelefono.requestFocus();
+                    return;
+                }
+
                 if (txtGmail.getText().trim().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Debe ingresar el correo");
+                    return;
+                }
+
+                // VALIDACIÓN DE CORREO
+                String correo = txtGmail.getText().trim();
+                if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+                    JOptionPane.showMessageDialog(this,
+                            "Debe ingresar un correo electrónico válido.",
+                            "Correo inválido",
+                            JOptionPane.WARNING_MESSAGE);
+                    txtGmail.requestFocus();
                     return;
                 }
 
@@ -655,8 +710,7 @@ public class ManUsuarios extends javax.swing.JPanel {
                     return; // usuario canceló
                 }
 
-                objUsuarios.registrar(
-                        Integer.parseInt(txtId.getText()),
+                objUsuarios.registrar(Integer.valueOf(txtId.getText()),
                         txtNombre.getText(),
                         txtApPaterno.getText(),
                         txtApMaterno.getText(),
@@ -686,8 +740,8 @@ public class ManUsuarios extends javax.swing.JPanel {
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        txtId.setEnabled(true);
-        txtContrasena.setEnabled(true);
+
+        txtId.setEnabled(false);
 
         try {
 
@@ -702,13 +756,40 @@ public class ManUsuarios extends javax.swing.JPanel {
                 return;
             }
 
+            if (!txtNombre.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$")) {
+                JOptionPane.showMessageDialog(this,
+                        "El nombre solo debe contener letras.",
+                        "Nombre inválido",
+                        JOptionPane.WARNING_MESSAGE);
+                txtNombre.requestFocus();
+                return;
+            }
+
             if (txtApPaterno.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe ingresar el apellido paterno.");
                 return;
             }
 
+            if (!txtApPaterno.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$")) {
+                JOptionPane.showMessageDialog(this,
+                        "El apellido paterno solo debe contener letras.",
+                        "Apellido inválido",
+                        JOptionPane.WARNING_MESSAGE);
+                txtApPaterno.requestFocus();
+                return;
+            }
+
             if (txtApMaterno.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe ingresar el apellido materno.");
+                return;
+            }
+
+            if (!txtApMaterno.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$")) {
+                JOptionPane.showMessageDialog(this,
+                        "El apellido materno solo debe contener letras.",
+                        "Apellido inválido",
+                        JOptionPane.WARNING_MESSAGE);
+                txtApMaterno.requestFocus();
                 return;
             }
 
@@ -732,8 +813,30 @@ public class ManUsuarios extends javax.swing.JPanel {
                 return;
             }
 
+            // VALIDACIÓN DE TELÉFONO
+            String telefono = txtTelefono.getText().trim();
+            if (!telefono.matches("^[0-9]{9}$")) {
+                JOptionPane.showMessageDialog(this,
+                        "El teléfono debe contener exactamente 9 dígitos.",
+                        "Teléfono inválido",
+                        JOptionPane.WARNING_MESSAGE);
+                txtTelefono.requestFocus();
+                return;
+            }
+
             if (txtGmail.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe ingresar el correo.");
+                return;
+            }
+
+            // VALIDACIÓN DE CORREO
+            String correo = txtGmail.getText().trim();
+            if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+                JOptionPane.showMessageDialog(this,
+                        "Debe ingresar un correo electrónico válido.",
+                        "Correo inválido",
+                        JOptionPane.WARNING_MESSAGE);
+                txtGmail.requestFocus();
                 return;
             }
 
@@ -768,6 +871,7 @@ public class ManUsuarios extends javax.swing.JPanel {
             if (op != JOptionPane.YES_OPTION) {
                 return;
             }
+
             objUsuarios.modificar(
                     Integer.parseInt(txtId.getText()),
                     txtNombre.getText(),
@@ -775,6 +879,7 @@ public class ManUsuarios extends javax.swing.JPanel {
                     txtApMaterno.getText(),
                     fechaNacimiento,
                     txtUsuario.getText(),
+                    txtContrasena.getText(),
                     txtTelefono.getText(),
                     txtGmail.getText(),
                     txtDireccion.getText(),
@@ -790,6 +895,7 @@ public class ManUsuarios extends javax.swing.JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
+
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnDarbajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDarbajaActionPerformed

@@ -418,4 +418,25 @@ public class Ejemplar {
             throw new Exception("Error al buscar ejemplares por título: " + e.getMessage());
         }
     }
+
+    public ResultSet filtrar(String nombre) throws Exception {
+        sql = "SELECT E.idejemplar, E.NroEjemplar, E.estado, L.titulo "
+                + "FROM ejemplar E "
+                + "INNER JOIN libros L ON E.idlibro = L.idlibro "
+                + "WHERE LOWER(L.titulo) LIKE LOWER('%" + nombre + "%')";
+
+        return con.consultarBD(sql);
+    }
+
+    public ResultSet filtrarNombre(String nombre) throws Exception {
+        sql = "SELECT E.idejemplar, E.nroejemplar, E.estado_devolucion, L.titulo "
+                + "FROM ejemplar E "
+                + "INNER JOIN libros L ON E.idlibro = L.idlibro "
+                + "WHERE E.estado = TRUE "
+                + "AND E.estado_devolucion = TRUE "
+                + "AND LOWER(L.titulo) LIKE LOWER('%" + nombre + "%')";
+
+        return con.consultarBD(sql);
+    }
+
 }
