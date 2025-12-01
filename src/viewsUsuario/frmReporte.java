@@ -785,6 +785,7 @@ private final javax.swing.JPanel panelContenedor;
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
+        
         Reporte09 pres = new Reporte09();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);

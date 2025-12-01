@@ -97,7 +97,7 @@ ORDER BY p.fechadevolucionestimada ASC]]>
 				<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="EstiloVencimiento" x="323" y="22" width="113" height="20" uuid="91e3f230-15c0-4c0a-9e34-a78d3416faa2"/>
+				<reportElement x="323" y="22" width="113" height="20" uuid="91e3f230-15c0-4c0a-9e34-a78d3416faa2"/>
 				<textFieldExpression><![CDATA[$F{Fecha Vencimiento}]]></textFieldExpression>
 			</textField>
 			<line>
