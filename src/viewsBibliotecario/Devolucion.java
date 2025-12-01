@@ -5,6 +5,8 @@
 package viewsBibliotecario;
 
 import capaDatos.clsJDBC;
+import capaLogica.DevolucionClase;
+import capaLogica.Usuarios;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,35 +17,92 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 /**
  *
  * @author VALENTINO
  */
 public class Devolucion extends javax.swing.JPanel {
-clsJDBC jdbc = new clsJDBC();
-DefaultTableModel modelo;
+
+    clsJDBC jdbc = new clsJDBC();
+    DefaultTableModel modelo;
+
     /**
      * Creates new form Devolucion
      */
     public Devolucion() {
         initComponents();
         configurarTabla();
-        
-    
+
     }
-private void configurarTabla() {
+
+    private void configurarTabla() {
         modelo = new DefaultTableModel();
-        // OJO: Agregamos columnas ID PRESTAMO y LECTOR para diferenciar
-        modelo.addColumn("ID Préstamo"); // Col 0
-        modelo.addColumn("Lector");      // Col 1
-        modelo.addColumn("ID Ejemplar"); // Col 2
-        modelo.addColumn("Título");      // Col 3
-        modelo.addColumn("F. Vencim.");  // Col 4
-        modelo.addColumn("Días Retr.");  // Col 5
-        modelo.addColumn("Estado");      // Col 6 
-  
-        tblDetalle.setModel(modelo);
+
+        modelo.addColumn("ID Ejemplar");
+        modelo.addColumn("Título");
+        modelo.addColumn("Observaciones");
+        modelo.addColumn("Estado actual");
+        modelo.addColumn("Observacion Devolucion");
+        modelo.addColumn("Multa");
+
+        tblDevolucion.setModel(modelo);
     }
+
+    private void cargarEjemplaresPrestamo(int idPrestamo) {
+        try {
+            modelo.setRowCount(0);
+
+            clsJDBC db = new clsJDBC();
+            db.conectar();
+            Connection con = db.getCon();
+
+            String sql = """
+                SELECT e.idejemplar, l.titulo, dp.observaciones, 
+                       CASE WHEN e.estado_devolucion = FALSE THEN 'Pendiente'
+                            ELSE 'Devuelto' END AS estado
+                FROM ejemplar e
+                INNER JOIN detalle_prestamo dp ON dp.idejemplar = e.idejemplar
+                INNER JOIN libros l ON l.idlibro = e.idlibro
+                WHERE dp.idprestamo = ? AND e.estado_devolucion = FALSE
+            """;
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, idPrestamo);
+
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getInt("idejemplar"),
+                    rs.getString("titulo"),
+                    rs.getString("observaciones"),
+                    rs.getString("estado")
+                });
+            }
+
+            if (modelo.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Todos los ejemplares ya fueron devueltos.",
+                        "Sin pendientes", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar ejemplares: " + e.getMessage(),
+                    "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limpiarFormulario() {
+        txtLector.setText("");
+
+        DefaultTableModel modelo = (DefaultTableModel) tblDevolucion.getModel();
+        modelo.setRowCount(0);
+
+        jdFecha.setDate(null);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -62,14 +121,9 @@ private void configurarTabla() {
         jLabel2 = new javax.swing.JLabel();
         btnBuscarPrestamo1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblDetalle = new javax.swing.JTable();
-        txtMulta = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        tblDevolucion = new javax.swing.JTable();
         btnGrabarDevolucion = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtObservaciones = new javax.swing.JTextArea();
-        txtFecha = new com.toedter.calendar.JDateChooser();
+        jdFecha = new com.toedter.calendar.JDateChooser();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -138,7 +192,7 @@ private void configurarTabla() {
             }
         });
 
-        tblDetalle.setModel(new javax.swing.table.DefaultTableModel(
+        tblDevolucion.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -149,15 +203,12 @@ private void configurarTabla() {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tblDetalle.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblDevolucion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblDetalleMouseClicked(evt);
+                tblDevolucionMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblDetalle);
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setText("Multa:");
+        jScrollPane1.setViewportView(tblDevolucion);
 
         btnGrabarDevolucion.setBackground(new java.awt.Color(24, 118, 210));
         btnGrabarDevolucion.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -176,13 +227,6 @@ private void configurarTabla() {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel5.setText("Observaciones:");
-
-        txtObservaciones.setColumns(20);
-        txtObservaciones.setRows(5);
-        jScrollPane2.setViewportView(txtObservaciones);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -190,33 +234,22 @@ private void configurarTabla() {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGap(281, 281, 281)
-                            .addComponent(btnBuscarPrestamo1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(251, 251, 251))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(85, 85, 85)
-                            .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(288, 288, 288)
+                        .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnBuscarPrestamo1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jdFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -228,20 +261,13 @@ private void configurarTabla() {
                         .addComponent(jLabel1)
                         .addComponent(jLabel2)
                         .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(jdFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47)
                 .addComponent(btnBuscarPrestamo1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtMulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(69, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -251,71 +277,37 @@ private void configurarTabla() {
     }//GEN-LAST:event_btnBuscarPrestamo1MouseClicked
 
     private void btnBuscarPrestamo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPrestamo1ActionPerformed
-       // 1. OBTENER LA FECHA DEL JDATECHOOSER
-        // Asumo que tu variable del JDateChooser se llama 'txtFecha' o 'txtFechaPrestamo'
-        // (Cámbialo según el nombre de variable que le pusiste en Design)
-        java.util.Date fechaSeleccionada = txtFecha.getDate(); 
-        
-        if (fechaSeleccionada == null) {
-            JOptionPane.showMessageDialog(this, "Por favor seleccione una fecha válida.");
-            return;
-        }
-
-        // 2. CONVERTIR A STRING (YYYY-MM-DD) PARA LA BASE DE DATOS
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String fecha = sdf.format(fechaSeleccionada);
-
-        // 3. OBTENER LECTOR (Opcional)
-        String lectorBusqueda = txtLector.getText().trim();
-
-        // 4. QUERY DINÁMICA
-        String sql = "SELECT p.idprestamo, u.nombre || ' ' || u.ap_paterno AS lector, "
-                + "p.fechadevolucionestimada, dp.idejemplar, l.titulo "
-                + "FROM PRESTAMO p "
-                + "INNER JOIN USUARIO u ON p.idusuariolector = u.idusuario "
-                + "INNER JOIN DETALLE_PRESTAMO dp ON p.idprestamo = dp.idprestamo "
-                + "INNER JOIN EJEMPLAR e ON dp.idejemplar = e.idejemplar "
-                + "INNER JOIN LIBROS l ON e.idlibro = l.idlibro "
-                + "WHERE p.fechaprestamo = '" + fecha + "' AND p.estado = 'activo'";
-
-        // Filtro opcional por nombre de lector
-        if (!lectorBusqueda.isEmpty()) {
-            sql += " AND (u.nombre || ' ' || u.ap_paterno) ILIKE '%" + lectorBusqueda + "%'";
-        }
-
         try {
-            ResultSet rs = jdbc.consultarBD(sql);
-
-            modelo.setRowCount(0);
-            txtMulta.setText("");
-            if(txtObservaciones != null) txtObservaciones.setText("");
-
-            LocalDate hoy = LocalDate.now();
-            boolean encontrado = false;
-
-            while (rs.next()) {
-                encontrado = true;
-
-                LocalDate fechaVence = rs.getDate("fechadevolucionestimada").toLocalDate();
-                long dias = ChronoUnit.DAYS.between(fechaVence, hoy);
-                if (dias < 0) dias = 0;
-
-                modelo.addRow(new Object[]{
-                    rs.getInt("idprestamo"),
-                    rs.getString("lector"),
-                    rs.getInt("idejemplar"),
-                    rs.getString("titulo"),
-                    fechaVence,
-                    dias,
-                    "Bueno"
-                });
+            if (txtLector.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese nombre del lector.");
+                return;
             }
 
-            jdbc.desconectar();
+            Usuarios u = new Usuarios();
+            int idLector = u.obtenerIdLectorPorNombreCompleto(txtLector.getText());
 
-            if (!encontrado) {
-                JOptionPane.showMessageDialog(this, "No se encontraron préstamos activos en esa fecha.");
+            if (idLector == 0) {
+                JOptionPane.showMessageDialog(this, "Lector no encontrado.");
+                return;
             }
+
+            clsJDBC db = new clsJDBC();
+            db.conectar();
+            Connection con = db.getCon();
+
+            String sql = "SELECT idprestamo FROM prestamo WHERE idusuariolector = ? AND estado='activo'";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, idLector);
+            ResultSet rs = pst.executeQuery();
+
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(this,
+                        "El lector no tiene préstamos activos.");
+                return;
+            }
+
+            int idPrestamo = rs.getInt(1);
+            cargarEjemplaresPrestamo(idPrestamo);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
@@ -327,135 +319,92 @@ private void configurarTabla() {
     }//GEN-LAST:event_btnGrabarDevolucionMouseClicked
 
     private void btnGrabarDevolucionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarDevolucionActionPerformed
-       // 1. VALIDACIÓN: Fila seleccionada
-        int filaSeleccionada = tblDetalle.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione el libro en la tabla.");
-            return;
-        }
-
-        // 2. VALIDACIÓN: Multa
-        String multaTexto = txtMulta.getText().trim();
-        if (multaTexto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el monto de la multa (0 si no hay).");
-            return;
-        }
-        
-        double multaManual = 0.0;
         try {
-            multaManual = Double.parseDouble(multaTexto);
-            if (multaManual < 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "La multa debe ser un número positivo.");
-            return;
-        }
-
-        // 3. CAPTURA OBSERVACIONES
-        String observaciones = txtObservaciones.getText().trim();
-        if (observaciones.isEmpty()) {
-            observaciones = "Ninguna"; 
-        }
-
-        Connection cn = null;
-
-        try {
-            cn = jdbc.conectar();
-            cn.setAutoCommit(false); 
-
-            Statement st = cn.createStatement();
-
-            // SQLs
-            String sqlDev = "INSERT INTO DEVOLUCION (iddevolucion, idprestamo, fechadevolucionreal) VALUES (?, ?, ?)";
-            PreparedStatement pstDev = cn.prepareStatement(sqlDev);
-
-            String sqlDet = "INSERT INTO DETALLE_DEVOLUCION (iddetalledev, iddevolucion, idejemplar, estado, multa, observaciones) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement pstDet = cn.prepareStatement(sqlDet);
-
-            String sqlUpdEj = "UPDATE EJEMPLAR SET Estado_Devolucion = TRUE WHERE idejemplar = ?";
-            PreparedStatement pstUpdEj = cn.prepareStatement(sqlUpdEj);
-
-            // Datos
-            int idPrestamo = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 0).toString());
-            int idEjemplar = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 2).toString());
-            String estadoStr = modelo.getValueAt(filaSeleccionada, 6).toString();
-            
-            double multaItem = multaManual; 
-
-            // A. CABECERA
-            String sqlCheck = "SELECT iddevolucion FROM DEVOLUCION WHERE idprestamo = " + idPrestamo + " AND fechadevolucionreal = CURRENT_DATE";
-            ResultSet rsCheck = st.executeQuery(sqlCheck);
-            
-            int idDevolucionActual;
-            if (rsCheck.next()) {
-                idDevolucionActual = rsCheck.getInt("iddevolucion");
-            } else {
-                ResultSet rsIdDev = st.executeQuery("SELECT COALESCE(MAX(iddevolucion), 0) + 1 FROM DEVOLUCION");
-                rsIdDev.next();
-                idDevolucionActual = rsIdDev.getInt(1);
-                
-                pstDev.setInt(1, idDevolucionActual);
-                pstDev.setInt(2, idPrestamo);
-                pstDev.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
-                pstDev.executeUpdate();
+            if (txtLector.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese lector.");
+                return;
             }
-            rsCheck.close();
 
-            // B. DETALLE
-            ResultSet rsIdDet = st.executeQuery("SELECT COALESCE(MAX(iddetalledev), 0) + 1 FROM DETALLE_DEVOLUCION");
-            rsIdDet.next();
-            int idDetalle = rsIdDet.getInt(1);
-            rsIdDet.close();
+            if (jdFecha.getDate() == null) {
+                JOptionPane.showMessageDialog(this, "Seleccione fecha real.");
+                return;
+            }
 
-            pstDet.setInt(1, idDetalle);
-            pstDet.setInt(2, idDevolucionActual);
-            pstDet.setInt(3, idEjemplar);
-            pstDet.setBoolean(4, estadoStr.equalsIgnoreCase("Bueno"));
-            pstDet.setDouble(5, multaItem); 
-            pstDet.setString(6, observaciones); 
-            pstDet.executeUpdate();
+            if (tblDevolucion.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No hay ejemplares a devolver.");
+                return;
+            }
 
-            // C. LIBERAR EJEMPLAR
-            pstUpdEj.setInt(1, idEjemplar);
-            pstUpdEj.executeUpdate();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String fechaReal = df.format(jdFecha.getDate());
 
-            // D. CERRAR PRÉSTAMO
-            String sqlClose = "UPDATE PRESTAMO SET estado = 'completado' WHERE idprestamo = ?";
-            PreparedStatement pstClose = cn.prepareStatement(sqlClose);
-            pstClose.setInt(1, idPrestamo);
-            pstClose.executeUpdate();
+            // --- EJECUTAR DEVOLUCIÓN ---
+            DevolucionClase d = new DevolucionClase();
 
-            cn.commit(); 
-            JOptionPane.showMessageDialog(this, "Devolución registrada con éxito.");
-            
-            // LIMPIEZA
-            modelo.removeRow(filaSeleccionada);
-            txtMulta.setText(""); 
-            txtObservaciones.setText("");
-            
-            if (modelo.getRowCount() == 0) {
+            boolean ok = d.registrarDevolucion(
+                    txtLector.getText(),
+                    fechaReal,
+                    modelo
+            );
+
+            if (ok) {
+                JOptionPane.showMessageDialog(this,
+                        "Devolución registrada correctamente.");
+                modelo.setRowCount(0);
                 txtLector.setText("");
+             
+                jdFecha.setDate(null);
             }
 
         } catch (Exception e) {
-            try { if(cn!=null) cn.rollback(); } catch (SQLException ex) {}
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            try { if(cn!=null) cn.close(); } catch (SQLException ex) {}
+            JOptionPane.showMessageDialog(this,
+                    "ERROR: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnGrabarDevolucionActionPerformed
 
-    private void tblDetalleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDetalleMouseClicked
-
-       int fila = tblDetalle.getSelectedRow();
-        if (fila >= 0) {
-            // Actualizamos nombre lector para confirmar
-            String nombreLector = tblDetalle.getValueAt(fila, 1).toString();
-            // txtLector.setText(nombreLector); // Descomenta si quieres que se auto-llene el filtro también
-            
-            txtMulta.requestFocus(); 
+    private void tblDevolucionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDevolucionMouseClicked
+        int fila = tblDevolucion.getSelectedRow();
+        if (fila < 0) {
+            return;
         }
-    }//GEN-LAST:event_tblDetalleMouseClicked
+
+        // 1. Preguntar si quiere multa
+        String multaStr = JOptionPane.showInputDialog(
+                this,
+                "¿Monto de multa para este ejemplar? (0 si no hay multa)",
+                "Registrar Multa",
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (multaStr == null || multaStr.trim().isEmpty()) {
+            multaStr = "0";
+        }
+
+        double multa = 0;
+        try {
+            multa = Double.parseDouble(multaStr);
+        } catch (Exception e) {
+            multa = 0;
+        }
+
+        // 2. Pedir observación
+        String obs = JOptionPane.showInputDialog(
+                this,
+                "Ingrese observación:",
+                "Observación",
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (obs == null || obs.trim().isEmpty()) {
+            obs = "Todo bien";
+        }
+
+        // Guardar en la tabla
+        tblDevolucion.setValueAt(obs, fila, 4);
+        tblDevolucion.setValueAt(String.valueOf(multa), fila, 5);
+
+    }//GEN-LAST:event_tblDevolucionMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -467,14 +416,9 @@ private void configurarTabla() {
     private javax.swing.JDialog jDialog4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable tblDetalle;
-    private com.toedter.calendar.JDateChooser txtFecha;
+    private com.toedter.calendar.JDateChooser jdFecha;
+    private javax.swing.JTable tblDevolucion;
     private javax.swing.JTextField txtLector;
-    private javax.swing.JTextField txtMulta;
-    private javax.swing.JTextArea txtObservaciones;
     // End of variables declaration//GEN-END:variables
 }

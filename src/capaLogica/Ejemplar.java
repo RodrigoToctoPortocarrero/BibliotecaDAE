@@ -432,7 +432,7 @@ public class Ejemplar {
         sql = "SELECT E.idejemplar, E.nroejemplar, E.estado_devolucion, L.titulo "
                 + "FROM ejemplar E "
                 + "INNER JOIN libros L ON E.idlibro = L.idlibro "
-                + "WHERE E.estado = TRUE "
+                + "WHERE E.estado_devolucion = TRUE "
                 + "AND E.estado_devolucion = TRUE "
                 + "AND LOWER(L.titulo) LIKE LOWER('%" + nombre + "%')";
 

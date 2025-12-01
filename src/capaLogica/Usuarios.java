@@ -197,4 +197,31 @@ public class Usuarios {
         }
     }
 
+    public int obtenerIdLectorPorNombreCompleto(String nombreCompleto) {
+        try {
+            clsJDBC db = new clsJDBC();
+            db.conectar();
+
+            String sql = """
+            SELECT idusuario 
+            FROM usuario 
+            WHERE CONCAT(nombre, ' ', ap_paterno, ' ', ap_materno) = ?
+        """;
+
+            PreparedStatement pst = db.conectar().prepareStatement(sql);
+            pst.setString(1, nombreCompleto);
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return 0;
+        }
+    }
+
 }
