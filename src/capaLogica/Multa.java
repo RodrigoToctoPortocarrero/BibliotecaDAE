@@ -20,57 +20,59 @@ public class Multa {
     private String strSQL;
     private ResultSet rs = null;
 
-   public ResultSet listarMultasPendientes(String fechaPrestamo, String nombreLector) throws Exception {
-        strSQL = "SELECT m.idmulta, "
-                + "       m.idprestamo, "
-                + "       u.idusuario, "
-                + "       u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno as nombre_completo, "
-                + "       p.fechaprestamo, "
-                + "       dd.observaciones, "
-                + "       dd.estado as estado_libro, " // Estado del libro al devolver (True=Bien, etc)
-                + "       dd.multa as monto_item, "   // Multa individual por ese libro
-                + "       m.pagado "
-                + "FROM MULTA m "
-                + "INNER JOIN PRESTAMO p ON m.idprestamo = p.idprestamo "
-                + "INNER JOIN USUARIO u ON m.idusuario = u.idusuario "
-                + "INNER JOIN DEVOLUCION d ON p.idprestamo = d.idprestamo "
-                + "INNER JOIN DETALLE_DEVOLUCION dd ON d.iddevolucion = dd.iddevolucion "
-                + "WHERE m.pagado = FALSE AND dd.multa > 0 "; 
+  public ResultSet buscarMultasDetalladas(java.sql.Date fechaPrestamo, String nombreLector) throws Exception {
+        strSQL = "SELECT "
+                + "    e.NroEjemplar, "
+                + "    dd.multa, "
+                + "    dd.observaciones, "
+                + "    u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno as lector_completo, "
+                + "    p.idprestamo, " // Oculto (necesario para pagar)
+                + "    u.idusuario "   // Oculto (necesario para habilitar)
+                + "FROM DETALLE_DEVOLUCION dd "
+                + "INNER JOIN EJEMPLAR e ON dd.idejemplar = e.idejemplar "
+                + "INNER JOIN DEVOLUCION d ON dd.iddevolucion = d.iddevolucion "
+                + "INNER JOIN PRESTAMO p ON d.idprestamo = p.idprestamo "
+                + "INNER JOIN USUARIO u ON p.idusuariolector = u.idusuario "
+                + "INNER JOIN MULTA m ON p.idprestamo = m.idprestamo " // Unimos con multa para verificar estado
+                + "WHERE dd.multa > 0 "
+                + "AND m.pagado = FALSE "; // Solo lo que no se ha pagado
 
-        // Filtro por fecha de PRÉSTAMO
-        if (fechaPrestamo != null && !fechaPrestamo.isEmpty()) {
-            strSQL += "AND CAST(p.fechaprestamo AS TEXT) LIKE '%" + fechaPrestamo + "%' ";
+        // Filtro obligatorio por Fecha de Préstamo
+        if (fechaPrestamo != null) {
+            strSQL += "AND p.fechaprestamo = '" + fechaPrestamo + "' ";
         }
 
-        // Filtro por nombre de lector
+        // Filtro por nombre concatenado
         if (nombreLector != null && !nombreLector.isEmpty()) {
             strSQL += "AND UPPER(u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno) LIKE UPPER('%" + nombreLector + "%') ";
         }
-
-        strSQL += "ORDER BY p.fechaprestamo ASC";
 
         try {
             rs = objConectar.consultarBD(strSQL);
             return rs;
         } catch (Exception e) {
-            throw new Exception("Error al listar detalles de multas: " + e.getMessage());
+            throw new Exception("Error al buscar detalles de multas: " + e.getMessage());
         }
     }
 
     /**
-     * Registra el pago ACTUALIZANDO la tabla MULTA y habilitando al usuario.
-     * NOTA: Al pagar por ID de préstamo, se limpian todos los detalles asociados a ese préstamo.
+     * Transacción de Pago:
+     * 1. Actualiza la tabla MULTA (Monto total, pagado=true, fecha actual).
+     * 2. Actualiza la tabla USUARIO (estado=true).
      */
-    public void registrarPagoMulta(int idPrestamo, int idLector) throws Exception {
-        // 1. Marcar la multa general del préstamo como pagada
+    public void realizarPago(int idPrestamo, int idUsuario, double montoTotal) throws Exception {
+        // 1. Actualizar la Multa a PAGADO
         String strUpdateMulta = "UPDATE multa "
-                + "SET pagado = TRUE, fechagenerada = CURRENT_DATE "
-                + "WHERE idprestamo = " + idPrestamo + " AND pagado = FALSE";
-        
-        // 2. Habilitar al usuario
-        String strUpdateUsuario = "UPDATE usuario SET estado = TRUE WHERE idusuario = " + idLector;
+                + "SET pagado = TRUE, "
+                + "    monto = " + montoTotal + ", "
+                + "    fechagenerada = CURRENT_DATE "
+                + "WHERE idprestamo = " + idPrestamo;
+
+        // 2. Habilitar al Lector (Estado = TRUE)
+        String strUpdateUsuario = "UPDATE usuario SET estado = TRUE WHERE idusuario = " + idUsuario;
 
         try {
+            // Ejecutar ambas consultas
             objConectar.ejecutarBD(strUpdateMulta);
             objConectar.ejecutarBD(strUpdateUsuario);
         } catch (Exception e) {

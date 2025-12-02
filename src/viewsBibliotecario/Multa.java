@@ -18,68 +18,79 @@ public class Multa extends javax.swing.JPanel {
 
     capaLogica.Multa objMulta = new capaLogica.Multa();
     DefaultTableModel modelo;
-
+    private int idPrestamoGlobal = -1;
+    private int idUsuarioGlobal = -1;
     /**
      * Creates new form Multa
      */
     public Multa() {
         initComponents();
-        listarMultas();
+        configurarTabla();
+        lblTotal.setText("0.00");
     }
-
-    private void listarMultas() {
-        ResultSet rs = null;
+    
+    private void configurarTabla() {
         modelo = new DefaultTableModel();
-
-        // --- NUEVAS COLUMNAS SEGÚN REQUERIMIENTO ---
-        modelo.addColumn("ID Préstamo"); // 0 (Oculto o visible, sirve para el pago)
-        modelo.addColumn("Lector");      // 1
-        modelo.addColumn("F. Préstamo"); // 2
-        modelo.addColumn("Observación"); // 3 (Desde detalle_devolucion)
-        modelo.addColumn("Estado Libro");// 4
-        modelo.addColumn("Multa");       // 5 (Monto individual)
-
+        modelo.addColumn("Nro Ejemplar"); // Muestra el código del libro físico
+        modelo.addColumn("Multa");
+        modelo.addColumn("Observación");
+        modelo.addColumn("Lector");
         tblMultas.setModel(modelo);
+    }
+    
+    private void buscarYListar() {
+        // 1. Validaciones iniciales
+        if (txtFechaPrestamo.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Por favor seleccione la fecha de préstamo.");
+            return;
+        }
+        String nombreBuscado = txtLector.getText().trim();
+        if (nombreBuscado.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del lector.");
+            return;
+        }
 
+        // Limpiar tabla y variables antes de buscar
+        modelo.setRowCount(0);
+        idPrestamoGlobal = -1;
+        idUsuarioGlobal = -1;
         double totalAcumulado = 0.0;
 
         try {
-            // 1. Filtro Fecha
-            String fechaStr = "";
-            if (txtFechaPrestamo.getDate() != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                fechaStr = sdf.format(txtFechaPrestamo.getDate());
-            }
+            // Convertir fecha de JDateChooser a java.sql.Date
+            java.sql.Date fechaSql = new java.sql.Date(txtFechaPrestamo.getDate().getTime());
 
-            // 2. Filtro Lector
-            String lector = txtLector.getText().trim();
-
-            // 3. Consulta
-            rs = objMulta.listarMultasPendientes(fechaStr, lector);
+            ResultSet rs = objMulta.buscarMultasDetalladas(fechaSql, nombreBuscado);
 
             while (rs.next()) {
-                double montoItem = rs.getDouble("monto_item");
-                boolean estadoLibroBool = rs.getBoolean("estado_libro");
-                String estadoLibroStr = estadoLibroBool ? "Bueno" : "Dañado/Perdido"; // Interpretación del bit
+                // Obtener datos visibles
+                String nroEjemplar = rs.getString("NroEjemplar");
+                double multa = rs.getDouble("multa");
+                String obs = rs.getString("observaciones");
+                String lector = rs.getString("lector_completo");
 
-                modelo.addRow(new Object[]{
-                    rs.getInt("idprestamo"), // Col 0
-                    rs.getString("nombre_completo"), // Col 1
-                    rs.getDate("fechaprestamo"), // Col 2
-                    rs.getString("observaciones"), // Col 3
-                    estadoLibroStr, // Col 4
-                    montoItem // Col 5
-                });
+                // Obtener datos ocultos (IDs) solo una vez (son los mismos para todo el préstamo)
+                if (idPrestamoGlobal == -1) {
+                    idPrestamoGlobal = rs.getInt("idprestamo");
+                    idUsuarioGlobal = rs.getInt("idusuario");
+                }
 
-                // Sumamos cada ítem al total general del lector/búsqueda
-                totalAcumulado += montoItem;
+                // Agregar fila visual
+                modelo.addRow(new Object[]{nroEjemplar, multa, obs, lector});
+
+                // Sumar al total
+                totalAcumulado += multa;
             }
 
-            // Mostrar Total
+            // Mostrar el total calculado
             lblTotal.setText(String.format("%.2f", totalAcumulado));
 
+            if (modelo.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No se encontraron multas pendientes con esos datos.");
+            }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al listar detalles: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
         }
     }
 
@@ -195,42 +206,48 @@ public class Multa extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPagarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarMultaActionPerformed
-        int fila = tblMultas.getSelectedRow();
+        // 1. Validar que hay deuda cargada
+        double totalPagar = 0;
+        try {
+            totalPagar = Double.parseDouble(lblTotal.getText().replace(",", "."));
+        } catch (NumberFormatException e) {
+            totalPagar = 0;
+        }
 
-        if (fila < 0) {
-            JOptionPane.showMessageDialog(this, "Seleccione un ítem de la tabla para procesar el pago del préstamo.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        if (idPrestamoGlobal == -1 || totalPagar <= 0) {
+            JOptionPane.showMessageDialog(this, "No hay multas cargadas para pagar. Realice una búsqueda primero.");
             return;
         }
 
-        // Recuperamos datos para confirmar
-        int idPrestamo = Integer.parseInt(tblMultas.getValueAt(fila, 0).toString());
-        String nombreLector = tblMultas.getValueAt(fila, 1).toString();
-        
-        // NOTA: Al pagar, se paga TODA la multa asociada a ese préstamo, 
-        // no solo el ítem seleccionado (ya que la tabla MULTA es por préstamo).
-        
-        int confirm = JOptionPane.showConfirmDialog(this, 
-                "¿Confirmar el pago de multas para el lector: " + nombreLector + "?\n" +
-                "Esto cancelará la deuda total asociada al préstamo seleccionado.", 
-                "Confirmar Pago", JOptionPane.YES_NO_OPTION);
+        // 2. Confirmación
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Confirmar pago total de S/ " + totalPagar + "?\n"
+                + "Esto habilitará al usuario nuevamente.",
+                "Procesar Pago", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
+                // 3. Llamar a la lógica transaccional
+                objMulta.realizarPago(idPrestamoGlobal, idUsuarioGlobal, totalPagar);
 
-                 int idUsuario = Integer.parseInt(tblMultas.getModel().getValueAt(fila, 6).toString()); // Asumiendo col 6
+                JOptionPane.showMessageDialog(this, "¡Pago exitoso! El lector ha sido habilitado.");
 
-                objMulta.registrarPagoMulta(idPrestamo, idUsuario);
-                
-                JOptionPane.showMessageDialog(this, "Pago registrado correctamente.");
-                listarMultas(); // Refrescar tabla
+                // 4. Limpiar la interfaz
+                modelo.setRowCount(0);
+                lblTotal.setText("0.00");
+                txtLector.setText("");
+                txtFechaPrestamo.setDate(null);
+                idPrestamoGlobal = -1;
+                idUsuarioGlobal = -1;
+
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "Error al procesar el pago: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnPagarMultaActionPerformed
 
     private void btnBuscarPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPrestamoActionPerformed
-        listarMultas();
+        buscarYListar();
     }//GEN-LAST:event_btnBuscarPrestamoActionPerformed
 
     private void tblMultasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMultasMouseClicked
