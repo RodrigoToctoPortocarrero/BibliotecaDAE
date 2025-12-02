@@ -12,7 +12,7 @@ import net.sf.jasperreports.swing.JRViewer;
 
 /**
  *
- * @author VALENTINO
+ * @author VALENTINO LOPEZ
  */
 public class Reporte08 extends javax.swing.JPanel {
 

@@ -15,7 +15,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 /**
  *
- * @author VALENTINO
+ * @author VALENTINO LOPEZ
  */
 public class Reporte07 extends javax.swing.JPanel {
 clsJDBC jdbc = new clsJDBC();

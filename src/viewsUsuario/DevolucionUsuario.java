@@ -12,7 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 /**
  *
- * @author VALENTINO
+ * @author VALENTINO LOPEZ
  */
 public class DevolucionUsuario extends javax.swing.JPanel {
     clsJDBC jdbc = new clsJDBC();
