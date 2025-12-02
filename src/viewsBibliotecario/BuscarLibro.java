@@ -35,30 +35,30 @@ public class BuscarLibro extends javax.swing.JPanel {
         listarLibros(); // Opcional: listar al inicio
     }
 
-    private void listarLibros() {
+   private void listarLibros() {
         ResultSet rsLibros = null;
         DefaultTableModel modelo = new DefaultTableModel();
 
-        // Definir las 6 columnas que devuelve el SQL de Libro.filtrarLibros()
-        modelo.addColumn("ID"); // 0
-        modelo.addColumn("TÍTULO"); // 1
-        modelo.addColumn("AÑO"); // 2
-        modelo.addColumn("EDITORIAL"); // 3
-        modelo.addColumn("CATEGORÍA"); // 4
-        modelo.addColumn("ESTADO"); // 5
+        // Definir las 6 columnas
+        modelo.addColumn("ID");         // 0
+        modelo.addColumn("TÍTULO");     // 1
+        modelo.addColumn("AÑO");        // 2
+        modelo.addColumn("EDITORIAL");  // 3
+        modelo.addColumn("CATEGORÍA");  // 4
+        modelo.addColumn("ESTADO");     // 5
 
         try {
             // 1. Recolección de parámetros de búsqueda
-            String titulo = txtNombre.getText(); // Nombre para el Título
+            String titulo = txtNombre.getText(); 
             String anio = txtAño.getText();
-            // String estado = cbxEstado.getSelectedItem().toString(); // ❌ ELIMINADO: ahora usaremos "Todos" por defecto, o el valor que necesites
-            String estado = "Todos"; // Valor fijo después de eliminar el JComboBox
+            
+            // 🚨 MODIFICACIÓN CLAVE: Filtra por "Activo" por defecto
+            String estado = "Activo"; 
+            
             String nomEditorial = txtEditorial.getText();
             String nomCategoria = txtCategoria.getText();
 
             // 2. Llamar al método de filtrado en la capa lógica
-            // NOTA: Si tu capa lógica (Libro.filtrarLibros) maneja el parámetro de estado
-            // como opcional o acepta "Todos", esto funcionará.
             rsLibros = objLibro.filtrarLibros(titulo, anio, estado, nomEditorial, nomCategoria);
 
             // 3. Llenar la tabla con los resultados

@@ -341,7 +341,6 @@ public class Libro {
             }
 
             // --- FILTRO POR AÑO DE PUBLICACIÓN ---
-            // Se asume que anioPublicacion es tipo CHAR(4) o VARCHAR en la BD
             if (anio != null && !anio.trim().isEmpty()) {
                 sb.append(" AND L.aniopublicacion = '").append(anio.trim()).append("'");
             }
@@ -357,6 +356,7 @@ public class Libro {
             }
 
             // --- FILTRO POR ESTADO (Activo/Inactivo) ---
+            // Si 'estado' es "Activo", esta condición se cumple y añade "AND L.estado = TRUE"
             if (estado != null && !estado.trim().equalsIgnoreCase("Todos")) {
                 String valorEstado = estado.trim().equalsIgnoreCase("Activo") ? "TRUE" : "FALSE";
                 sb.append(" AND L.estado = ").append(valorEstado);
@@ -368,7 +368,6 @@ public class Libro {
             return objConectar.consultarBD(strSQL);
 
         } catch (Exception e) {
-            // Asegurar el manejo de la conexión en caso de error
             throw new Exception("Error al filtrar libros: " + e.getMessage());
         }
     }
