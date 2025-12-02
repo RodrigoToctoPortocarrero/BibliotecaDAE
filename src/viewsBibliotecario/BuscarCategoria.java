@@ -28,18 +28,7 @@ public class BuscarCategoria extends javax.swing.JPanel {
         initComponents();
         this.panelPrincipal = principal;
         this.frameContenedor = contenedor;
-        llenarEstado(); // Llama a este método en el constructor
         listarCategorias();
-    }
-
-    private void llenarEstado() {
-        // Rellena el JComboBox cboEstado
-        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
-        modelo.addElement("Todos");
-        modelo.addElement("Activo");
-        modelo.addElement("Inactivo");
-        cbxEstado.setModel(modelo);
-        cbxEstado.setSelectedIndex(0);
     }
 
     private void listarCategorias() {
@@ -56,10 +45,16 @@ public class BuscarCategoria extends javax.swing.JPanel {
             // 1. Obtener los valores de los filtros
             String nombre = txtNombre.getText();
             String descripcion = txtDescripcion.getText();
-            String estadoSeleccionado = cbxEstado.getSelectedItem().toString();
+            // String estadoSeleccionado = cbxEstado.getSelectedItem().toString(); // ❌ ELIMINADO
+
+            // 💡 REEMPLAZO: Establecer "Todos" como filtro fijo
+            String estadoSeleccionado = "Todos";
 
             // 2. Llamar al nuevo método de filtrado
-            String filtroEstado = "";
+            String filtroEstado = estadoSeleccionado;
+
+            // ❌ Lógica de conversión de estado eliminada
+            /*
             if (estadoSeleccionado.equalsIgnoreCase("Activo")) {
                 filtroEstado = "Activo"; // Corresponderá a TRUE en la lógica
             } else if (estadoSeleccionado.equalsIgnoreCase("Inactivo")) {
@@ -67,7 +62,7 @@ public class BuscarCategoria extends javax.swing.JPanel {
             } else {
                 filtroEstado = "Todos";
             }
-
+             */
             rsCategorias = objCategoria.filtrarCategorias(nombre, descripcion, filtroEstado);
 
             // 3. Llenar la tabla con los resultados
@@ -88,6 +83,7 @@ public class BuscarCategoria extends javax.swing.JPanel {
             rsCategorias.close();
 
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al listar categorías: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -106,8 +102,9 @@ public class BuscarCategoria extends javax.swing.JPanel {
         tblListadoCategorias = new javax.swing.JTable();
         txtTotalCategorias = new javax.swing.JLabel();
         txtTotalCategorias1 = new javax.swing.JLabel();
-        cbxEstado = new javax.swing.JComboBox<>();
         btnSeleccionar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -138,17 +135,6 @@ public class BuscarCategoria extends javax.swing.JPanel {
 
         txtTotalCategorias1.setText("Total:");
 
-        cbxEstado.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbxEstadoItemStateChanged(evt);
-            }
-        });
-        cbxEstado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxEstadoActionPerformed(evt);
-            }
-        });
-
         btnSeleccionar.setText("Seleccionar");
         btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -156,32 +142,37 @@ public class BuscarCategoria extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("Descripción:");
+
+        jLabel2.setText("Nombre:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(67, 67, 67)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(179, 179, 179)
-                                .addComponent(btnSeleccionar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addComponent(txtTotalCategorias1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtTotalCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(61, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
+                        .addGap(39, 39, 39)
+                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(77, 77, 77))))
+                        .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(5, 5, 5)
+                            .addComponent(txtTotalCategorias1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtTotalCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(61, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSeleccionar)
+                .addGap(224, 224, 224))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -189,8 +180,9 @@ public class BuscarCategoria extends javax.swing.JPanel {
                 .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
                 .addGap(36, 36, 36)
                 .addComponent(btnSeleccionar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -211,14 +203,6 @@ public class BuscarCategoria extends javax.swing.JPanel {
         listarCategorias();
     }//GEN-LAST:event_txtDescripcionKeyReleased
 
-    private void cbxEstadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxEstadoItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbxEstadoItemStateChanged
-
-    private void cbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEstadoActionPerformed
-        listarCategorias();
-    }//GEN-LAST:event_cbxEstadoActionPerformed
-
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
         int fila = tblListadoCategorias.getSelectedRow();
 
@@ -231,7 +215,7 @@ public class BuscarCategoria extends javax.swing.JPanel {
 
             String estadoCategoria = tblListadoCategorias.getValueAt(fila, 3).toString();
 
-        if (!estadoCategoria.equalsIgnoreCase("Activo")) {
+            if (!estadoCategoria.equalsIgnoreCase("Activo")) {
                 JOptionPane.showMessageDialog(this,
                         "Solo se pueden seleccionar Categorías Activas (Estado: " + estadoCategoria + ").",
                         "Categoría Inactiva",
@@ -267,7 +251,8 @@ public class BuscarCategoria extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSeleccionar;
-    private javax.swing.JComboBox<String> cbxEstado;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblListadoCategorias;
     private javax.swing.JTextField txtDescripcion;

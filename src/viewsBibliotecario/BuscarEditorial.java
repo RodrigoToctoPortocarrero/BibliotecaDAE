@@ -33,19 +33,7 @@ public class BuscarEditorial extends javax.swing.JPanel {
         this.panelPrincipal = principal;
         this.frameContenedor = contenedor;
 
-        // Inicialización y listado
-        llenarEstado();
         listarEditoriales();
-    }
-
-    private void llenarEstado() {
-        // Rellena el JComboBox cbxEstado
-        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
-        modelo.addElement("Todos");
-        modelo.addElement("Activo");
-        modelo.addElement("Inactivo");
-        cbxEstado.setModel(modelo);
-        cbxEstado.setSelectedIndex(0);
     }
 
     private void listarEditoriales() {
@@ -63,10 +51,13 @@ public class BuscarEditorial extends javax.swing.JPanel {
             // 1. Obtener los valores de los filtros
             String nombre = txtNombre.getText();
             String telefono = txtTelefono.getText();
-            // String correo = txtCorreo.getText(); // Se elimina la obtención de este campo
-            String estadoSeleccionado = cbxEstado.getSelectedItem().toString();
+            // String estadoSeleccionado = cbxEstado.getSelectedItem().toString(); // ❌ ELIMINADO
+
+            // 💡 REEMPLAZO: Establecemos "Todos" como filtro fijo de estado
+            String estadoSeleccionado = "Todos";
 
             // 2. Llamar al método de filtrado con solo TRES argumentos
+            // NOTA: Asegúrate de que objEditorial.filtrarEditoriales maneje "Todos"
             rsEditoriales = objEditorial.filtrarEditoriales(nombre, telefono, estadoSeleccionado);
 
             // 3. Llenar la tabla (usando los 5 campos de la BD)
@@ -100,12 +91,13 @@ public class BuscarEditorial extends javax.swing.JPanel {
 
         txtNombre = new javax.swing.JTextField();
         txtTelefono = new javax.swing.JTextField();
-        cbxEstado = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListadoEditoriales = new javax.swing.JTable();
         btnSeleccionar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtTotalEditoriales = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -116,12 +108,6 @@ public class BuscarEditorial extends javax.swing.JPanel {
         txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtTelefonoKeyReleased(evt);
-            }
-        });
-
-        cbxEstado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxEstadoActionPerformed(evt);
             }
         });
 
@@ -149,6 +135,10 @@ public class BuscarEditorial extends javax.swing.JPanel {
 
         txtTotalEditoriales.setText("jLabel2");
 
+        jLabel2.setText("Nombre:");
+
+        jLabel3.setText("Teléfono:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -161,19 +151,22 @@ public class BuscarEditorial extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(txtTotalEditoriales))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(32, 32, 32)
-                                        .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnSeleccionar))
-                                .addGap(32, 32, 32)
-                                .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(37, 37, 37)
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(2, 2, 2)))
                 .addGap(78, 78, 78))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(226, 226, 226)
+                .addComponent(btnSeleccionar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,11 +174,12 @@ public class BuscarEditorial extends javax.swing.JPanel {
                 .addContainerGap(60, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGap(28, 28, 28)
                 .addComponent(btnSeleccionar)
-                .addGap(27, 27, 27)
+                .addGap(28, 28, 28)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(64, 64, 64)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -202,10 +196,6 @@ public class BuscarEditorial extends javax.swing.JPanel {
     private void txtTelefonoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyReleased
         listarEditoriales();
     }//GEN-LAST:event_txtTelefonoKeyReleased
-
-    private void cbxEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxEstadoActionPerformed
-        listarEditoriales();
-    }//GEN-LAST:event_cbxEstadoActionPerformed
 
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
         int fila = tblListadoEditoriales.getSelectedRow();
@@ -256,8 +246,9 @@ public class BuscarEditorial extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSeleccionar;
-    private javax.swing.JComboBox<String> cbxEstado;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblListadoEditoriales;
     private javax.swing.JTextField txtNombre;
