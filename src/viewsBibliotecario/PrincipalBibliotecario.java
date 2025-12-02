@@ -11,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author BIENVENIDO
+ * @author Edgar Bernabe
  */
 public class PrincipalBibliotecario extends javax.swing.JPanel {
 

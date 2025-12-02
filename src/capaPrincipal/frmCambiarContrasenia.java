@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author rodri
+ * @author Tocto Portocarrero Rodrigo Jesús
  */
 public class frmCambiarContrasenia extends javax.swing.JFrame {
 

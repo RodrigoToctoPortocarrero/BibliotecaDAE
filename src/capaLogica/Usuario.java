@@ -5,6 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ *
+ * @author Tocto Portocarrero Rodrigo Jesús
+ */
 public class Usuario {
 
     clsJDBC con = new clsJDBC();

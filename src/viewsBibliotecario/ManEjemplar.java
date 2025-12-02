@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 
 /**
  *
- * @author LENOVO
+ * @author Tocto Portocarrero Rodrigo
  */
 public class ManEjemplar extends javax.swing.JPanel {
 

@@ -6,7 +6,7 @@ package viewsUsuario;
 
 /**
  *
- * @author LENOVO
+ * @author Tocto Portocarrero Rodrigo
  */
 public class Integrantes extends javax.swing.JPanel {
 

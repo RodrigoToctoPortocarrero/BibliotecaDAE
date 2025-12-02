@@ -4,6 +4,10 @@ import capaDatos.clsJDBC;
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ *
+ * @author Tocto Portocarrero Rodrigo Jesús
+ */
 public class DevolucionClase {
 
     public boolean registrarDevolucion(String lectorNombre, String fechaReal, DefaultTableModel modelo) {

@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 /**
  *
- * @author laboratorio_computo
+ * @author Valentino Lopez
  */
 public class ManEditorial extends javax.swing.JPanel {
 

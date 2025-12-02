@@ -20,7 +20,7 @@ import java.util.Date;
 
 /**
  *
- * @author VALENTINO
+ * @author VALENTINO LOPEZ
  */
 public class Devolucion extends javax.swing.JPanel {
 

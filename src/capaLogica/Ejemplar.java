@@ -6,6 +6,10 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 
+/**
+ *
+ * @author Tocto Portocarrero Rodrigo Jesús
+ */
 public class Ejemplar {
 
     clsJDBC con = new clsJDBC();
