@@ -6,8 +6,7 @@ import java.sql.ResultSet;
 /**
  * Mantenimiento de autores
  *
- * @author Edgar Bernabe (Modificado por Asistente para incluir el campo
- * 'estado')
+ * @author Edgar Bernabe 
  */
 public class Autor {
 

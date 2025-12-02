@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Percy Alexander
+ * @author Edgar Bernabe
  */
 public class ManAutor extends javax.swing.JPanel {
 
