@@ -52,8 +52,8 @@ public class ManEjemplar extends javax.swing.JPanel {
                 tabla.addRow(new Object[]{
                     rs.getInt("idejemplar"),
                     rs.getString("nroejemplar"),
-                    rs.getBoolean("estado") ? "Vigente" : "No Vigente",
-                    rs.getBoolean("estado_devolucion") ? "Disponible" : "Prestado",
+                    rs.getBoolean("estado") ? "Vigente" : "No Vigente", // Ciclo de vida
+                    rs.getBoolean("estado_devolucion") ? "Disponible" : "Prestado", // Disponibilidad
                     rs.getString("titulo")
                 });
             }
