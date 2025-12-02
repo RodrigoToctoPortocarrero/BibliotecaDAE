@@ -4,6 +4,8 @@
  */
 package viewsBibliotecario;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,48 +24,52 @@ public class Multa extends javax.swing.JPanel {
         listarMultas();
     }
     
-    private void listarMultas() {
+private void listarMultas() {
         ResultSet rs = null;
         modelo = new DefaultTableModel();
-        modelo.addColumn("ID");
-        modelo.addColumn("Lector");
-        modelo.addColumn("F. Generada");
-        modelo.addColumn("Monto");
-        modelo.addColumn("Estado");
+        // Definición de columnas
+        modelo.addColumn("ID Préstamo"); // 0
+        modelo.addColumn("ID Lector");   // 1
+        modelo.addColumn("Lector");      // 2
+        modelo.addColumn("F. Préstamo"); // 3
+        modelo.addColumn("Monto");       // 4
 
         tblMultas.setModel(modelo);
-        
+
         double total = 0.0;
 
         try {
-            // Obtener filtros de los cuadros de texto
-            String fecha = txtFechaPrestamo.getText().trim();
+            // 1. Obtener la fecha del JDateChooser y formatearla
+            String fechaStr = "";
+            if (txtFechaPrestamo.getDate() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                fechaStr = sdf.format(txtFechaPrestamo.getDate());
+            }
+
+            // 2. Obtener filtro de lector
             String lector = txtLector.getText().trim();
 
-            rs = objMulta.listarMultas(fecha, lector);
+            // 3. Llamar a la lógica con la fecha formateada
+            rs = objMulta.listarMultasPendientes(fechaStr, lector);
 
             while (rs.next()) {
-                boolean pagado = rs.getBoolean("pagado");
-                String estado = pagado ? "Pagado" : "Pendiente";
-                double monto = rs.getDouble("monto");
+                double monto = rs.getDouble("monto_total");
 
                 modelo.addRow(new Object[]{
-                    rs.getInt("idmulta"),
+                    rs.getInt("idprestamo"),
+                    rs.getInt("idusuario"),
                     rs.getString("nombre_completo"),
-                    rs.getDate("fechagenerada"),
-                    monto,
-                    estado
+                    rs.getDate("fechaprestamo"),
+                    monto
                 });
-                
-                // Sumar al total solo si está pendiente (Opcional: sumar todo si prefieres)
-                // En este caso, sumaremos todo lo que se muestra en la tabla
-                 total += monto;
+
+                total += monto;
             }
-            
+
             lblTotal.setText(String.format("%.2f", total));
-            
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al listar multas: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al listar multas pendientes: " + e.getMessage());
         }
     }
 
@@ -77,7 +83,6 @@ public class Multa extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtFechaPrestamo = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtLector = new javax.swing.JTextField();
         btnBuscarPrestamo = new javax.swing.JButton();
@@ -86,6 +91,7 @@ public class Multa extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         lblTotal = new javax.swing.JLabel();
         btnPagarMulta = new javax.swing.JButton();
+        txtFechaPrestamo = new com.toedter.calendar.JDateChooser();
 
         jLabel1.setText("Fecha del Multa:");
 
@@ -134,8 +140,8 @@ public class Multa extends javax.swing.JPanel {
                         .addGap(78, 78, 78)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(58, 58, 58)
+                        .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -159,11 +165,12 @@ public class Multa extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(47, 47, 47)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2)
+                        .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnBuscarPrestamo)
                 .addGap(28, 28, 28)
@@ -179,33 +186,35 @@ public class Multa extends javax.swing.JPanel {
 
     private void btnPagarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarMultaActionPerformed
         int fila = tblMultas.getSelectedRow();
-        
+
         if (fila < 0) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar una multa de la tabla para pagarla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un préstamo pendiente de la tabla para pagar su multa.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String estadoActual = tblMultas.getValueAt(fila, 4).toString(); // Columna 4 es Estado
-        if (estadoActual.equalsIgnoreCase("Pagado")) {
-            JOptionPane.showMessageDialog(this, "Esta multa ya está pagada.", "Información", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        int idMulta = Integer.parseInt(tblMultas.getValueAt(fila, 0).toString()); // Columna 0 es ID
-        String lector = tblMultas.getValueAt(fila, 1).toString();
-        double monto = Double.parseDouble(tblMultas.getValueAt(fila, 3).toString());
+        // Obtener datos del modelo (Nuevas columnas)
+        // Col 0: ID Prestamo, Col 1: ID Usuario, Col 2: Lector, Col 3: Fecha, Col 4: Monto
+        int idPrestamo = Integer.parseInt(tblMultas.getValueAt(fila, 0).toString());
+        int idLector = Integer.parseInt(tblMultas.getValueAt(fila, 1).toString());
+        String nombreLector = tblMultas.getValueAt(fila, 2).toString();
+        double monto = Double.parseDouble(tblMultas.getValueAt(fila, 4).toString());
 
         int confirm = JOptionPane.showConfirmDialog(this, 
-                "¿Confirmar pago de multa?\nLector: " + lector + "\nMonto: S/ " + monto, 
-                "Confirmar Pago", JOptionPane.YES_NO_OPTION);
+                "¿Confirmar pago de multas pendientes para este préstamo?\n\n" +
+                "Lector: " + nombreLector + "\n" +
+                "Monto Total: S/ " + monto + "\n\n" +
+                "Esto registrará el pago y habilitará al lector.", 
+                "Confirmar Transacción", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                objMulta.pagarMulta(idMulta);
-                JOptionPane.showMessageDialog(this, "Pago registrado correctamente.");
+                // Llamamos al nuevo método transaccional
+                objMulta.registrarPagoMulta(idPrestamo, idLector, monto);
+                
+                JOptionPane.showMessageDialog(this, "Pago registrado y lector habilitado correctamente.");
                 listarMultas(); // Actualizar la tabla
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al procesar el pago: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error al procesar la transacción: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnPagarMultaActionPerformed
@@ -218,23 +227,25 @@ public class Multa extends javax.swing.JPanel {
         int fila = tblMultas.getSelectedRow();
         
         if (fila >= 0) {
-            // 1. Obtener datos de la fila seleccionada
-            // Columna 1: Nombre del Lector
-            // Columna 2: Fecha Generada
-            // Columna 3: Monto
-            
-            String lector = tblMultas.getValueAt(fila, 1).toString();
-            String fecha = tblMultas.getValueAt(fila, 2).toString();
-            String monto = tblMultas.getValueAt(fila, 3).toString();
-
-            // 2. Mostrar en los campos de texto
-            txtLector.setText(lector);
-            txtFechaPrestamo.setText(fecha);
-
-            // 3. Actualizar el lblTotal con el monto de la fila seleccionada
-            lblTotal.setText(monto);
-            
-            // Opcional: Si quieres que el botón Pagar se habilite o cambie de texto, puedes hacerlo aquí
+            try {
+                String lector = tblMultas.getValueAt(fila, 2).toString();
+                // Recuperar el objeto fecha directamente si el modelo lo guarda como Date, 
+                // o parsear si es String. Generalmente JDBC devuelve java.sql.Date que hereda de java.util.Date.
+                Object fechaObj = tblMultas.getValueAt(fila, 3); 
+                
+                txtLector.setText(lector);
+                
+                if (fechaObj instanceof Date) {
+                    txtFechaPrestamo.setDate((Date) fechaObj);
+                } else if (fechaObj != null) {
+                    // Fallback por si viene como String
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    txtFechaPrestamo.setDate(sdf.parse(fechaObj.toString()));
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error al seleccionar fecha: " + e.getMessage());
+            }
         }
     }//GEN-LAST:event_tblMultasMouseClicked
 
@@ -248,7 +259,7 @@ public class Multa extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tblMultas;
-    private javax.swing.JTextField txtFechaPrestamo;
+    private com.toedter.calendar.JDateChooser txtFechaPrestamo;
     private javax.swing.JTextField txtLector;
     // End of variables declaration//GEN-END:variables
 }
