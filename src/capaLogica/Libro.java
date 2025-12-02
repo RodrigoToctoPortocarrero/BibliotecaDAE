@@ -26,9 +26,17 @@ public class Libro {
      * las columnas se han adaptado al esquema de la BD.
      */
     public ResultSet listarLibros() throws Exception {
+        // MODIFICACIÓN: Agregar una subconsulta para obtener la lista de autores
         strSQL = "SELECT L.idlibro, L.titulo, L.aniopublicacion, L.estado, "
                 + "E.nombre AS nombre_editorial, "
-                + "C.nombrecategoria AS nombre_categoria "
+                + "C.nombrecategoria AS nombre_categoria, "
+                + "COALESCE( "
+                + "    (SELECT A.nombres || ' ' || A.apepaterno "
+                + "     FROM AUTOR A "
+                + "     INNER JOIN ASIGNAR_LIBRO_AUTOR ALA ON A.idautor = ALA.idautor "
+                + "     WHERE ALA.idlibro = L.idlibro "
+                + "     LIMIT 1), " // Solo toma el primer autor encontrado (o el que se desea mostrar)
+                + "    'Sin Autor Asignado') AS nombre_autor " // Alias para la columna 2
                 + "FROM LIBROS L "
                 + "INNER JOIN EDITORIAL E ON L.ideditorial = E.ideditorial "
                 + "INNER JOIN CATEGORIA C ON L.idcategoria = C.idcategoria "
@@ -264,25 +272,25 @@ public class Libro {
     /**
      * Busca libros por coincidencia en el título.
      */
-        public ResultSet buscarLibrosPorTitulo(String titulo) throws Exception {
-            // Usamos la misma estructura que en listarLibros para que la tabla no falle
-            strSQL = "SELECT L.idlibro, L.titulo, L.aniopublicacion, L.estado, "
-                    + "E.nombre AS nombre_editorial, "
-                    + "C.nombrecategoria AS nombre_categoria "
-                    + "FROM LIBROS L "
-                    + "INNER JOIN EDITORIAL E ON L.ideditorial = E.ideditorial "
-                    + "INNER JOIN CATEGORIA C ON L.idcategoria = C.idcategoria "
-                    + "WHERE LOWER(L.titulo) LIKE '%" + titulo.toLowerCase().replace("'", "''") + "%' "
-                    + "ORDER BY L.idlibro";
+    public ResultSet buscarLibrosPorTitulo(String titulo) throws Exception {
+        // Usamos la misma estructura que en listarLibros para que la tabla no falle
+        strSQL = "SELECT L.idlibro, L.titulo, L.aniopublicacion, L.estado, "
+                + "E.nombre AS nombre_editorial, "
+                + "C.nombrecategoria AS nombre_categoria "
+                + "FROM LIBROS L "
+                + "INNER JOIN EDITORIAL E ON L.ideditorial = E.ideditorial "
+                + "INNER JOIN CATEGORIA C ON L.idcategoria = C.idcategoria "
+                + "WHERE LOWER(L.titulo) LIKE '%" + titulo.toLowerCase().replace("'", "''") + "%' "
+                + "ORDER BY L.idlibro";
 
-            try {
-                rs = objConectar.consultarBD(strSQL);
-                return rs;
-            } catch (Exception e) {
-                throw new Exception("Error al buscar libros por título: " + e.getMessage());
-            }
+        try {
+            rs = objConectar.consultarBD(strSQL);
+            return rs;
+        } catch (Exception e) {
+            throw new Exception("Error al buscar libros por título: " + e.getMessage());
         }
-        
+    }
+
     public ResultSet filtrarLibros(String titulo, String anio, String estado,
             String nomEditorial, String nomCategoria) throws Exception {
 
@@ -351,19 +359,16 @@ public class Libro {
             throw new Exception("Error al listar el informe de asignaciones: " + e.getMessage());
         }
     }
-    
-    
+
     //Necesito listar los titulos del los libros
-    
-    
-    public ResultSet listarTitulosLibros() throws Exception{
-        try{
+    public ResultSet listarTitulosLibros() throws Exception {
+        try {
             strSQL = "select titulo from libros";
 
-            return objConectar.consultarBD(strSQL) ;
-            
-        }catch(Exception e){
-            throw new Exception("Error al listar los titulos de libros: "+e.getMessage());
+            return objConectar.consultarBD(strSQL);
+
+        } catch (Exception e) {
+            throw new Exception("Error al listar los titulos de libros: " + e.getMessage());
         }
     }
 

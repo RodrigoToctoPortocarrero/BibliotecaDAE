@@ -146,13 +146,13 @@ public class ManLibro extends javax.swing.JPanel {
 
         tbllibros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Título", "Autor", "Editorial", "Categoría", "Año", "Vigencia"
+                "Código", "Título", "Editorial", "Categoría", "Año", "Vigencia"
             }
         ));
         tbllibros.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -544,26 +544,30 @@ public class ManLibro extends javax.swing.JPanel {
             txtcodigo.setEditable(true);
 
             try {
-                String codigo = String.valueOf(tbllibros.getValueAt(fila, 0));
-                String titulo = String.valueOf(tbllibros.getValueAt(fila, 1));
-                String editorialNombre = String.valueOf(tbllibros.getValueAt(fila, 2));
-                String categoriaNombre = String.valueOf(tbllibros.getValueAt(fila, 3));
-                String anio = String.valueOf(tbllibros.getValueAt(fila, 5));
-                String estado = String.valueOf(tbllibros.getValueAt(fila, 6));
+                // VERIFICAR ESTOS ÍNDICES:
+                String codigo = String.valueOf(tbllibros.getValueAt(fila, 0)).trim(); // Índice 0
+                String titulo = String.valueOf(tbllibros.getValueAt(fila, 1)).trim(); // Índice 1
+
+                String editorialNombre = String.valueOf(tbllibros.getValueAt(fila, 2)).trim(); // Índice 2
+                String categoriaNombre = String.valueOf(tbllibros.getValueAt(fila, 3)).trim(); // Índice 3
+
+                String anio = String.valueOf(tbllibros.getValueAt(fila, 4)).trim();   // Índice 4
+                String estado = String.valueOf(tbllibros.getValueAt(fila, 5)).trim();  // Índice 5
 
                 txtcodigo.setText(codigo);
                 txttitulo.setText(titulo);
-
-                cmbEditorial.setSelectedItem(editorialNombre);
-                cmbCategoria.setSelectedItem(categoriaNombre);
-                // ❌ Eliminado: cmbAutores.setSelectedIndex(0); 
-
-                // Asignación de campos restantes
                 txtanio.setText(anio);
 
-                chkvigente.setSelected(estado.equals("Vigente"));
+                // 2. Asignar a JCheckBox
+                chkvigente.setSelected(estado.equalsIgnoreCase("Vigente"));
 
-            } finally {
+                // 3. Asignar a JComboBox
+                cmbEditorial.setSelectedItem(editorialNombre);
+                cmbCategoria.setSelectedItem(categoriaNombre);
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar datos de la fila: " + e.getMessage(), "Error General", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
     }//GEN-LAST:event_tbllibrosMouseClicked
@@ -670,36 +674,31 @@ public class ManLibro extends javax.swing.JPanel {
     private void listarLibros() {
         ResultSet rs = null;
         try {
-
             rs = objLibro.listarLibros();
 
             modelo = new DefaultTableModel();
+
+            // 1. Definición con 6 columnas, acorde a tu diseño actual
             String[] columnas = {
-                "Código", // Columna 0
-                "Título", // Columna 1
-                "Editorial", // Columna 2
-                "Categoría", // Columna 3
-                "Año", // Columna 4
-                "Estado" // Columna 5
+                "Código", "Título", "Editorial", "Categoría", "Año", "Vigencia"
             };
             modelo.setColumnIdentifiers(columnas);
 
-            // 4. Llenar el modelo con los datos del ResultSet
+            // 2. Llenar el modelo con los 6 datos del ResultSet
             while (rs.next()) {
                 String estado = rs.getBoolean("estado") ? "Vigente" : "No Vigente";
 
                 Object[] fila = {
-                    rs.getInt("idlibro"),
-                    rs.getString("titulo"),
-                    rs.getString("nombre_editorial"),
-                    rs.getString("nombre_categoria"),
-                    rs.getString("aniopublicacion"),
-                    estado
+                    rs.getInt("idlibro"), // Índice 0: Código
+                    rs.getString("titulo"), // Índice 1: Título
+                    rs.getString("nombre_editorial"), // Índice 2: Editorial
+                    rs.getString("nombre_categoria"), // Índice 3: Categoría
+                    rs.getString("aniopublicacion"), // Índice 4: Año
+                    estado // Índice 5: Vigencia
                 };
                 modelo.addRow(fila);
             }
 
-            // 5. Asignar el modelo a la JTable
             tbllibros.setModel(modelo);
 
         } catch (Exception e) {
@@ -709,7 +708,7 @@ public class ManLibro extends javax.swing.JPanel {
                 try {
                     rs.close();
                 } catch (SQLException ex) {
-                    /* Ignorar error al cerrar */ }
+                }
             }
         }
     }
