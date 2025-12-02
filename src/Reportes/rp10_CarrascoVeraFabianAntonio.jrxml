@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp10_CarrascoVeraFabianAntonio" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c313b92c-6527-42ca-9d80-2d5ce25efe5f">
 	<property name="ireport.zoom" value="1.1000000000000003"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="105"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="nombrecategoria" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -80,7 +80,12 @@ ORDER BY
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="248" height="20" uuid="a2d0ee19-ca06-494c-acb1-cfb1f5797b38"/>
+				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch"/>
@@ -102,10 +107,6 @@ ORDER BY
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
-			<staticText>
-				<reportElement x="11" y="34" width="248" height="20" uuid="a2d0ee19-ca06-494c-acb1-cfb1f5797b38"/>
-				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="426" y="34" width="80" height="20" uuid="a72ab731-ac40-4920-a258-c6edec238b27"/>
 				<textElement textAlignment="Right"/>
@@ -114,6 +115,10 @@ ORDER BY
 			<textField evaluationTime="Report">
 				<reportElement x="506" y="34" width="40" height="20" uuid="45e894b7-dd36-4268-b30a-b3967358a475"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="34" width="202" height="20" uuid="611c0218-442e-4b86-bf2e-4d4f55899bf2"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

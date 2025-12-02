@@ -34,7 +34,12 @@ LIMIT 10;]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="248" height="20" uuid="eb8b378c-0904-4aca-a9f2-099149016896"/>
+				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="38" splitType="Stretch">
@@ -74,10 +79,6 @@ LIMIT 10;]]>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="34" width="248" height="20" uuid="eb8b378c-0904-4aca-a9f2-099149016896"/>
-				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="435" y="34" width="80" height="20" uuid="eaebb1a1-83fa-4834-a834-3b88860c781a"/>
 				<textElement textAlignment="Right"/>
@@ -86,6 +87,10 @@ LIMIT 10;]]>
 			<textField evaluationTime="Report">
 				<reportElement x="515" y="34" width="40" height="20" uuid="915ea15a-cfdb-4467-88d7-dfa3178105d6"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="34" width="201" height="20" uuid="feac8066-4cf5-4526-90e1-d577affc6684"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
