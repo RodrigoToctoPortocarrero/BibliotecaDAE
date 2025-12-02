@@ -38,7 +38,7 @@ ORDER BY
 				<textField>
 					<reportElement x="11" y="0" width="321" height="20" uuid="b34136be-d787-4f38-a530-81738511cd97"/>
 					<textElement>
-						<font size="12" isBold="true"/>
+						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nombrecategoria}]]></textFieldExpression>
 				</textField>
@@ -48,14 +48,14 @@ ORDER BY
 				<staticText>
 					<reportElement x="11" y="35" width="100" height="20" uuid="a66ab587-4f20-4874-8597-10b078dfcf24"/>
 					<textElement>
-						<font size="12" isBold="true"/>
+						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Titulo]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="310" y="35" width="100" height="20" uuid="3cef6904-25b9-4743-b6d0-ab152def94ce"/>
 					<textElement>
-						<font size="12" isBold="true"/>
+						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Veces Prestado]]></text>
 				</staticText>
@@ -70,10 +70,13 @@ ORDER BY
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="59383c3a-7f4d-45e8-b48b-56f6a5d35490"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="127" y="34" width="299" height="31" uuid="3b8196bf-d180-427b-990b-3ea2d58e0457"/>
+				<reportElement x="140" y="17" width="299" height="31" uuid="3b8196bf-d180-427b-990b-3ea2d58e0457"/>
 				<textElement>
-					<font size="18" isBold="false"/>
+					<font fontName="Serif" size="18" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Libros Populares por Categoría]]></text>
 			</staticText>
@@ -83,41 +86,61 @@ ORDER BY
 		<band height="35" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="248" height="20" uuid="a2d0ee19-ca06-494c-acb1-cfb1f5797b38"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch"/>
+		<band height="12" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
 		<band height="61" splitType="Stretch">
 			<textField>
 				<reportElement x="11" y="14" width="263" height="35" uuid="ce7404ab-3bbc-42e2-982c-d63e85d20584"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="310" y="14" width="129" height="20" uuid="aa6f63a0-07d9-468a-8fed-97b858b4a2ff"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Veces_Prestado}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="19" splitType="Stretch"/>
+		<band height="18" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="03b53083-207d-4c64-920e-b969d501c2ca"/>
+			</rectangle>
 			<textField>
 				<reportElement x="426" y="34" width="80" height="20" uuid="a72ab731-ac40-4920-a258-c6edec238b27"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="506" y="34" width="40" height="20" uuid="45e894b7-dd36-4268-b30a-b3967358a475"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="0" y="34" width="202" height="20" uuid="611c0218-442e-4b86-bf2e-4d4f55899bf2"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>

@@ -24,10 +24,13 @@ LIMIT 10;]]>
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="103289e3-2af7-4747-83c6-c7be422c6aaa"/>
+			</rectangle>
 			<staticText>
 				<reportElement x="88" y="22" width="393" height="31" uuid="b4a1f6ca-270b-4add-8011-28b7fcb155c1"/>
 				<textElement>
-					<font size="18" isBold="false"/>
+					<font fontName="Serif" size="18" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Autores con Mayor Colección en la Biblioteca]]></text>
 			</staticText>
@@ -37,6 +40,9 @@ LIMIT 10;]]>
 		<band height="35" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="248" height="20" uuid="eb8b378c-0904-4aca-a9f2-099149016896"/>
+				<textElement>
+					<font fontName="Serif" size="10"/>
+				</textElement>
 				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
 			</staticText>
 		</band>
@@ -46,14 +52,14 @@ LIMIT 10;]]>
 			<staticText>
 				<reportElement x="12" y="0" width="100" height="20" uuid="2a1d4245-42aa-4042-84ae-e2cae194c6a2"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Autor]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="239" y="0" width="202" height="20" uuid="5236d1f6-1770-443e-9c70-07a4f45c1c49"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Colección de Libros]]></text>
 			</staticText>
@@ -66,10 +72,16 @@ LIMIT 10;]]>
 		<band height="49" splitType="Stretch">
 			<textField>
 				<reportElement x="12" y="0" width="210" height="20" uuid="5a0bfe51-6626-4f6b-8629-788df07957c6"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Autor}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="239" y="0" width="202" height="35" uuid="9fd2de75-45f7-4cfc-8e06-5dd3a0f5731a"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Total_Titulos_en_Inventario}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -79,17 +91,28 @@ LIMIT 10;]]>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="6d4b1906-dbcb-47d9-9179-95124e37b44f"/>
+			</rectangle>
 			<textField>
 				<reportElement x="435" y="34" width="80" height="20" uuid="eaebb1a1-83fa-4834-a834-3b88860c781a"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="515" y="34" width="40" height="20" uuid="915ea15a-cfdb-4467-88d7-dfa3178105d6"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="0" y="34" width="201" height="20" uuid="feac8066-4cf5-4526-90e1-d577affc6684"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>

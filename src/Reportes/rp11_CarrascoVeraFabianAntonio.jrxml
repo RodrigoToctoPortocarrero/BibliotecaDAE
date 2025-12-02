@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp11_CarrascoVeraFabianAntonio" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="368e0293-b9fe-44c7-8696-d9d781e276c4">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.610510000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="70"/>
 	<parameter name="idUsuarioLector" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -41,10 +41,13 @@ ORDER BY
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="c4b6048f-01b7-43c6-b0a5-8c3dcf1481bf"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="131" y="21" width="299" height="31" uuid="064b4b4e-0a5d-4be5-b0b0-189726bb592e"/>
+				<reportElement x="148" y="24" width="299" height="31" uuid="064b4b4e-0a5d-4be5-b0b0-189726bb592e"/>
 				<textElement>
-					<font size="18" isBold="false"/>
+					<font fontName="Serif" size="18" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Estado Detallado de Mis Multas]]></text>
 			</staticText>
@@ -54,8 +57,14 @@ ORDER BY
 		<band height="35" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="248" height="20" uuid="8e8ee099-a7e0-4b3f-8b95-a79523502219"/>
+				<textElement>
+					<font fontName="Serif" size="10"/>
+				</textElement>
 				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
 			</staticText>
+			<line>
+				<reportElement x="0" y="34" width="555" height="1" uuid="2b31f49a-0ac1-4dd0-b908-26a0b16c7b1f"/>
+			</line>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -63,40 +72,40 @@ ORDER BY
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="20" uuid="9c89b657-faff-41e2-b983-9c11bd88ee04"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Libro]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="160" y="0" width="100" height="20" uuid="446db75f-9f24-42d0-84e5-7f876b2558d5"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nro de Ejemplar]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="391" y="0" width="56" height="20" uuid="7b58fe33-6dac-4686-a3c5-b1146ab38502"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Multa]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="260" y="0" width="131" height="20" uuid="1fb07c1a-37f0-4a74-97df-465d7e5a4a53"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha de Generacion]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="477" y="0" width="58" height="20" uuid="845a2c9a-e970-4491-8c5b-2b571d68f860"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Pagado]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="22" width="555" height="1" uuid="871489c1-2cbc-4443-b020-7da658c45b98"/>
+				<reportElement x="0" y="20" width="555" height="1" uuid="871489c1-2cbc-4443-b020-7da658c45b98"/>
 			</line>
 		</band>
 	</columnHeader>
@@ -104,22 +113,37 @@ ORDER BY
 		<band height="37" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="160" height="35" uuid="fbc95a94-ca7f-4fb7-a5ae-dede8369afe2"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Titulo_Libro}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="160" y="0" width="100" height="20" uuid="f8092bf6-3c65-44ce-99ee-13af3db427f9"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Nro_Ejemplar}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="391" y="0" width="86" height="20" uuid="9bd24a07-fb66-4f2e-b17d-e8e41553946c"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Monto_Multa}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="260" y="0" width="131" height="20" uuid="38aa38eb-6ab2-4cbe-89a7-1eabf64d615a"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Fecha_Generacion}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="477" y="0" width="58" height="20" uuid="fb850c7f-8d19-4a39-b501-c2a869a32559"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Pagado}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -129,17 +153,28 @@ ORDER BY
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="fb8428a3-6d70-4cfd-ae6d-ce1075cf0083"/>
+			</rectangle>
 			<textField>
 				<reportElement x="435" y="34" width="80" height="20" uuid="98133131-d625-418b-a4b0-9d07d1f618ae"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="515" y="34" width="40" height="20" uuid="10f87e11-9681-4c58-be4c-2bbf69346413"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="0" y="34" width="182" height="20" uuid="eeae534e-14c6-4870-a0c8-df6f3108c4b9"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
