@@ -240,6 +240,27 @@ public class Libro {
         }
     }
 
+    public boolean tieneEjemplaresPrestados(Integer idLibro) throws Exception {
+        // Busca ejemplares del libro cuyo estado de devolución NO sea TRUE (es decir, esté prestado/pendiente)
+        String checkSQL = "SELECT 1 FROM EJEMPLAR WHERE idlibro = " + idLibro + " AND Estado_Devolucion = FALSE LIMIT 1";
+        ResultSet rsCheck = null;
+
+        try {
+            rsCheck = objConectar.consultarBD(checkSQL);
+            // Si rsCheck.next() es TRUE, significa que encontró al menos un ejemplar prestado.
+            return rsCheck.next();
+        } catch (Exception e) {
+            throw new Exception("Error al verificar ejemplares prestados: " + e.getMessage());
+        } finally {
+            if (rsCheck != null) {
+                try {
+                    rsCheck.close();
+                } catch (SQLException ex) {
+                    /* Ignorar */ }
+            }
+        }
+    }
+
     /**
      * Elimina el libro (y se confía en la BD para eliminar las referencias en
      * ASIGNAR_LIBRO_AUTOR si se ha configurado la restricción ON DELETE
@@ -259,6 +280,14 @@ public class Libro {
      * Modifica el estado de vigencia (Activo/Inactivo).
      */
     public void modificarVigencia(Integer id, Boolean nuevoEstado) throws Exception {
+        // 🚨 VERIFICACIÓN CLAVE: Solo se permite dar de BAJA si no tiene ejemplares prestados.
+        if (!nuevoEstado) { // Si el nuevo estado es FALSE (dar de BAJA)
+            if (tieneEjemplaresPrestados(id)) {
+                // Lanza una excepción específica para el manejo en la vista
+                throw new Exception("ERROR_PRESTAMO_ACTIVO: No se puede dar de baja el libro, existen ejemplares prestados.");
+            }
+        }
+
         String estadoDB = nuevoEstado ? "TRUE" : "FALSE";
         String strSQL = "UPDATE LIBROS SET estado = " + estadoDB + " WHERE idlibro = " + id;
 

@@ -129,7 +129,9 @@ public class Autor {
     }
 
     public ResultSet filtrarAutores(String nombres, String estado) throws Exception {
+
         try {
+
             // 1. Consulta Base (Selecciona todos los campos)
             StringBuilder sb = new StringBuilder(
                     "SELECT idautor, nombres, apepaterno, apematerno, descripcion, estado FROM AUTOR WHERE 1=1"
@@ -137,19 +139,23 @@ public class Autor {
 
             // 2. Filtro por NOMBRES
             if (nombres != null && !nombres.trim().isEmpty()) {
+
                 // Usamos concatenación directa para el LIKE, sanitizando la entrada
                 sb.append(" AND UPPER(nombres) LIKE UPPER('%")
                         .append(nombres.trim().replace("'", "''"))
                         .append("%')");
-            }
 
+            }
 
             // 4. Filtro por ESTADO
             if (estado != null && !estado.trim().equalsIgnoreCase("Todos")) {
+
                 // Convierte la cadena "Activo" o "Inactivo" a valor booleano o cadena SQL
                 String valorEstado = estado.trim().equalsIgnoreCase("Activo") ? "TRUE" : "FALSE";
+
                 sb.append(" AND estado = ")
                         .append(valorEstado);
+
             }
 
             // 5. Agregar ordenación
@@ -157,19 +163,26 @@ public class Autor {
 
             // 6. Asignar la SQL final a la variable de instancia y ejecutar
             strSQL = sb.toString();
+
             rs = objConectar.consultarBD(strSQL);
 
             return rs;
 
         } catch (Exception e) {
+
             // Asegurar que la conexión se desconecte si falló la consulta (patrón de tu clase)
             if (objConectar.getCon() != null) {
+
                 objConectar.desconectar();
+
             }
+
             throw new Exception("Error al filtrar autores: " + e.getMessage());
+
         }
+
     }
-    
+
     // Método para verificar si el autor está presente en la tabla ASIGNAR_LIBRO_AUTOR
     public boolean tieneLibrosAsignados(Integer idAutor) throws Exception {
         strSQL = "SELECT COUNT(*) AS total FROM ASIGNAR_LIBRO_AUTOR WHERE idautor = " + idAutor;

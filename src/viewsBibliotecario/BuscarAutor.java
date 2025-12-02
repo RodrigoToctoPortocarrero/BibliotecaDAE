@@ -25,58 +25,46 @@ public class BuscarAutor extends javax.swing.JPanel {
     /**
      * Creates new form BuscarAutor
      */
-    public BuscarAutor(ManAsignarAutorLibro principal,javax.swing.JDialog contenedor) {
+    public BuscarAutor(ManAsignarAutorLibro principal, javax.swing.JDialog contenedor) {
         initComponents();
         this.panelAsignarLibro = principal; // Guarda la referencia del JDialog
         this.dialogoContenedor = contenedor;
-        llenarEstado();
         listarAutores();
-    }
-
-    private void llenarEstado() {
-        // Rellena el JComboBox cbxEstado
-        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
-        modelo.addElement("Todos");
-        modelo.addElement("Activo");
-        modelo.addElement("Inactivo");
-        cboEstado.setModel(modelo);
-        cboEstado.setSelectedIndex(0);
     }
 
     private void listarAutores() {
         ResultSet rsAutores = null;
+
         DefaultTableModel modelo = new DefaultTableModel();
 
         // Definición de las columnas de la tabla (6 columnas)
         modelo.addColumn("ID");
+
         modelo.addColumn("NOMBRES");
+
         modelo.addColumn("AP. PATERNO");
+
         modelo.addColumn("AP. MATERNO");
+
         modelo.addColumn("DESCRIPCIÓN");
+
         modelo.addColumn("ESTADO"); // Índice 5
 
         try {
+
             // 1. Obtener los valores de los filtros
             String nombre = txtNombre.getText();
-            String estadoSeleccionado = cboEstado.getSelectedItem().toString();
 
-            // 2. Preparar el filtro de estado (asumiendo que TRUE = Activo)
-            String filtroEstado = "";
-            if (estadoSeleccionado.equalsIgnoreCase("Activo")) {
-                filtroEstado = "Activo";
-            } else if (estadoSeleccionado.equalsIgnoreCase("Inactivo")) {
-                filtroEstado = "Inactivo";
-            } else {
-                filtroEstado = "Todos";
-            }
+            // String estadoSeleccionado = cboEstado.getSelectedItem().toString(); // ❌ ELIMINADO
+            String filtroEstado = "Todos"; // Valor fijo después de eliminar el JComboBox
 
-            // 3. Llamar al método de filtrado (Necesitas un método similar a Autor.filtrarAutores)
-            // NOTA: ApeMaterno y Descripcion no se usan como filtro según tu solicitud,
-            // pero podrías añadirlos a la llamada si lo necesitas.
+            // 3. Llamar al método de filtrado 
+            // NOTA: Asegúrate de que Autor.filtrarAutores pueda manejar 'filtroEstado' como "Todos"
             rsAutores = objAutor.filtrarAutores(nombre, filtroEstado);
 
             // 4. Llenar la tabla con los resultados
             while (rsAutores.next()) {
+
                 modelo.addRow(new Object[]{
                     rsAutores.getInt("idautor"),
                     rsAutores.getString("nombres"),
@@ -85,18 +73,23 @@ public class BuscarAutor extends javax.swing.JPanel {
                     rsAutores.getString("descripcion"),
                     rsAutores.getBoolean("estado") ? "Activo" : "Inactivo" // Columna 5: ESTADO
                 });
+
             }
 
             // 5. Asignar el modelo a la JTable y actualizar el contador
             tblListadoAutores.setModel(modelo);
+
             txtTotalAutores.setText(String.valueOf(tblListadoAutores.getRowCount()));
 
             // 6. Cerrar el ResultSet 
             rsAutores.close();
 
         } catch (SQLException e) {
+
             JOptionPane.showMessageDialog(this, "Error de base de datos al listar autores: " + e.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
+
         } catch (Exception e) {
+
             // Manejo de otras excepciones (NullPointerException, etc.)
         }
     }
@@ -113,12 +106,10 @@ public class BuscarAutor extends javax.swing.JPanel {
         txtNombre = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListadoAutores = new javax.swing.JTable();
-        cboEstado = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         txtTotalAutores = new javax.swing.JLabel();
         btnSeleccionar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
 
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -139,12 +130,6 @@ public class BuscarAutor extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblListadoAutores);
 
-        cboEstado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboEstadoActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText("Total");
 
         txtTotalAutores.setText("Total");
@@ -158,8 +143,6 @@ public class BuscarAutor extends javax.swing.JPanel {
 
         jLabel2.setText("Nombre:");
 
-        jLabel4.setText("Estado:");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -171,11 +154,7 @@ public class BuscarAutor extends javax.swing.JPanel {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26))
+                        .addGap(258, 258, 258))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(69, 69, 69)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,7 +165,7 @@ public class BuscarAutor extends javax.swing.JPanel {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(66, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(242, 242, 242)
+                .addGap(243, 243, 243)
                 .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -196,61 +175,84 @@ public class BuscarAutor extends javax.swing.JPanel {
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(btnSeleccionar)
+                    .addComponent(jLabel2))
                 .addGap(18, 18, 18)
+                .addComponent(btnSeleccionar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtTotalAutores))
-                .addGap(37, 37, 37))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
         int fila = tblListadoAutores.getSelectedRow();
-        // ... (Validación fila == -1) ...
+
+        if (fila == -1) {
+
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un Autor de la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+
+            return;
+
+        }
 
         try {
+
             // 1. VALIDACIÓN: Obtener y verificar el ESTADO (Índice 5)
             // Columna 5 es el ESTADO, según tu método listarAutores()
             String estadoAutor = tblListadoAutores.getValueAt(fila, 5).toString();
 
             // 🛑 Lógica de Bloqueo 🛑
             if (!estadoAutor.equalsIgnoreCase("Activo")) {
+
                 JOptionPane.showMessageDialog(this,
                         "Solo se pueden seleccionar Autores Activos (Estado: " + estadoAutor + ").",
                         "Autor Inactivo",
                         JOptionPane.WARNING_MESSAGE);
+
                 return; // 🛑 ESTA LÍNEA ES CRUCIAL: Detiene la ejecución aquí.
+
             }
 
             // 2. Obtener los datos (Solo se ejecuta si el estado es Activo)
             String idString = tblListadoAutores.getValueAt(fila, 0).toString();
+
             Integer idAutor = Integer.parseInt(idString);
+
             // ... (obtención de nombres, etc.) ...
             String nombres = tblListadoAutores.getValueAt(fila, 1).toString();
+
             String apePaterno = tblListadoAutores.getValueAt(fila, 2).toString();
+
             String apeMaterno = tblListadoAutores.getValueAt(fila, 3).toString();
+
             String nombreCompleto = nombres + " " + apePaterno + " " + apeMaterno;
 
             // 3. Llamar al método delegado del panel principal (ManAsignarAutorLibro)
             if (panelAsignarLibro != null) {
+
                 panelAsignarLibro.setAutorSeleccionado(idAutor, nombreCompleto.trim());
 
                 // 4. Cerrar el JFrame contenedor
                 if (dialogoContenedor != null) {
+
                     dialogoContenedor.dispose();
+
                 }
+
             }
+
         } catch (NumberFormatException nfe) {
-            // ... (Manejo de error de formato) ...
+
+            JOptionPane.showMessageDialog(this, "Error de formato de número al seleccionar el ID: " + nfe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
         } catch (Exception e) {
-            // ... (Manejo de error general) ...
+
+            JOptionPane.showMessageDialog(this, "Error al seleccionar el autor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
         }
     }//GEN-LAST:event_btnSeleccionarActionPerformed
 
@@ -258,17 +260,11 @@ public class BuscarAutor extends javax.swing.JPanel {
         listarAutores();
     }//GEN-LAST:event_txtNombreKeyReleased
 
-    private void cboEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadoActionPerformed
-        listarAutores();
-    }//GEN-LAST:event_cboEstadoActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSeleccionar;
-    private javax.swing.JComboBox<String> cboEstado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblListadoAutores;
     private javax.swing.JTextField txtNombre;

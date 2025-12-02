@@ -32,18 +32,7 @@ public class BuscarLibro extends javax.swing.JPanel {
         initComponents();
         this.panelAsignarLibro = principal; // Asigna la referencia del delegado
         this.dialogoContenedor = contenedor;
-        llenarEstado();
         listarLibros(); // Opcional: listar al inicio
-    }
-
-    private void llenarEstado() {
-        // Rellena el JComboBox cbxEstado
-        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
-        modelo.addElement("Todos");
-        modelo.addElement("Activo");
-        modelo.addElement("Inactivo");
-        cbxEstado.setModel(modelo);
-        cbxEstado.setSelectedIndex(0);
     }
 
     private void listarLibros() {
@@ -51,22 +40,25 @@ public class BuscarLibro extends javax.swing.JPanel {
         DefaultTableModel modelo = new DefaultTableModel();
 
         // Definir las 6 columnas que devuelve el SQL de Libro.filtrarLibros()
-        modelo.addColumn("ID");         // 0
-        modelo.addColumn("TÍTULO");     // 1
-        modelo.addColumn("AÑO");        // 2
-        modelo.addColumn("EDITORIAL");  // 3
-        modelo.addColumn("CATEGORÍA");  // 4
-        modelo.addColumn("ESTADO");     // 5
+        modelo.addColumn("ID"); // 0
+        modelo.addColumn("TÍTULO"); // 1
+        modelo.addColumn("AÑO"); // 2
+        modelo.addColumn("EDITORIAL"); // 3
+        modelo.addColumn("CATEGORÍA"); // 4
+        modelo.addColumn("ESTADO"); // 5
 
         try {
             // 1. Recolección de parámetros de búsqueda
             String titulo = txtNombre.getText(); // Nombre para el Título
             String anio = txtAño.getText();
-            String estado = cbxEstado.getSelectedItem().toString();
+            // String estado = cbxEstado.getSelectedItem().toString(); // ❌ ELIMINADO: ahora usaremos "Todos" por defecto, o el valor que necesites
+            String estado = "Todos"; // Valor fijo después de eliminar el JComboBox
             String nomEditorial = txtEditorial.getText();
             String nomCategoria = txtCategoria.getText();
 
             // 2. Llamar al método de filtrado en la capa lógica
+            // NOTA: Si tu capa lógica (Libro.filtrarLibros) maneja el parámetro de estado
+            // como opcional o acepta "Todos", esto funcionará.
             rsLibros = objLibro.filtrarLibros(titulo, anio, estado, nomEditorial, nomCategoria);
 
             // 3. Llenar la tabla con los resultados
@@ -143,7 +135,6 @@ public class BuscarLibro extends javax.swing.JPanel {
         txtAño = new javax.swing.JTextField();
         txtEditorial = new javax.swing.JTextField();
         txtCategoria = new javax.swing.JTextField();
-        cbxEstado = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         txtTotal = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -153,7 +144,6 @@ public class BuscarLibro extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
 
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -211,8 +201,6 @@ public class BuscarLibro extends javax.swing.JPanel {
 
         jLabel5.setText("Categoría:");
 
-        jLabel6.setText("Estado:");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -251,11 +239,7 @@ public class BuscarLibro extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(102, 102, 102)))
                 .addContainerGap(69, Short.MAX_VALUE))
         );
@@ -274,13 +258,9 @@ public class BuscarLibro extends javax.swing.JPanel {
                     .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel5))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(btnSeleccionar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -313,13 +293,11 @@ public class BuscarLibro extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSeleccionar;
-    private javax.swing.JComboBox<String> cbxEstado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblListadoLibros;
     private javax.swing.JTextField txtAño;

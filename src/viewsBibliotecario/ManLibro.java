@@ -188,7 +188,7 @@ public class ManLibro extends javax.swing.JPanel {
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel13.setText("Vigente:");
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setText("Asignar autor a libro");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,42 +202,43 @@ public class ManLibro extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 688, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(490, 490, 490))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel8)
                             .addComponent(jLabel7))
                         .addGap(11, 11, 11)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txttitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                                .addComponent(txtcodigo))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(1, 1, 1)
-                                .addComponent(cmbEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(23, 23, 23)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(cmbEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(btnEditorial, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txttitulo)
+                            .addComponent(txtcodigo))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addGap(18, 18, 18)
-                                .addComponent(chkvigente, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(73, 73, 73)
-                                .addComponent(txtanio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel12))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(88, 88, 88)
+                                .addGap(32, 32, 32)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel13)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(chkvigente, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(73, 73, 73)
+                                        .addComponent(txtanio, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel12))
+                                .addGap(55, 55, 55)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
                                     .addComponent(btnnuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -250,7 +251,7 @@ public class ManLibro extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1)
-                                .addGap(28, 28, 28)))))
+                                .addGap(12, 12, 12)))))
                 .addGap(0, 10, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -515,6 +516,7 @@ public class ManLibro extends javax.swing.JPanel {
                 return;
             }
 
+            // Determina el nuevo estado (lo opuesto al actual)
             Boolean nuevoEstado = !chkvigente.isSelected();
             String mensajeEstado = nuevoEstado ? "dar de ALTA" : "dar de BAJA";
 
@@ -527,11 +529,27 @@ public class ManLibro extends javax.swing.JPanel {
             if (confirmacion == JOptionPane.YES_OPTION) {
                 Libro.modificarVigencia(Integer.parseInt(txtcodigo.getText()), nuevoEstado);
                 JOptionPane.showMessageDialog(this, "Estado del libro cambiado a " + (nuevoEstado ? "VIGENTE" : "NO VIGENTE") + " exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                if (nuevoEstado) {
+                    btndarbaja.setText("Dar Baja"); // Ya está en alta, la próxima es baja
+                } else {
+                    btndarbaja.setText("Dar Alta"); // Ya está en baja, la próxima es alta
+                }
+
                 limpiarControles();
                 listarLibros();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cambiar el estado del libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            // 🚨 Manejo de ERROR_PRESTAMO_ACTIVO
+            if (e.getMessage().contains("ERROR_PRESTAMO_ACTIVO")) {
+                JOptionPane.showMessageDialog(this,
+                        "⚠️ No se puede dar de BAJA. El libro tiene ejemplares actualmente prestados.",
+                        "Imposible Inactivar",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Para otros errores (BD, conexión, etc.)
+                JOptionPane.showMessageDialog(this, "Error al cambiar el estado del libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btndarbajaActionPerformed
 
@@ -552,15 +570,13 @@ public class ManLibro extends javax.swing.JPanel {
             txtcodigo.setEditable(true);
 
             try {
-                // VERIFICAR ESTOS ÍNDICES:
-                String codigo = String.valueOf(tbllibros.getValueAt(fila, 0)).trim(); // Índice 0
-                String titulo = String.valueOf(tbllibros.getValueAt(fila, 1)).trim(); // Índice 1
-
-                String editorialNombre = String.valueOf(tbllibros.getValueAt(fila, 2)).trim(); // Índice 2
-                String categoriaNombre = String.valueOf(tbllibros.getValueAt(fila, 3)).trim(); // Índice 3
-
-                String anio = String.valueOf(tbllibros.getValueAt(fila, 4)).trim();   // Índice 4
-                String estado = String.valueOf(tbllibros.getValueAt(fila, 5)).trim();  // Índice 5
+                // ... (Lectura de campos) ...
+                String codigo = String.valueOf(tbllibros.getValueAt(fila, 0)).trim();
+                String titulo = String.valueOf(tbllibros.getValueAt(fila, 1)).trim();
+                String editorialNombre = String.valueOf(tbllibros.getValueAt(fila, 2)).trim();
+                String categoriaNombre = String.valueOf(tbllibros.getValueAt(fila, 3)).trim();
+                String anio = String.valueOf(tbllibros.getValueAt(fila, 4)).trim();
+                String estado = String.valueOf(tbllibros.getValueAt(fila, 5)).trim(); // Índice 5: Vigencia
 
                 txtcodigo.setText(codigo);
                 txttitulo.setText(titulo);
@@ -572,6 +588,16 @@ public class ManLibro extends javax.swing.JPanel {
                 // 3. Asignar a JComboBox
                 cmbEditorial.setSelectedItem(editorialNombre);
                 cmbCategoria.setSelectedItem(categoriaNombre);
+
+                // 🌟 CÓDIGO AÑADIDO: Actualizar el texto del botón 🌟
+                // Si el estado actual es VIGENTE, el botón debe decir "Dar Baja".
+                // Si el estado actual es NO VIGENTE, el botón debe decir "Dar Alta".
+                if (estado.equalsIgnoreCase("Vigente")) {
+                    btndarbaja.setText("Dar Baja");
+                } else {
+                    btndarbaja.setText("Dar Alta");
+                }
+                // 🌟 FIN DEL CÓDIGO AÑADIDO 🌟
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al cargar datos de la fila: " + e.getMessage(), "Error General", JOptionPane.ERROR_MESSAGE);
