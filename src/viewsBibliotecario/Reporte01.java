@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package viewsUsuario;
+package viewsBibliotecario;
 
 import capaLogica.Reportes;
 import java.awt.BorderLayout;
@@ -12,22 +12,21 @@ import net.sf.jasperreports.swing.JRViewer;
 
 /**
  *
- * @author VALENTINO
+ * @author Percy Alexander
  */
-public class Reporte08 extends javax.swing.JPanel {
+public class Reporte01 extends javax.swing.JPanel {
 
     /**
-     * Creates new form Reporte08
+     * Creates new form Reporte01
      */
-    public Reporte08() {
+    public Reporte01() {
         initComponents();
-        
         try {
             Container contenedor = this.vistaReporte;
             contenedor.setLayout(new BorderLayout());
             contenedor.removeAll();
 
-            JRViewer objReporte = new Reportes().reporteInterno("reporte08.jasper", null);
+            JRViewer objReporte = new Reportes().reporteInterno("reporte01Percy.jasper", null);
             contenedor.add(objReporte);
             contenedor.revalidate();
             contenedor.repaint();
@@ -56,11 +55,11 @@ public class Reporte08 extends javax.swing.JPanel {
         vistaReporte.setLayout(vistaReporteLayout);
         vistaReporteLayout.setHorizontalGroup(
             vistaReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 767, Short.MAX_VALUE)
+            .addGap(0, 670, Short.MAX_VALUE)
         );
         vistaReporteLayout.setVerticalGroup(
             vistaReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
+            .addGap(0, 520, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -71,7 +70,7 @@ public class Reporte08 extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(vistaReporte, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(vistaReporte)
         );
     }// </editor-fold>//GEN-END:initComponents
 

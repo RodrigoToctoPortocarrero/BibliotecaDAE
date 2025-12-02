@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package viewsUsuario;
+package viewsBibliotecario;
 import java.awt.BorderLayout;
 import java.util.Date;
 import java.util.HashMap;

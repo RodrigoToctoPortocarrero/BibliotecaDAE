@@ -97,7 +97,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         btnDevolucion = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         btnBuscarLibro = new javax.swing.JButton();
-        btnBuscarLibro1 = new javax.swing.JButton();
+        btnReporte = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         dateText = new javax.swing.JLabel();
@@ -266,14 +266,14 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             }
         });
 
-        btnBuscarLibro1.setBackground(new java.awt.Color(0, 102, 255));
-        btnBuscarLibro1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnBuscarLibro1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscarLibro1.setText("REPORTES");
-        btnBuscarLibro1.setBorderPainted(false);
-        btnBuscarLibro1.addActionListener(new java.awt.event.ActionListener() {
+        btnReporte.setBackground(new java.awt.Color(0, 102, 255));
+        btnReporte.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnReporte.setForeground(new java.awt.Color(255, 255, 255));
+        btnReporte.setText("REPORTES");
+        btnReporte.setBorderPainted(false);
+        btnReporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarLibro1ActionPerformed(evt);
+                btnReporteActionPerformed(evt);
             }
         });
 
@@ -311,7 +311,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                     .addComponent(btnGestionarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnBuscarLibro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnBuscarLibro1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGestionarCategoria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGestionarAutor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
@@ -345,7 +345,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnBuscarLibro)
                 .addGap(18, 18, 18)
-                .addComponent(btnBuscarLibro1)
+                .addComponent(btnReporte)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
@@ -616,9 +616,34 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         lblMenu.setText("Buscar Libro");
     }//GEN-LAST:event_btnBuscarLibroActionPerformed
 
-    private void btnBuscarLibro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarLibro1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarLibro1ActionPerformed
+    private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
+        try {
+            // 1. Instanciar el panel pasándole el panel 'content' como referencia
+            viewsBibliotecario.frmReporteB pres = new viewsBibliotecario.frmReporteB(content);
+
+            // 2. IMPORTANTE: BorderLayout ignora setSize(), usa setPreferredSize
+            // Esto fuerza al panel a tener el tamaño del contenedor padre
+            pres.setPreferredSize(new java.awt.Dimension(750, 430));
+            pres.setSize(750, 430); // Se mantiene por compatibilidad con algunos layouts absolutos
+
+            // 3. Limpiar el contenedor principal
+            content.removeAll();
+
+            // 4. Agregar el nuevo panel al centro
+            content.add(pres, java.awt.BorderLayout.CENTER);
+
+            // 5. Refrescar la interfaz (Muy importante el orden)
+            content.revalidate(); // Recalcula el layout
+            content.repaint();    // Vuelve a pintar los gráficos
+
+            // 6. Actualizar el título del menú (opcional, para que el usuario sepa dónde está)
+            lblMenu.setText("Reportes");
+
+        } catch (Exception e) {
+            System.out.println("Error al cargar reporte: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnReporteActionPerformed
 
     private void InitContent() {
 
@@ -668,7 +693,6 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
     private javax.swing.JButton btnBuscarLibro;
-    private javax.swing.JButton btnBuscarLibro1;
     private javax.swing.JButton btnDevolucion;
     private javax.swing.JButton btnEjemplar;
     private javax.swing.JButton btnGestionarAutor;
@@ -677,6 +701,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     private javax.swing.JButton btnGestionareditorial;
     private javax.swing.JButton btnGestionarlibro;
     private javax.swing.JButton btnPrestamosUsuario;
+    private javax.swing.JButton btnReporte;
     private javax.swing.JButton btnSalir;
     private javax.swing.JPanel content;
     private javax.swing.JLabel dateText;

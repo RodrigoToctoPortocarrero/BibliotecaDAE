@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package viewsUsuario;
+package viewsBibliotecario;
 
 import capaLogica.Reportes;
 import java.awt.BorderLayout;
@@ -14,19 +14,19 @@ import net.sf.jasperreports.swing.JRViewer;
  *
  * @author BIENVENIDO
  */
-public class Reporte04 extends javax.swing.JPanel {
+public class Reporte06 extends javax.swing.JPanel {
 
     /**
-     * Creates new form Reporte04
+     * Creates new form Reporte06
      */
-    public Reporte04() {
+    public Reporte06() {
         initComponents();
         try {
             Container contenedor = this.vistaReporte;
             contenedor.setLayout(new BorderLayout());
             contenedor.removeAll();
 
-            JRViewer objReporte = new Reportes().reporteInterno("RERPORTE4.jasper", null);
+            JRViewer objReporte = new Reportes().reporteInterno("REPORTE6.jasper", null);
             contenedor.add(objReporte);
             contenedor.revalidate();
             contenedor.repaint();
@@ -55,11 +55,11 @@ public class Reporte04 extends javax.swing.JPanel {
         vistaReporte.setLayout(vistaReporteLayout);
         vistaReporteLayout.setHorizontalGroup(
             vistaReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 744, Short.MAX_VALUE)
+            .addGap(0, 750, Short.MAX_VALUE)
         );
         vistaReporteLayout.setVerticalGroup(
             vistaReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 459, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
