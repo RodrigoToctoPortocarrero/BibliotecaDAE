@@ -18,7 +18,7 @@ import javax.swing.JPanel; // Asegúrate de tener esto
 
 /**
  *
- * @author Bernabe Villegas Edgar
+ * @author Percy Castañeda
  */
 public class frmReporte extends javax.swing.JPanel {
 

@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author laboratorio_computo
+ * @author Percy Castañeda
  */
 public class ManCategoria extends javax.swing.JPanel {
 
