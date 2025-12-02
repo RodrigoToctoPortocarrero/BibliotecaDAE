@@ -224,7 +224,7 @@ public class Prestamo {
             // ===================================
             // 3. ACTUALIZAR EJEMPLAR A NO DISPONIBLE
             // ===================================
-            strSQL = "UPDATE ejemplar SET estado = FALSE, estado_devolucion = FALSE "
+            strSQL = "UPDATE ejemplar SET estado_devolucion = FALSE "
                     + "WHERE idejemplar = ?";
             pstEjemplar = con.prepareStatement(strSQL);
 
