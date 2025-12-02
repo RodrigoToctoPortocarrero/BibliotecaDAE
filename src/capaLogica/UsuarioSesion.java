@@ -6,7 +6,7 @@ package capaLogica;
 
 /**
  *
- * @author LENOVO
+ * @author Tocto Portocarrero Rodrigo
  */
 public class UsuarioSesion {
 

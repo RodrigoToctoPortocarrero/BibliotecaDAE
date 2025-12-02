@@ -106,6 +106,8 @@ public class BuscarCategoria extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtNombreKeyReleased(evt);
@@ -131,19 +133,28 @@ public class BuscarCategoria extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblListadoCategorias);
 
+        txtTotalCategorias.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtTotalCategorias.setText("jLabel1");
 
+        txtTotalCategorias1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtTotalCategorias1.setText("Total:");
 
+        btnSeleccionar.setBackground(new java.awt.Color(24, 118, 210));
+        btnSeleccionar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSeleccionar.setForeground(new java.awt.Color(255, 255, 255));
         btnSeleccionar.setText("Seleccionar");
+        btnSeleccionar.setBorder(null);
+        btnSeleccionar.setBorderPainted(false);
         btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSeleccionarActionPerformed(evt);
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Descripción:");
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Nombre:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -168,11 +179,11 @@ public class BuscarCategoria extends javax.swing.JPanel {
                             .addComponent(txtTotalCategorias1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(txtTotalCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSeleccionar)
-                .addGap(224, 224, 224))
+                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(218, 218, 218))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,11 +194,11 @@ public class BuscarCategoria extends javax.swing.JPanel {
                     .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addGap(36, 36, 36)
-                .addComponent(btnSeleccionar)
+                .addGap(18, 18, 18)
+                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTotalCategorias)
                     .addComponent(txtTotalCategorias1))

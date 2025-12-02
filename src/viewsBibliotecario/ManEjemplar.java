@@ -153,7 +153,13 @@ public class ManEjemplar extends javax.swing.JPanel {
             }
         });
 
+        btnBuscar.setBackground(new java.awt.Color(24, 118, 210));
+        btnBuscar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/buscar2.png"))); // NOI18N
         btnBuscar.setText("BUSCAR");
+        btnBuscar.setBorder(null);
+        btnBuscar.setBorderPainted(false);
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
@@ -177,35 +183,65 @@ public class ManEjemplar extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblEjemplar);
 
+        btnInsertar.setBackground(new java.awt.Color(24, 118, 210));
+        btnInsertar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnInsertar.setForeground(new java.awt.Color(255, 255, 255));
+        btnInsertar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/registrarMarca.png"))); // NOI18N
         btnInsertar.setText("NUEVO");
+        btnInsertar.setBorder(null);
+        btnInsertar.setBorderPainted(false);
         btnInsertar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInsertarActionPerformed(evt);
             }
         });
 
+        btnEliminar.setBackground(new java.awt.Color(24, 118, 210));
+        btnEliminar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/eliminarMarca.png"))); // NOI18N
         btnEliminar.setText("ELIMINAR");
+        btnEliminar.setBorder(null);
+        btnEliminar.setBorderPainted(false);
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
             }
         });
 
+        btnDarBaja.setBackground(new java.awt.Color(24, 118, 210));
+        btnDarBaja.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnDarBaja.setForeground(new java.awt.Color(255, 255, 255));
+        btnDarBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/darBajaMarca.png"))); // NOI18N
         btnDarBaja.setText("DAR DE BAJA");
+        btnDarBaja.setBorder(null);
+        btnDarBaja.setBorderPainted(false);
         btnDarBaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDarBajaActionPerformed(evt);
             }
         });
 
+        btnModificar.setBackground(new java.awt.Color(24, 118, 210));
+        btnModificar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnModificar.setForeground(new java.awt.Color(255, 255, 255));
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/modificarMarca.png"))); // NOI18N
         btnModificar.setText("MODIFICAR");
+        btnModificar.setBorder(null);
+        btnModificar.setBorderPainted(false);
         btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnModificarActionPerformed(evt);
             }
         });
 
+        btnLimpiar.setBackground(new java.awt.Color(24, 118, 210));
+        btnLimpiar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/limpiarMarca.png"))); // NOI18N
         btnLimpiar.setText("LIMPIAR");
+        btnLimpiar.setBorder(null);
+        btnLimpiar.setBorderPainted(false);
         btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLimpiarActionPerformed(evt);
@@ -264,13 +300,16 @@ public class ManEjemplar extends javax.swing.JPanel {
                     .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(checkVigencia))
                 .addGap(22, 22, 22)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4)
-                    .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNroEjemplar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4)
+                            .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNroEjemplar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 14, Short.MAX_VALUE))
                     .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 43, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnInsertar, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                     .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

@@ -111,6 +111,8 @@ public class BuscarAutor extends javax.swing.JPanel {
         btnSeleccionar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtNombreKeyReleased(evt);
@@ -130,17 +132,25 @@ public class BuscarAutor extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblListadoAutores);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Total");
 
+        txtTotalAutores.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtTotalAutores.setText("Total");
 
+        btnSeleccionar.setBackground(new java.awt.Color(24, 118, 210));
+        btnSeleccionar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSeleccionar.setForeground(new java.awt.Color(255, 255, 255));
         btnSeleccionar.setText("Seleccionar");
+        btnSeleccionar.setBorder(null);
+        btnSeleccionar.setBorderPainted(false);
         btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSeleccionarActionPerformed(evt);
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Nombre:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -154,7 +164,9 @@ public class BuscarAutor extends javax.swing.JPanel {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(258, 258, 258))
+                        .addGap(45, 45, 45)
+                        .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(87, 87, 87))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(69, 69, 69)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,10 +176,6 @@ public class BuscarAutor extends javax.swing.JPanel {
                                 .addComponent(txtTotalAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(66, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,16 +183,15 @@ public class BuscarAutor extends javax.swing.JPanel {
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addComponent(btnSeleccionar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel2)
+                    .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtTotalAutores))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

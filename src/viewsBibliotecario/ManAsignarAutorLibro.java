@@ -161,6 +161,8 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         btnmas = new javax.swing.JButton();
         btnmenos = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setText("Autor:");
 
@@ -170,7 +172,12 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
             }
         });
 
+        btnAutor.setBackground(new java.awt.Color(24, 118, 210));
+        btnAutor.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAutor.setForeground(new java.awt.Color(255, 255, 255));
         btnAutor.setText("...");
+        btnAutor.setBorder(null);
+        btnAutor.setBorderPainted(false);
         btnAutor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAutorActionPerformed(evt);
@@ -186,7 +193,12 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
             }
         });
 
+        btnBuscarLibro.setBackground(new java.awt.Color(24, 118, 210));
+        btnBuscarLibro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnBuscarLibro.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscarLibro.setText("...");
+        btnBuscarLibro.setBorder(null);
+        btnBuscarLibro.setBorderPainted(false);
         btnBuscarLibro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarLibroActionPerformed(evt);
@@ -206,7 +218,12 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblAsignado);
 
+        btnAsignar.setBackground(new java.awt.Color(24, 118, 210));
+        btnAsignar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAsignar.setForeground(new java.awt.Color(255, 255, 255));
         btnAsignar.setText("Asignar");
+        btnAsignar.setBorder(null);
+        btnAsignar.setBorderPainted(false);
         btnAsignar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAsignarActionPerformed(evt);
@@ -220,14 +237,24 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         txtdescripcion.setRows(5);
         jScrollPane2.setViewportView(txtdescripcion);
 
+        btnmas.setBackground(new java.awt.Color(24, 118, 210));
+        btnmas.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnmas.setForeground(new java.awt.Color(255, 255, 255));
         btnmas.setText("+");
+        btnmas.setBorder(null);
+        btnmas.setBorderPainted(false);
         btnmas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnmasActionPerformed(evt);
             }
         });
 
+        btnmenos.setBackground(new java.awt.Color(24, 118, 210));
+        btnmenos.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnmenos.setForeground(new java.awt.Color(255, 255, 255));
         btnmenos.setText("-");
+        btnmenos.setBorder(null);
+        btnmenos.setBorderPainted(false);
         btnmenos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnmenosActionPerformed(evt);
@@ -239,35 +266,36 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addGap(36, 36, 36)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnmas, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnmenos, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(12, 12, 12))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addGap(27, 27, 27)
-                        .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscarLibro, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(52, 52, 52)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addGap(36, 36, 36)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnmas, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnmenos, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(12, 12, 12))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addGap(27, 27, 27)
+                                .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscarLibro, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38)
+                                .addComponent(jLabel11)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(232, 232, 232)
+                        .addComponent(btnAsignar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(72, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(232, 232, 232)
-                .addComponent(btnAsignar, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,7 +308,7 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
                     .addComponent(jLabel12)
                     .addComponent(cboLibros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarLibro))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13)
@@ -291,8 +319,8 @@ public class ManAsignarAutorLibro extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnAsignar)
-                .addGap(45, 45, 45))
+                .addComponent(btnAsignar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
     }// </editor-fold>//GEN-END:initComponents
 

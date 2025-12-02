@@ -99,6 +99,8 @@ public class BuscarEditorial extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtNombreKeyReleased(evt);
@@ -124,19 +126,28 @@ public class BuscarEditorial extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblListadoEditoriales);
 
+        btnSeleccionar.setBackground(new java.awt.Color(24, 118, 210));
+        btnSeleccionar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSeleccionar.setForeground(new java.awt.Color(255, 255, 255));
         btnSeleccionar.setText("Seleccionar");
+        btnSeleccionar.setBorder(null);
+        btnSeleccionar.setBorderPainted(false);
         btnSeleccionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSeleccionarActionPerformed(evt);
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Total");
 
+        txtTotalEditoriales.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtTotalEditoriales.setText("jLabel2");
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Nombre:");
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Teléfono:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -144,7 +155,7 @@ public class BuscarEditorial extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(74, Short.MAX_VALUE)
+                .addContainerGap(72, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -165,21 +176,21 @@ public class BuscarEditorial extends javax.swing.JPanel {
                 .addGap(78, 78, 78))
             .addGroup(layout.createSequentialGroup()
                 .addGap(226, 226, 226)
-                .addComponent(btnSeleccionar)
+                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(60, Short.MAX_VALUE)
+                .addContainerGap(59, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addGap(28, 28, 28)
-                .addComponent(btnSeleccionar)
-                .addGap(28, 28, 28)
+                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(64, 64, 64)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

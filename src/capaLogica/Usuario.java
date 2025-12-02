@@ -38,8 +38,7 @@ public class Usuario {
         sql = "SELECT idusuario, nombre, tipousuario "
                 + "FROM USUARIO "
                 + "WHERE nomusuario = ? "
-                + "AND contrasenia = MD5(? || ? || ?) "
-                + "AND estado = TRUE";
+                + "AND contrasenia = MD5(? || ? || ?) ";
 
         try (Connection micon = con.conectar(); PreparedStatement sp = micon.prepareStatement(sql)) {
 

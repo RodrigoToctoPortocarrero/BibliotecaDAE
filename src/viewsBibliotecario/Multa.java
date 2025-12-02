@@ -39,6 +39,16 @@ public class Multa extends javax.swing.JPanel {
         tblMultas.setModel(modelo);
     }
 
+    // Método auxiliar
+    private void limpiarFormulario() {
+        modelo.setRowCount(0);
+        lblTotal.setText("0.00");
+        txtLector.setText("");
+        txtFechaPrestamo.setDate(null);
+        idPrestamoActual = -1;
+        idUsuarioActual = -1;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,11 +69,20 @@ public class Multa extends javax.swing.JPanel {
         btnPagarMulta = new javax.swing.JButton();
         txtFechaPrestamo = new com.toedter.calendar.JDateChooser();
 
-        jLabel1.setText("Fecha del Multa:");
+        setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setText("Fecha de Prestamo");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Lector:");
 
+        btnBuscarPrestamo.setBackground(new java.awt.Color(24, 118, 210));
+        btnBuscarPrestamo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnBuscarPrestamo.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscarPrestamo.setText("Buscar Multas");
+        btnBuscarPrestamo.setBorder(null);
+        btnBuscarPrestamo.setBorderPainted(false);
         btnBuscarPrestamo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarPrestamoActionPerformed(evt);
@@ -85,11 +104,18 @@ public class Multa extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblMultas);
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("TOTAL:");
 
+        lblTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblTotal.setText("0.0");
 
+        btnPagarMulta.setBackground(new java.awt.Color(24, 118, 210));
+        btnPagarMulta.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnPagarMulta.setForeground(new java.awt.Color(255, 255, 255));
         btnPagarMulta.setText("PAGAR MULTA");
+        btnPagarMulta.setBorder(null);
+        btnPagarMulta.setBorderPainted(false);
         btnPagarMulta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPagarMultaActionPerformed(evt);
@@ -112,19 +138,18 @@ public class Multa extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblTotal)
+                                .addGap(427, 427, 427)
+                                .addComponent(btnPagarMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(306, 306, 306)
-                        .addComponent(btnBuscarPrestamo))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addGap(71, 71, 71)
-                            .addComponent(jLabel3)
-                            .addGap(18, 18, 18)
-                            .addComponent(lblTotal)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnPagarMulta))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addGap(55, 55, 55)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(btnBuscarPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -138,54 +163,81 @@ public class Multa extends javax.swing.JPanel {
                         .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnBuscarPrestamo)
-                .addGap(28, 28, 28)
+                .addComponent(btnBuscarPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(lblTotal)
-                    .addComponent(btnPagarMulta))
-                .addContainerGap(59, Short.MAX_VALUE))
+                    .addComponent(btnPagarMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPagarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarMultaActionPerformed
-        if (idPrestamoActual == -1 || modelo.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Busque primero una multa pendiente.");
+        // Validaciones iniciales
+        if (idPrestamoActual == -1 || idUsuarioActual == -1 || modelo.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe buscar primero una multa pendiente.",
+                    "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        double total = Double.parseDouble(lblTotal.getText().replace(",", "."));
+        // Parsear y validar monto
+        double total;
+        try {
+            String totalText = lblTotal.getText().trim().replace(",", ".");
+            total = Double.parseDouble(totalText);
 
+            if (total <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        "El monto total debe ser mayor a 0.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al leer el monto total.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Confirmación
         int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Pagar deuda total de S/ " + total + "?\nEsto habilitará al lector nuevamente.",
-                "Confirmar Pago", JOptionPane.YES_NO_OPTION);
+                "¿Confirma el pago de S/ " + String.format("%.2f", total) + "?\n"
+                + "El lector será habilitado nuevamente.",
+                "Confirmar Pago",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                // Registrar pago usando los datos rescatados
+                // Ejecutar pago
                 objMulta.pagarMulta(idPrestamoActual, idUsuarioActual, total);
 
-                JOptionPane.showMessageDialog(this, "¡Pago registrado exitosamente!");
+                // Mensaje de éxito
+                JOptionPane.showMessageDialog(this,
+                        "¡Pago registrado exitosamente!\n"
+                        + "El lector ha sido habilitado.",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
 
-                // Limpiar todo
-                modelo.setRowCount(0);
-                lblTotal.setText("0.00");
-                txtLector.setText("");
-                txtFechaPrestamo.setDate(null);
-                idPrestamoActual = -1;
+                // Limpiar formulario
+                limpiarFormulario();
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al pagar: " + e.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        "Error al procesar el pago:\n" + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnPagarMultaActionPerformed
 
     private void btnBuscarPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPrestamoActionPerformed
-        // 1. Validar que se haya seleccionado fecha y escrito lector
         if (txtFechaPrestamo.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Seleccione la fecha del préstamo en el calendario.");
+            JOptionPane.showMessageDialog(this, "Seleccione la fecha del préstamo.");
             return;
         }
         String lector = txtLector.getText().trim();
@@ -195,16 +247,13 @@ public class Multa extends javax.swing.JPanel {
         }
 
         try {
-            // 2. Preparar fecha SQL
             java.sql.Date fechaSql = new java.sql.Date(txtFechaPrestamo.getDate().getTime());
-
-            // 3. Llamar a la lógica para rescatar datos de DETALLE_DEVOLUCION
             ResultSet rs = objMulta.buscarDetallesDeuda(fechaSql, lector);
 
-            // 4. Llenar la tabla
-            modelo.setRowCount(0); // Limpiar tabla
+            modelo.setRowCount(0);
             double sumaTotal = 0.0;
-            idPrestamoActual = -1; // Resetear IDs
+            idPrestamoActual = -1;
+            idUsuarioActual = -1;
 
             while (rs.next()) {
                 modelo.addRow(new Object[]{
@@ -214,50 +263,29 @@ public class Multa extends javax.swing.JPanel {
                     rs.getString("nombre_completo")
                 });
 
-                // Sumar al total
                 sumaTotal += rs.getDouble("multa");
-
-                // Capturar IDs (serán los mismos para todas las filas de ese préstamo)
                 idPrestamoActual = rs.getInt("idprestamo");
                 idUsuarioActual = rs.getInt("idusuario");
             }
 
-            // 5. Mostrar Total
             lblTotal.setText(String.format("%.2f", sumaTotal));
 
+            // **AGREGAR ESTA VALIDACIÓN**:
             if (modelo.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "No se encontraron multas pendientes para esa fecha y lector.");
+                JOptionPane.showMessageDialog(this,
+                        "Este lector no tiene multas pendientes o ya fueron pagadas.",
+                        "Sin multas", JOptionPane.INFORMATION_MESSAGE);
+                idPrestamoActual = -1; // Resetear
+                idUsuarioActual = -1;
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
     }//GEN-LAST:event_btnBuscarPrestamoActionPerformed
 
     private void tblMultasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMultasMouseClicked
-        int fila = tblMultas.getSelectedRow();
 
-        if (fila >= 0) {
-            try {
-                String lector = tblMultas.getValueAt(fila, 2).toString();
-                // Recuperar el objeto fecha directamente si el modelo lo guarda como Date, 
-                // o parsear si es String. Generalmente JDBC devuelve java.sql.Date que hereda de java.util.Date.
-                Object fechaObj = tblMultas.getValueAt(fila, 3);
-
-                txtLector.setText(lector);
-
-                if (fechaObj instanceof Date) {
-                    txtFechaPrestamo.setDate((Date) fechaObj);
-                } else if (fechaObj != null) {
-                    // Fallback por si viene como String
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    txtFechaPrestamo.setDate(sdf.parse(fechaObj.toString()));
-                }
-
-            } catch (Exception e) {
-                System.err.println("Error al seleccionar fecha: " + e.getMessage());
-            }
-        }
     }//GEN-LAST:event_tblMultasMouseClicked
 
 

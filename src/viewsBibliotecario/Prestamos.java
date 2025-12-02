@@ -86,6 +86,8 @@ public class Prestamos extends javax.swing.JPanel {
         btnEliminarEjemplar = new javax.swing.JButton();
         txtLector = new javax.swing.JTextField();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Número de ejemplar:");
 

@@ -169,6 +169,8 @@ public class Devolucion extends javax.swing.JPanel {
             .addGap(0, 300, Short.MAX_VALUE)
         );
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Fecha del préstamo:");
 

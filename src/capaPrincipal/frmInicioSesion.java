@@ -241,7 +241,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
             } else {
                 // --- LOGIN FALLIDO ---
-                JOptionPane.showMessageDialog(this, "Nombre de Usuario o Contraseña incorrectos.");
+                JOptionPane.showMessageDialog(this, "Nombre de Usuario o Contraseña incorrectos");
 
                 contador--;
                 if (contador <= 0) {

@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 
 /**
  *
- * @author BIENVENIDO
+ * @author Edgar Bernabe
  */
 public class Multa {
 
@@ -20,38 +20,42 @@ public class Multa {
     private String strSQL;
     private ResultSet rs = null;
 
- public ResultSet buscarDetallesDeuda(java.sql.Date fechaPrestamo, String nombreLector) throws Exception {
+    public ResultSet buscarDetallesDeuda(java.sql.Date fechaPrestamo, String nombreLector) throws Exception {
         strSQL = "SELECT "
                 + "    e.NroEjemplar, "
                 + "    dd.multa, "
                 + "    dd.observaciones, "
                 + "    u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno as nombre_completo, "
-                + "    p.idprestamo, " // Guardamos esto oculto para saber qué préstamo se está pagando
-                + "    u.idusuario "   // Guardamos esto oculto para habilitar al usuario luego
+                + "    p.idprestamo, "
+                + "    u.idusuario "
                 + "FROM DETALLE_DEVOLUCION dd "
                 + "INNER JOIN EJEMPLAR e ON dd.idejemplar = e.idejemplar "
                 + "INNER JOIN DEVOLUCION d ON dd.iddevolucion = d.iddevolucion "
                 + "INNER JOIN PRESTAMO p ON d.idprestamo = p.idprestamo "
                 + "INNER JOIN USUARIO u ON p.idusuariolector = u.idusuario "
-                + "LEFT JOIN MULTA m ON p.idprestamo = m.idprestamo " // Verificamos estado en tabla MULTA
-                + "WHERE dd.multa > 0 "
-                + "AND (m.pagado IS NULL OR m.pagado = FALSE) "; // Solo mostrar si NO está pagado
+                + "WHERE dd.multa > 0 ";
 
-        // Filtro 1: Fecha del Préstamo (Dato del DateChooser)
         if (fechaPrestamo != null) {
             strSQL += "AND p.fechaprestamo = '" + fechaPrestamo + "' ";
         }
 
-        // Filtro 2: Nombre del Lector (Dato del Txt)
         if (nombreLector != null && !nombreLector.isEmpty()) {
             strSQL += "AND UPPER(u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno) LIKE UPPER('%" + nombreLector + "%') ";
         }
+
+        // **CRÍTICO: Validar que NO exista multa pagada Y que el usuario esté inhabilitado**
+        strSQL += "AND NOT EXISTS ( "
+                + "    SELECT 1 FROM MULTA m "
+                + "    WHERE m.idprestamo = p.idprestamo "
+                + "    AND m.pagado = TRUE "
+                + ") "
+                + "AND u.estado = FALSE "; // **AGREGAR ESTA LÍNEA**
 
         try {
             rs = objConectar.consultarBD(strSQL);
             return rs;
         } catch (Exception e) {
-            throw new Exception("Error al buscar en detalle_devolucion: " + e.getMessage());
+            throw new Exception("Error al buscar detalles: " + e.getMessage());
         }
     }
 
@@ -59,24 +63,47 @@ public class Multa {
      * Paga la multa registrando en la tabla MULTA y habilitando al usuario.
      */
     public void pagarMulta(int idPrestamo, int idUsuario, double montoTotal) throws Exception {
-        // 1. Actualizar/Insertar en tabla MULTA como PAGADO
-        // Usamos un UPDATE porque tu sistema ya genera la multa en estado FALSE previamente.
-        String strUpdateMulta = "UPDATE multa "
-                + "SET pagado = TRUE, "
-                + "    monto = " + montoTotal + ", "
-                + "    fechagenerada = CURRENT_DATE "
-                + "WHERE idprestamo = " + idPrestamo;
-
-        // 2. Desbloquear al Usuario
-        String strUpdateUsuario = "UPDATE usuario SET estado = TRUE WHERE idusuario = " + idUsuario;
-
         try {
-            objConectar.ejecutarBD(strUpdateMulta);
+            // **PASO 1**: Verificar si ya existe un registro en MULTA
+            String strVerificar = "SELECT COUNT(*) as total FROM multa WHERE idprestamo = " + idPrestamo;
+            ResultSet rsVerificar = objConectar.consultarBD(strVerificar);
+
+            boolean existeRegistro = false;
+            if (rsVerificar.next()) {
+                existeRegistro = rsVerificar.getInt("total") > 0;
+            }
+
+            // **PASO 2**: INSERT o UPDATE según corresponda
+            if (existeRegistro) {
+                // Ya existe, solo actualizar
+                String strUpdate = "UPDATE multa "
+                        + "SET pagado = TRUE, "
+                        + "    monto = " + montoTotal + ", "
+                        + "    fechagenerada = CURRENT_DATE "
+                        + "WHERE idprestamo = " + idPrestamo;
+                objConectar.ejecutarBD(strUpdate);
+            } else {
+                // No existe, insertar nuevo registro
+                String strObtenerMaxId = "SELECT COALESCE(MAX(idmulta), 0) + 1 as nuevo_id FROM multa";
+                ResultSet rsId = objConectar.consultarBD(strObtenerMaxId);
+                int nuevoId = 1;
+                if (rsId.next()) {
+                    nuevoId = rsId.getInt("nuevo_id");
+                }
+
+                String strInsert = "INSERT INTO multa (idmulta, idusuario, idprestamo, monto, pagado, fechagenerada) "
+                        + "VALUES (" + nuevoId + ", " + idUsuario + ", " + idPrestamo + ", "
+                        + montoTotal + ", TRUE, CURRENT_DATE)";
+                objConectar.ejecutarBD(strInsert);
+            }
+
+            // **PASO 3**: Habilitar al usuario (cambiar estado a TRUE)
+            String strUpdateUsuario = "UPDATE usuario SET estado = TRUE WHERE idusuario = " + idUsuario;
             objConectar.ejecutarBD(strUpdateUsuario);
+
         } catch (Exception e) {
-            throw new Exception("Error en la transacción de pago: " + e.getMessage());
+            throw new Exception("Error al pagar multa: " + e.getMessage());
         }
     }
-    
 
 }

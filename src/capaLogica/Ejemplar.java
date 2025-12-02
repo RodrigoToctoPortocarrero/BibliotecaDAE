@@ -100,7 +100,7 @@ public class Ejemplar {
             sql = "SELECT ej.idejemplar, ej.nroejemplar, ej.estado, ej.estado_devolucion, li.titulo "
                     + "FROM ejemplar ej "
                     + "INNER JOIN libros li ON ej.idlibro = li.idlibro "
-                    + "ORDER BY ej.idejemplar";
+                    + "ORDER BY ej.idejemplar ";
             Statement st = con.conectar().createStatement();
             return st.executeQuery(sql);
 
@@ -114,7 +114,7 @@ public class Ejemplar {
     // ============================
     public ResultSet listarTitulosLibros() throws Exception {
         try {
-            sql = "SELECT idlibro, titulo FROM libros ORDER BY titulo";
+            sql = "SELECT idlibro, titulo FROM libros where estado = true ORDER BY titulo";
             Statement st = con.conectar().createStatement();
             return st.executeQuery(sql);
         } catch (Exception e) {
