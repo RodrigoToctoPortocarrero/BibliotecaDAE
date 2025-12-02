@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp11_CarrascoVeraFabianAntonio" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="368e0293-b9fe-44c7-8696-d9d781e276c4">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idUsuarioLector" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    L.titulo AS "Titulo_Libro",
+    E.NroEjemplar AS "Nro_Ejemplar",
+    DD.multa AS "Monto_Multa", -- Multa individual por ejemplar
+    M.fechagenerada AS "Fecha_Generacion",
+    CASE WHEN M.pagado = TRUE THEN 'SÍ' ELSE 'NO' END AS "Pagado"
+FROM
+    DETALLE_DEVOLUCION DD
+JOIN
+    DEVOLUCION D ON DD.iddevolucion = D.iddevolucion
+JOIN
+    PRESTAMO P ON D.idprestamo = P.idprestamo
+JOIN
+    EJEMPLAR E ON DD.idejemplar = E.idejemplar
+JOIN
+    LIBROS L ON E.idlibro = L.idlibro
+JOIN
+    MULTA M ON P.idprestamo = M.idprestamo -- Unimos para obtener el estado de pago
+WHERE
+    P.idusuariolector = $P{idUsuarioLector} -- Filtramos por el lector
+    AND DD.multa > 0 -- Solo mostramos ítems donde se generó multa individual
+ORDER BY
+    M.fechagenerada DESC;]]>
+	</queryString>
+	<field name="Titulo_Libro" class="java.lang.String"/>
+	<field name="Nro_Ejemplar" class="java.lang.String"/>
+	<field name="Monto_Multa" class="java.math.BigDecimal"/>
+	<field name="Fecha_Generacion" class="java.sql.Date"/>
+	<field name="Pagado" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="131" y="21" width="299" height="31" uuid="064b4b4e-0a5d-4be5-b0b0-189726bb592e"/>
+				<textElement>
+					<font size="18" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Estado Detallado de Mis Multas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="9c89b657-faff-41e2-b983-9c11bd88ee04"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Libro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="0" width="100" height="20" uuid="446db75f-9f24-42d0-84e5-7f876b2558d5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro de Ejemplar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="391" y="0" width="56" height="20" uuid="7b58fe33-6dac-4686-a3c5-b1146ab38502"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Multa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="260" y="0" width="131" height="20" uuid="1fb07c1a-37f0-4a74-97df-465d7e5a4a53"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Generacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="477" y="0" width="58" height="20" uuid="845a2c9a-e970-4491-8c5b-2b571d68f860"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pagado]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="22" width="555" height="1" uuid="871489c1-2cbc-4443-b020-7da658c45b98"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="37" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="160" height="35" uuid="fbc95a94-ca7f-4fb7-a5ae-dede8369afe2"/>
+				<textFieldExpression><![CDATA[$F{Titulo_Libro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="0" width="100" height="20" uuid="f8092bf6-3c65-44ce-99ee-13af3db427f9"/>
+				<textFieldExpression><![CDATA[$F{Nro_Ejemplar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="391" y="0" width="86" height="20" uuid="9bd24a07-fb66-4f2e-b17d-e8e41553946c"/>
+				<textFieldExpression><![CDATA[$F{Monto_Multa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="0" width="131" height="20" uuid="38aa38eb-6ab2-4cbe-89a7-1eabf64d615a"/>
+				<textFieldExpression><![CDATA[$F{Fecha_Generacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="477" y="0" width="58" height="20" uuid="fb850c7f-8d19-4a39-b501-c2a869a32559"/>
+				<textFieldExpression><![CDATA[$F{Pagado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="34" width="248" height="20" uuid="8e8ee099-a7e0-4b3f-8b95-a79523502219"/>
+				<text><![CDATA[Elaborado por: FABIAN ANTONIO CARRASCO VERA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="435" y="34" width="80" height="20" uuid="98133131-d625-418b-a4b0-9d07d1f618ae"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="34" width="40" height="20" uuid="10f87e11-9681-4c58-be4c-2bbf69346413"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

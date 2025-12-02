@@ -6,12 +6,15 @@ package viewsUsuario;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel; // Asegúrate de tener esto
+
 /**
  *
  * @author Bernabe Villegas Edgar
  */
 public class frmReporte extends javax.swing.JPanel {
-private final javax.swing.JPanel panelContenedor;
+
+    private final javax.swing.JPanel panelContenedor;
+
     /**
      * Creates new form frmReporte
      */
@@ -479,16 +482,31 @@ private final javax.swing.JPanel panelContenedor;
         });
 
         jButton10.setText("REPORTE 10");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jLabel13.setText("Préstamos Vigentes");
 
         jLabel14.setText("Reporte de Morosidad");
 
         jButton11.setText("REPORTE 11");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
         jLabel15.setText("Historial de Prestamos ");
 
         jButton12.setText("REPORTE 12");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         jLabel16.setText("Uso del Personal Bibliotecario");
 
@@ -657,49 +675,49 @@ private final javax.swing.JPanel panelContenedor;
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         Reporte04 pres = new Reporte04();
-        
+
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
         // Usar la referencia guardada para la navegación:
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         Reporte05 pres = new Reporte05();
-        
+
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
         // Usar la referencia guardada para la navegación:
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         Reporte06 pres = new Reporte06();
-        
+
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
         // Usar la referencia guardada para la navegación:
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-       Reporte13 pres = new Reporte13();
+        Reporte13 pres = new Reporte13();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton13ActionPerformed
@@ -709,7 +727,7 @@ private final javax.swing.JPanel panelContenedor;
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton15ActionPerformed
@@ -719,7 +737,7 @@ private final javax.swing.JPanel panelContenedor;
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton14ActionPerformed
@@ -729,33 +747,33 @@ private final javax.swing.JPanel panelContenedor;
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Reporte01 pres = new Reporte01();
-        
+
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
         // Usar la referencia guardada para la navegación:
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Reporte02 pres = new Reporte02();
-        
+
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
 
         // Usar la referencia guardada para la navegación:
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -766,34 +784,64 @@ private final javax.swing.JPanel panelContenedor;
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-      
+
         Reporte08 pres = new Reporte08();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
-        
+
         Reporte09 pres = new Reporte09();
         pres.setSize(750, 430);
         pres.setLocation(0, 0);
         this.panelContenedor.removeAll();
-        this.panelContenedor.add(pres, BorderLayout.CENTER); 
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
         this.panelContenedor.revalidate();
         this.panelContenedor.repaint();
     }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        Reporte10 pres = new Reporte10();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        Reporte11 pres = new Reporte11();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        Reporte12 pres = new Reporte12();
+        pres.setSize(750, 430);
+        pres.setLocation(0, 0);
+        this.panelContenedor.removeAll();
+        this.panelContenedor.add(pres, BorderLayout.CENTER);
+        this.panelContenedor.revalidate();
+        this.panelContenedor.repaint();
+    }//GEN-LAST:event_jButton12ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

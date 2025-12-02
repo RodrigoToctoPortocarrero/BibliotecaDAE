@@ -239,9 +239,7 @@ public class Prestamos extends javax.swing.JPanel {
 
     private void btnRegistrarPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarPrestamoActionPerformed
         try {
-            // ===================================
-            // VALIDACIÓN 1: Lector seleccionado
-            // ===================================
+
             if (txtLector.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                         "Debe seleccionar un lector.",
@@ -250,9 +248,6 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // VALIDACIÓN 2: Fecha de devolución
-            // ===================================
             if (jDateChooser1.getDate() == null) {
                 JOptionPane.showMessageDialog(this,
                         "Debe seleccionar una fecha estimada de devolución.",
@@ -261,9 +256,6 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // VALIDACIÓN 3: Fecha no puede ser pasada
-            // ===================================
             Date fechaSeleccionada = jDateChooser1.getDate();
             Date hoy = new Date();
 
@@ -279,9 +271,6 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // VALIDACIÓN 4: Al menos un ejemplar
-            // ===================================
             if (tblDetallePrestamo.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this,
                         "Debe agregar al menos un ejemplar.",
@@ -290,9 +279,6 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // VALIDACIÓN 5: Máximo 3 ejemplares
-            // ===================================
             if (tblDetallePrestamo.getRowCount() > 3) {
                 JOptionPane.showMessageDialog(this,
                         "Solo puede prestar un máximo de 3 ejemplares por préstamo.",
@@ -301,18 +287,12 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // Crear instancias
-            // ===================================
             Prestamo objPrestamo = new Prestamo();
             Usuarios objUsuarios = new Usuarios();
 
             int idPrestamo = objPrestamo.generarCodigoPrestamo();
             int idLector = objUsuarios.obtenerIdLectorPorNombre(txtLector.getText());
 
-            // ===================================
-            // VALIDACIÓN 6: Usuario lector vigente
-            // ===================================
             if (!objPrestamo.usuarioEstaVigente(idLector)) {
                 JOptionPane.showMessageDialog(this,
                         "El usuario lector no está VIGENTE.\n"

@@ -40,7 +40,7 @@ public class BuscarEjemplar extends javax.swing.JDialog {
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // NO PERMITE EDITAR
+                return false;
             }
         };
 
