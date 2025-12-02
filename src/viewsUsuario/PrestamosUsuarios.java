@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author FABIAN VERA
+ * @author Fabian Antonio Carrasco Vera
  */
 public class PrestamosUsuarios extends javax.swing.JPanel {
 

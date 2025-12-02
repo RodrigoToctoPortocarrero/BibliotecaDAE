@@ -86,10 +86,6 @@
           <Group type="102" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="288" max="-2" attributes="0"/>
-                      <Component id="btnGrabarDevolucion" min="-2" pref="177" max="-2" attributes="0"/>
-                  </Group>
                   <Component id="jScrollPane1" alignment="0" min="-2" pref="697" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
@@ -109,6 +105,11 @@
               </Group>
               <EmptySpace pref="32" max="32767" attributes="0"/>
           </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="277" max="-2" attributes="0"/>
+              <Component id="btnGrabarDevolucion" min="-2" pref="177" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -127,9 +128,9 @@
               <Component id="btnBuscarPrestamo1" min="-2" pref="34" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="210" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnGrabarDevolucion" min="-2" pref="34" max="-2" attributes="0"/>
-              <EmptySpace pref="69" max="32767" attributes="0"/>
+              <EmptySpace pref="12" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

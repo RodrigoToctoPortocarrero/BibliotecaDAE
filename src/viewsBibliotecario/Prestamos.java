@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author FABIAN VERA
+ * @author Fabian Antonio Carrasco Vera
  */
 public class Prestamos extends javax.swing.JPanel {
 
@@ -302,9 +302,6 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // VALIDACIÓN 7: Préstamos activos
-            // ===================================
             if (objPrestamo.tienePrestamosActivos(idLector)) {
                 JOptionPane.showMessageDialog(this,
                         "El lector tiene préstamos activos.\n"
@@ -314,9 +311,6 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // VALIDACIÓN 8: Multas pendientes
-            // ===================================
             if (objPrestamo.tieneMultasPendientes(idLector)) {
                 JOptionPane.showMessageDialog(this,
                         "El lector tiene multas pendientes.\n"
@@ -326,47 +320,39 @@ public class Prestamos extends javax.swing.JPanel {
                 return;
             }
 
-            // ===================================
-            // Obtener ID del Bibliotecario desde Sesión
-            // ===================================
             int idBibliotecario = Sesion.getUsuario().getIdusuario();
 
-            // ===================================
-            // Convertir fecha a SQL (CORREGIDO)
-            // ===================================
             java.util.Date fechaUtil = jDateChooser1.getDate();
             java.sql.Date fechaSQL = new java.sql.Date(fechaUtil.getTime());
-            String fechaDevString = formatoCorto.format(fechaUtil); // para mostrar al usuario
+            String fechaDevString = formatoCorto.format(fechaUtil);
 
-            // ===================================
-            // Confirmación antes de registrar
-            // ===================================
-            int confirmar = JOptionPane.showConfirmDialog(this,
+            int op = JOptionPane.showOptionDialog(
+                    null,
                     "¿Está seguro de registrar este préstamo?\n\n"
                     + "Lector: " + txtLector.getText() + "\n"
                     + "Ejemplares: " + tblDetallePrestamo.getRowCount() + "\n"
                     + "Fecha Devolución: " + fechaDevString,
                     "Confirmar Préstamo",
-                    JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"Sí", "No"},
+                    "Sí"
+            );
 
-            if (confirmar != JOptionPane.YES_OPTION) {
+            if (op != JOptionPane.YES_OPTION) {
                 return;
             }
 
-            // ===================================
-            // REGISTRAR PRÉSTAMO (TRANSACCIÓN)
-            // ===================================
             objPrestamo.registrarPrestamo(
                     idPrestamo,
                     idLector,
                     idBibliotecario,
-                    fechaSQL, // ← FECHA SQL CORRECTA
+                    fechaSQL, 
                     tblDetallePrestamo
             );
 
-            // ===================================
-            // Mensaje de éxito
-            // ===================================
+
             JOptionPane.showMessageDialog(this,
                     "✓ Préstamo registrado correctamente.\n\n"
                     + "ID Préstamo: " + idPrestamo + "\n"
@@ -375,15 +361,12 @@ public class Prestamos extends javax.swing.JPanel {
                     + "Ejemplares prestados: " + tblDetallePrestamo.getRowCount(),
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-
-            // ===================================
-            // Limpiar formulario
-            // ===================================
+            
             limpiarFormulario();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "❌ Error al registrar préstamo:\n" + e.getMessage(),
+                    "Error al registrar préstamo:\n" + e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -397,7 +380,6 @@ public class Prestamos extends javax.swing.JPanel {
     private void btnEliminarEjemplarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarEjemplarActionPerformed
         int fila = tblDetallePrestamo.getSelectedRow();
 
-        // Validar selección
         if (fila == -1) {
             JOptionPane.showMessageDialog(this,
                     "Debe seleccionar un ejemplar para eliminar.",
@@ -406,17 +388,21 @@ public class Prestamos extends javax.swing.JPanel {
             return;
         }
 
-        // Confirmación opcional
-        int opcion = JOptionPane.showConfirmDialog(this,
+        int opcion = JOptionPane.showOptionDialog(
+                null,
                 "¿Desea eliminar el ejemplar seleccionado?",
                 "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION);
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"Sí", "No"},
+                "Sí"
+        );
 
         if (opcion != JOptionPane.YES_OPTION) {
             return;
         }
 
-        // Eliminar la fila
         DefaultTableModel modelo = (DefaultTableModel) tblDetallePrestamo.getModel();
         modelo.removeRow(fila);
 

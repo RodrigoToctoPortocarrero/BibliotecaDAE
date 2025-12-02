@@ -236,9 +236,6 @@ public class Devolucion extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(288, 288, 288)
-                        .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
@@ -253,6 +250,10 @@ public class Devolucion extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtLector, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(32, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(277, 277, 277)
+                .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,9 +269,9 @@ public class Devolucion extends javax.swing.JPanel {
                 .addComponent(btnBuscarPrestamo1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGrabarDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -340,6 +341,24 @@ public class Devolucion extends javax.swing.JPanel {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String fechaReal = df.format(jdFecha.getDate());
 
+            int op = JOptionPane.showOptionDialog(
+                    null,
+                    "¿Está seguro de registrar la devolución?\n\n"
+                    + "Lector: " + txtLector.getText() + "\n"
+                    + "Ejemplares a devolver: " + tblDevolucion.getRowCount() + "\n"
+                    + "Fecha Real: " + fechaReal,
+                    "Confirmar Devolución",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"Sí", "No"},
+                    "Sí"
+            );
+
+            if (op != JOptionPane.YES_OPTION) {
+                return;
+            }
+
             // --- EJECUTAR DEVOLUCIÓN ---
             DevolucionClase d = new DevolucionClase();
 
@@ -354,7 +373,7 @@ public class Devolucion extends javax.swing.JPanel {
                         "Devolución registrada correctamente.");
                 modelo.setRowCount(0);
                 txtLector.setText("");
-             
+
                 jdFecha.setDate(null);
             }
 

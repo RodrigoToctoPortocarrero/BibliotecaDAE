@@ -5,11 +5,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
-import java.util.Date;
 import javax.swing.JTable;
 
 /**
- * @author FABIAN VERA - CORREGIDO
+ * @author Fabian Antonio Carrasco Vera
  */
 public class Prestamo {
 
@@ -20,9 +19,6 @@ public class Prestamo {
     Statement sent;
     PreparedStatement pst = null;
 
-    // ============================================================
-    // MÉTODO 1: Generar Código de Préstamo
-    // ============================================================
     public Integer generarCodigoPrestamo() throws Exception {
         strSQL = "SELECT COALESCE(MAX(idprestamo),0)+1 AS codigo FROM prestamo";
         try {
@@ -41,9 +37,6 @@ public class Prestamo {
         return 0;
     }
 
-    // ============================================================
-    // MÉTODO 2: Generar Código de Detalle
-    // ============================================================
     public Integer generarCodigoDetalle() throws Exception {
         strSQL = "SELECT COALESCE(MAX(iddetalle),0)+1 AS codigo FROM detalle_prestamo";
         ResultSet rs = null;
@@ -62,11 +55,6 @@ public class Prestamo {
         }
         return 0;
     }
-
-    // ============================================================
-    // MÉTODO 3: Verificar si el Usuario Lector está Vigente
-    // ✅ NUEVO MÉTODO AGREGADO
-    // ============================================================
     public boolean usuarioEstaVigente(int idLector) throws Exception {
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -78,7 +66,7 @@ public class Prestamo {
             rs = pst.executeQuery();
 
             if (rs.next()) {
-                return rs.getBoolean("estado"); // true = vigente, false = no vigente
+                return rs.getBoolean("estado"); 
             } else {
                 throw new Exception("El usuario no existe o no es un lector.");
             }
@@ -97,16 +85,11 @@ public class Prestamo {
         }
     }
 
-    // ============================================================
-    // MÉTODO 4: Verificar Préstamos Activos
-    // ⚠️ CORREGIDO: idusuariolector (no idlector)
-    // ============================================================
     public boolean tienePrestamosActivos(int idLector) throws Exception {
         PreparedStatement pst = null;
         ResultSet rs = null;
 
         try {
-            // ✅ CORREGIDO: Usar idusuariolector y estado VARCHAR
             strSQL = "SELECT 1 FROM prestamo "
                     + "WHERE idusuariolector = ? AND estado = 'activo' "
                     + "LIMIT 1";
@@ -115,7 +98,7 @@ public class Prestamo {
             pst.setInt(1, idLector);
             rs = pst.executeQuery();
 
-            return rs.next(); // true si tiene préstamos activos
+            return rs.next();
 
         } catch (Exception e) {
             throw new Exception("Error al verificar préstamos activos: " + e.getMessage());
@@ -131,10 +114,6 @@ public class Prestamo {
         }
     }
 
-    // ============================================================
-    // MÉTODO 5: Verificar Multas Pendientes
-    // ✅ CORREGIDO: Usar PreparedStatement
-    // ============================================================
     public boolean tieneMultasPendientes(int idLector) throws Exception {
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -148,7 +127,7 @@ public class Prestamo {
             pst.setInt(1, idLector);
             rs = pst.executeQuery();
 
-            return rs.next(); // true si tiene multas pendientes
+            return rs.next(); 
 
         } catch (Exception e) {
             throw new Exception("Error al verificar multas pendientes: " + e.getMessage());
@@ -164,15 +143,11 @@ public class Prestamo {
         }
     }
 
-    // ============================================================
-    // MÉTODO 6: Registrar Préstamo (TRANSACCIÓN COMPLETA)
-    // ⚠️ TOTALMENTE CORREGIDO
-    // ============================================================
     public void registrarPrestamo(
             Integer idPrestamo,
             Integer idLector,
             Integer idBibliotecario,
-            java.sql.Date fechaEstimado, // ← Tipo correcto
+            java.sql.Date fechaEstimado, 
             JTable tabla) throws Exception {
 
         PreparedStatement pstPrestamo = null;
@@ -182,26 +157,18 @@ public class Prestamo {
         try {
             objConectar.conectar();
             con = objConectar.getCon();
-            con.setAutoCommit(false); // Iniciar transacción
+            con.setAutoCommit(false); 
 
-            // ===================================
-            // VALIDACIÓN 1: Usuario lector vigente
-            // ===================================
+
             if (!usuarioEstaVigente(idLector)) {
                 throw new Exception("El usuario lector no está vigente. No puede realizar préstamos.");
             }
 
-            // ===================================
-            // VALIDACIÓN 2: Debe tener ejemplares
-            // ===================================
             int filas = tabla.getRowCount();
             if (filas == 0) {
                 throw new Exception("Debe agregar al menos un ejemplar al préstamo.");
             }
 
-            // ===================================
-            // 1. INSERTAR PRESTAMO
-            // ===================================
             strSQL = "INSERT INTO prestamo (idprestamo, idusuariolector, idusuariobibliotecario, "
                     + "fechaprestamo, fechadevolucionestimada, estado) "
                     + "VALUES (?, ?, ?, CURRENT_DATE, ?, 'activo')";
@@ -210,20 +177,15 @@ public class Prestamo {
             pstPrestamo.setInt(1, idPrestamo);
             pstPrestamo.setInt(2, idLector);
             pstPrestamo.setInt(3, idBibliotecario);
-            pstPrestamo.setDate(4, fechaEstimado); // ← YA ES java.sql.Date
+            pstPrestamo.setDate(4, fechaEstimado); 
             pstPrestamo.executeUpdate();
 
-            // ===================================
-            // 2. INSERTAR DETALLE_PRESTAMO
-            // ===================================
+
             strSQL = "INSERT INTO detalle_prestamo "
                     + "(iddetalle, idprestamo, idejemplar, observaciones, estado) "
                     + "VALUES (?, ?, ?, ?, TRUE)";
             pstDetalle = con.prepareStatement(strSQL);
 
-            // ===================================
-            // 3. ACTUALIZAR EJEMPLAR A NO DISPONIBLE
-            // ===================================
             strSQL = "UPDATE ejemplar SET estado_devolucion = FALSE WHERE idejemplar = ?";
             
             pstEjemplar = con.prepareStatement(strSQL);
@@ -238,21 +200,16 @@ public class Prestamo {
                     obs = tabla.getValueAt(i, 3).toString().trim();
                 }
 
-                // Insertar detalle
                 pstDetalle.setInt(1, iddetalle);
                 pstDetalle.setInt(2, idPrestamo);
                 pstDetalle.setInt(3, idejemplar);
                 pstDetalle.setString(4, obs);
                 pstDetalle.executeUpdate();
 
-                // Bloquear ejemplar como NO disponible
                 pstEjemplar.setInt(1, idejemplar);
                 pstEjemplar.executeUpdate();
             }
 
-            // ===================================
-            // CONFIRMAR TRANSACCIÓN
-            // ===================================
             con.commit();
 
         } catch (Exception e) {
@@ -287,11 +244,7 @@ public class Prestamo {
             }
         }
     }
-
-    // ============================================================
-    // MÉTODO 7: Listar Préstamos del Usuario
-    // ⚠️ CORREGIDO: usar idusuariolector
-    // ============================================================
+    
     public ResultSet listarPrestamosDeUsuario(int idUsuario) throws Exception {
         try {
             strSQL = "SELECT p.idprestamo, p.fechaprestamo, p.fechadevolucionestimada, p.estado, "
@@ -311,10 +264,6 @@ public class Prestamo {
         }
     }
 
-    // ============================================================
-    // MÉTODO 8: Listar Préstamos por Fecha
-    // ⚠️ CORREGIDO: usar idusuariolector
-    // ============================================================
     public ResultSet listarPrestamosPorFecha(int idUsuario, String fecha) throws Exception {
         try {
             strSQL = "SELECT p.idprestamo, p.fechaprestamo, p.fechadevolucionestimada, p.estado, "
@@ -335,9 +284,7 @@ public class Prestamo {
         }
     }
 
-    // ============================================================
-    // MÉTODO 9: Buscar Préstamos (General)
-    // ============================================================
+
     public ResultSet buscarPrestamos(int idUsuario, String fecha) throws Exception {
         if (fecha == null || fecha.trim().isEmpty()) {
             return listarPrestamosDeUsuario(idUsuario);

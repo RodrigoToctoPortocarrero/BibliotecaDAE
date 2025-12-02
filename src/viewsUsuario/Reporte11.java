@@ -14,7 +14,7 @@ import net.sf.jasperreports.swing.JRViewer;
 
 /**
  *
- * @author FABIAN VERA
+ * @author Fabian Antonio Carrasco Vera
  */
 public class Reporte11 extends javax.swing.JPanel {
 

@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<queryString>
 		<![CDATA[SELECT
-    A.nombres || ' ' || A.apepaterno AS "Autor",
+    A.nombres || ' ' || A.apepaterno || ' ' || A.apematerno AS "Autor",
     COUNT(ALA.idlibro) AS "Total_Titulos_en_Inventario"
 FROM
     AUTOR A
@@ -60,7 +60,7 @@ LIMIT 10;]]>
 	<detail>
 		<band height="49" splitType="Stretch">
 			<textField>
-				<reportElement x="12" y="0" width="147" height="20" uuid="5a0bfe51-6626-4f6b-8629-788df07957c6"/>
+				<reportElement x="12" y="0" width="210" height="20" uuid="5a0bfe51-6626-4f6b-8629-788df07957c6"/>
 				<textFieldExpression><![CDATA[$F{Autor}]]></textFieldExpression>
 			</textField>
 			<textField>

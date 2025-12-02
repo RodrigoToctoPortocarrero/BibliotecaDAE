@@ -8,7 +8,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author FABIAN VERA
+ * @author Fabian Antonio Carrasco Vera
  */
 public class BuscarEjemplar extends javax.swing.JDialog {
 
@@ -16,9 +16,8 @@ public class BuscarEjemplar extends javax.swing.JDialog {
 
     private Prestamos panelPrestamo;
 
-    // En BuscarEjemplar.java
     public BuscarEjemplar(Prestamos panelPrestamo) {
-        super((Frame) null, true); // JDialog modal
+        super((Frame) null, true); 
         initComponents();
         this.panelPrestamo = panelPrestamo;
         listarEjemplares();
@@ -34,7 +33,7 @@ public class BuscarEjemplar extends javax.swing.JDialog {
     private void listarEjemplares() {
         ResultSet rs = null;
 
-        // MODELO NO EDITABLE
+        //PARA NO EDITAR TABLA
         DefaultTableModel modelo = new DefaultTableModel(
                 new Object[]{"ID EJEMPLAR", "NRO EJEMPLAR", "TÍTULO", "ESTADO"}, 0
         ) {
@@ -61,7 +60,6 @@ public class BuscarEjemplar extends javax.swing.JDialog {
             }
 
             tblEjemplares.setModel(modelo);
-
             // BLOQUEAR EDITORES
             tblEjemplares.setDefaultEditor(Object.class, null);
 
@@ -216,7 +214,6 @@ public class BuscarEjemplar extends javax.swing.JDialog {
 
         String obser = txtObser.getText().trim();
 
-        // Validar vacío
         if (obser.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Debe ingresar una observación antes de agregar el ejemplar.",
@@ -226,7 +223,7 @@ public class BuscarEjemplar extends javax.swing.JDialog {
             return;
         }
 
-        // Validar solo letras y espacios
+        // SOLO LETRAS Y ESPACIOS
         if (!obser.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
             JOptionPane.showMessageDialog(this,
                     "La observación solo debe contener texto (letras y espacios).",

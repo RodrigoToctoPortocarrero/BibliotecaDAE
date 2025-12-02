@@ -7,7 +7,7 @@ import java.sql.Date;
 
 /**
  *
- * @author FABIAN VERA
+ * @author Fabian Antonio Carrasco Vera
  */
 public class Usuarios {
 

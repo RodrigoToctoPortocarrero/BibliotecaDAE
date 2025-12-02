@@ -71,16 +71,16 @@ public class Multa extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Fecha de Prestamo");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Lector:");
 
         btnBuscarPrestamo.setBackground(new java.awt.Color(24, 118, 210));
         btnBuscarPrestamo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnBuscarPrestamo.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscarPrestamo.setText("Buscar Multas");
+        btnBuscarPrestamo.setText("BUSCAR MULTAS");
         btnBuscarPrestamo.setBorder(null);
         btnBuscarPrestamo.setBorderPainted(false);
         btnBuscarPrestamo.addActionListener(new java.awt.event.ActionListener() {
@@ -104,7 +104,7 @@ public class Multa extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblMultas);
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("TOTAL:");
 
         lblTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -142,9 +142,9 @@ public class Multa extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblTotal)
-                                .addGap(427, 427, 427)
+                                .addGap(439, 439, 439)
                                 .addComponent(btnPagarMulta, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
@@ -204,33 +204,42 @@ public class Multa extends javax.swing.JPanel {
         }
 
         // Confirmación
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Confirma el pago de S/ " + String.format("%.2f", total) + "?\n"
+        int op = JOptionPane.showOptionDialog(
+                null,
+                "¿Confirma el pago?\n\n"
+                + "Total a pagar: S/ " + String.format("%.2f", total) + "\n"
                 + "El lector será habilitado nuevamente.",
                 "Confirmar Pago",
                 JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"Sí", "No"},
+                "Sí"
+        );
 
-        if (confirm == JOptionPane.YES_OPTION) {
+        if (op == JOptionPane.YES_OPTION) {
             try {
                 // Ejecutar pago
                 objMulta.pagarMulta(idPrestamoActual, idUsuarioActual, total);
 
                 // Mensaje de éxito
-                JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(
+                        null,
                         "¡Pago registrado exitosamente!\n"
                         + "El lector ha sido habilitado.",
                         "Éxito",
-                        JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.INFORMATION_MESSAGE
+                );
 
-                // Limpiar formulario
                 limpiarFormulario();
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(
+                        null,
                         "Error al procesar el pago:\n" + e.getMessage(),
                         "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }//GEN-LAST:event_btnPagarMultaActionPerformed

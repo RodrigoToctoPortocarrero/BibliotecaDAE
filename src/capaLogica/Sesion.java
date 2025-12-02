@@ -2,7 +2,7 @@ package capaLogica;
 
 /**
  *
- * @author FABIAN VERA
+ * @author Fabian Antonio Carrasco Vera
  */
 public class Sesion {
 
