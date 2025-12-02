@@ -250,8 +250,8 @@ public class Libro {
         try {
             objConectar.ejecutarBD(strSQL);
         } catch (Exception e) {
-            // Este error puede ocurrir si tiene ejemplares o autores asignados y no hay CASCADE.
-            throw new Exception("Error al eliminar libro. Verifique que no tenga ejemplares o autores asociados: " + e.getMessage());
+
+            throw new Exception("ERROR_FK: El libro no se puede eliminar por registros asociados.");
         }
     }
 

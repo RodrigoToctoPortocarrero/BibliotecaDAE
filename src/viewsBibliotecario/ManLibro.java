@@ -421,7 +421,15 @@ public class ManLibro extends javax.swing.JPanel {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "El código del libro no es un número válido.", "Error de Entrada", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al eliminar el libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            if (e.getMessage().contains("ERROR_FK")) {
+                JOptionPane.showMessageDialog(this,
+                        "⛔ No se puede eliminar el Libro. Existen ejemplares o autores asociados.",
+                        "Eliminación Bloqueada",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Para otros errores (conexión, etc.), muestra el mensaje completo.
+                JOptionPane.showMessageDialog(this, "Error al eliminar el libro: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btneliminarActionPerformed
 
