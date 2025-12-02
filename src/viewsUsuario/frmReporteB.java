@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package viewsBibliotecario;
+package viewsUsuario;
 
 import viewsBibliotecario.Reporte02;
 import viewsBibliotecario.Reporte03;
@@ -15,6 +15,15 @@ import viewsBibliotecario.Reporte06;
 import viewsBibliotecario.Reporte05;
 import java.awt.BorderLayout;
 import javax.swing.JPanel; // Asegúrate de tener esto
+import viewsBibliotecario.Reporte01;
+import viewsBibliotecario.Reporte02;
+import viewsBibliotecario.Reporte03;
+import viewsBibliotecario.Reporte04;
+import viewsBibliotecario.Reporte05;
+import viewsBibliotecario.Reporte06;
+import viewsBibliotecario.Reporte07;
+import viewsBibliotecario.Reporte08;
+import viewsBibliotecario.Reporte15;
 
 /**
  *

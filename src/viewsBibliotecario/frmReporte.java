@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package viewsUsuario;
+package viewsBibliotecario;
 
 import viewsBibliotecario.Reporte02;
 import viewsBibliotecario.Reporte03;
@@ -15,6 +15,12 @@ import viewsBibliotecario.Reporte06;
 import viewsBibliotecario.Reporte05;
 import java.awt.BorderLayout;
 import javax.swing.JPanel; // Asegúrate de tener esto
+import viewsUsuario.Reporte09;
+import viewsUsuario.Reporte10;
+import viewsUsuario.Reporte11;
+import viewsUsuario.Reporte12;
+import viewsUsuario.Reporte13;
+import viewsUsuario.Reporte14;
 
 /**
  *
@@ -438,6 +444,7 @@ public class frmReporte extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(

@@ -13,7 +13,7 @@ import viewsUsuario.DevolucionUsuario;
 import viewsUsuario.Integrantes;
 import viewsUsuario.PrestamosUsuarios;
 import viewsUsuario.PrincipalUsuario;
-import viewsUsuario.frmReporte;
+import viewsBibliotecario.frmReporte;
 
 /**
  *
@@ -353,7 +353,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPrincipalUsuarioActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        viewsUsuario.frmReporte pres = new viewsUsuario.frmReporte(content);
+        viewsBibliotecario.frmReporte pres = new viewsBibliotecario.frmReporte(content);
 
         // Configurar el tamaño
         pres.setSize(750, 430);

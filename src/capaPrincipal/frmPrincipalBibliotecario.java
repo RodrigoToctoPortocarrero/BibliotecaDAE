@@ -619,7 +619,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
         try {
             // 1. Instanciar el panel pasándole el panel 'content' como referencia
-            viewsBibliotecario.frmReporteB pres = new viewsBibliotecario.frmReporteB(content);
+            viewsUsuario.frmReporteB pres = new viewsUsuario.frmReporteB(content);
 
             // 2. IMPORTANTE: BorderLayout ignora setSize(), usa setPreferredSize
             // Esto fuerza al panel a tener el tamaño del contenedor padre
