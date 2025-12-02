@@ -568,7 +568,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
         content.revalidate();
         content.repaint();
 
-        lblMenu.setText("Devoluciones");
+        lblMenu.setText("Multa");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void InitContent() {
