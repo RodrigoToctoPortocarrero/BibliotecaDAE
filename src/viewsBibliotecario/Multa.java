@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package viewsBibliotecario;
+
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,8 +15,10 @@ import javax.swing.table.DefaultTableModel;
  * @author Edgar Bernabe
  */
 public class Multa extends javax.swing.JPanel {
+
     capaLogica.Multa objMulta = new capaLogica.Multa();
     DefaultTableModel modelo;
+
     /**
      * Creates new form Multa
      */
@@ -23,53 +26,60 @@ public class Multa extends javax.swing.JPanel {
         initComponents();
         listarMultas();
     }
-    
-private void listarMultas() {
+
+    private void listarMultas() {
         ResultSet rs = null;
         modelo = new DefaultTableModel();
-        // Definición de columnas
-        modelo.addColumn("ID Préstamo"); // 0
-        modelo.addColumn("ID Lector");   // 1
-        modelo.addColumn("Lector");      // 2
-        modelo.addColumn("F. Préstamo"); // 3
-        modelo.addColumn("Monto");       // 4
+
+        // --- NUEVAS COLUMNAS SEGÚN REQUERIMIENTO ---
+        modelo.addColumn("ID Préstamo"); // 0 (Oculto o visible, sirve para el pago)
+        modelo.addColumn("Lector");      // 1
+        modelo.addColumn("F. Préstamo"); // 2
+        modelo.addColumn("Observación"); // 3 (Desde detalle_devolucion)
+        modelo.addColumn("Estado Libro");// 4
+        modelo.addColumn("Multa");       // 5 (Monto individual)
 
         tblMultas.setModel(modelo);
 
-        double total = 0.0;
+        double totalAcumulado = 0.0;
 
         try {
-            // 1. Obtener la fecha del JDateChooser y formatearla
+            // 1. Filtro Fecha
             String fechaStr = "";
             if (txtFechaPrestamo.getDate() != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 fechaStr = sdf.format(txtFechaPrestamo.getDate());
             }
 
-            // 2. Obtener filtro de lector
+            // 2. Filtro Lector
             String lector = txtLector.getText().trim();
 
-            // 3. Llamar a la lógica con la fecha formateada
+            // 3. Consulta
             rs = objMulta.listarMultasPendientes(fechaStr, lector);
 
             while (rs.next()) {
-                double monto = rs.getDouble("monto_total");
+                double montoItem = rs.getDouble("monto_item");
+                boolean estadoLibroBool = rs.getBoolean("estado_libro");
+                String estadoLibroStr = estadoLibroBool ? "Bueno" : "Dañado/Perdido"; // Interpretación del bit
 
                 modelo.addRow(new Object[]{
-                    rs.getInt("idprestamo"),
-                    rs.getInt("idusuario"),
-                    rs.getString("nombre_completo"),
-                    rs.getDate("fechaprestamo"),
-                    monto
+                    rs.getInt("idprestamo"), // Col 0
+                    rs.getString("nombre_completo"), // Col 1
+                    rs.getDate("fechaprestamo"), // Col 2
+                    rs.getString("observaciones"), // Col 3
+                    estadoLibroStr, // Col 4
+                    montoItem // Col 5
                 });
 
-                total += monto;
+                // Sumamos cada ítem al total general del lector/búsqueda
+                totalAcumulado += montoItem;
             }
 
-            lblTotal.setText(String.format("%.2f", total));
+            // Mostrar Total
+            lblTotal.setText(String.format("%.2f", totalAcumulado));
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al listar multas pendientes: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al listar detalles: " + e.getMessage());
         }
     }
 
@@ -188,33 +198,33 @@ private void listarMultas() {
         int fila = tblMultas.getSelectedRow();
 
         if (fila < 0) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un préstamo pendiente de la tabla para pagar su multa.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleccione un ítem de la tabla para procesar el pago del préstamo.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Obtener datos del modelo (Nuevas columnas)
-        // Col 0: ID Prestamo, Col 1: ID Usuario, Col 2: Lector, Col 3: Fecha, Col 4: Monto
+        // Recuperamos datos para confirmar
         int idPrestamo = Integer.parseInt(tblMultas.getValueAt(fila, 0).toString());
-        int idLector = Integer.parseInt(tblMultas.getValueAt(fila, 1).toString());
-        String nombreLector = tblMultas.getValueAt(fila, 2).toString();
-        double monto = Double.parseDouble(tblMultas.getValueAt(fila, 4).toString());
-
+        String nombreLector = tblMultas.getValueAt(fila, 1).toString();
+        
+        // NOTA: Al pagar, se paga TODA la multa asociada a ese préstamo, 
+        // no solo el ítem seleccionado (ya que la tabla MULTA es por préstamo).
+        
         int confirm = JOptionPane.showConfirmDialog(this, 
-                "¿Confirmar pago de multas pendientes para este préstamo?\n\n" +
-                "Lector: " + nombreLector + "\n" +
-                "Monto Total: S/ " + monto + "\n\n" +
-                "Esto registrará el pago y habilitará al lector.", 
-                "Confirmar Transacción", JOptionPane.YES_NO_OPTION);
+                "¿Confirmar el pago de multas para el lector: " + nombreLector + "?\n" +
+                "Esto cancelará la deuda total asociada al préstamo seleccionado.", 
+                "Confirmar Pago", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                // Llamamos al nuevo método transaccional
-                objMulta.registrarPagoMulta(idPrestamo, idLector, monto);
+
+                 int idUsuario = Integer.parseInt(tblMultas.getModel().getValueAt(fila, 6).toString()); // Asumiendo col 6
+
+                objMulta.registrarPagoMulta(idPrestamo, idUsuario);
                 
-                JOptionPane.showMessageDialog(this, "Pago registrado y lector habilitado correctamente.");
-                listarMultas(); // Actualizar la tabla
+                JOptionPane.showMessageDialog(this, "Pago registrado correctamente.");
+                listarMultas(); // Refrescar tabla
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al procesar la transacción: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnPagarMultaActionPerformed
@@ -225,16 +235,16 @@ private void listarMultas() {
 
     private void tblMultasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMultasMouseClicked
         int fila = tblMultas.getSelectedRow();
-        
+
         if (fila >= 0) {
             try {
                 String lector = tblMultas.getValueAt(fila, 2).toString();
                 // Recuperar el objeto fecha directamente si el modelo lo guarda como Date, 
                 // o parsear si es String. Generalmente JDBC devuelve java.sql.Date que hereda de java.util.Date.
-                Object fechaObj = tblMultas.getValueAt(fila, 3); 
-                
+                Object fechaObj = tblMultas.getValueAt(fila, 3);
+
                 txtLector.setText(lector);
-                
+
                 if (fechaObj instanceof Date) {
                     txtFechaPrestamo.setDate((Date) fechaObj);
                 } else if (fechaObj != null) {
@@ -242,7 +252,7 @@ private void listarMultas() {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     txtFechaPrestamo.setDate(sdf.parse(fechaObj.toString()));
                 }
-                
+
             } catch (Exception e) {
                 System.err.println("Error al seleccionar fecha: " + e.getMessage());
             }
