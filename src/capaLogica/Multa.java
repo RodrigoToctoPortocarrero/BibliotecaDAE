@@ -20,29 +20,29 @@ public class Multa {
     private String strSQL;
     private ResultSet rs = null;
 
-  public ResultSet buscarMultasDetalladas(java.sql.Date fechaPrestamo, String nombreLector) throws Exception {
+ public ResultSet buscarDetallesDeuda(java.sql.Date fechaPrestamo, String nombreLector) throws Exception {
         strSQL = "SELECT "
                 + "    e.NroEjemplar, "
                 + "    dd.multa, "
                 + "    dd.observaciones, "
-                + "    u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno as lector_completo, "
-                + "    p.idprestamo, " // Oculto (necesario para pagar)
-                + "    u.idusuario "   // Oculto (necesario para habilitar)
+                + "    u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno as nombre_completo, "
+                + "    p.idprestamo, " // Guardamos esto oculto para saber qué préstamo se está pagando
+                + "    u.idusuario "   // Guardamos esto oculto para habilitar al usuario luego
                 + "FROM DETALLE_DEVOLUCION dd "
                 + "INNER JOIN EJEMPLAR e ON dd.idejemplar = e.idejemplar "
                 + "INNER JOIN DEVOLUCION d ON dd.iddevolucion = d.iddevolucion "
                 + "INNER JOIN PRESTAMO p ON d.idprestamo = p.idprestamo "
                 + "INNER JOIN USUARIO u ON p.idusuariolector = u.idusuario "
-                + "INNER JOIN MULTA m ON p.idprestamo = m.idprestamo " // Unimos con multa para verificar estado
+                + "LEFT JOIN MULTA m ON p.idprestamo = m.idprestamo " // Verificamos estado en tabla MULTA
                 + "WHERE dd.multa > 0 "
-                + "AND m.pagado = FALSE "; // Solo lo que no se ha pagado
+                + "AND (m.pagado IS NULL OR m.pagado = FALSE) "; // Solo mostrar si NO está pagado
 
-        // Filtro obligatorio por Fecha de Préstamo
+        // Filtro 1: Fecha del Préstamo (Dato del DateChooser)
         if (fechaPrestamo != null) {
             strSQL += "AND p.fechaprestamo = '" + fechaPrestamo + "' ";
         }
 
-        // Filtro por nombre concatenado
+        // Filtro 2: Nombre del Lector (Dato del Txt)
         if (nombreLector != null && !nombreLector.isEmpty()) {
             strSQL += "AND UPPER(u.nombre || ' ' || u.ap_paterno || ' ' || u.ap_materno) LIKE UPPER('%" + nombreLector + "%') ";
         }
@@ -51,28 +51,26 @@ public class Multa {
             rs = objConectar.consultarBD(strSQL);
             return rs;
         } catch (Exception e) {
-            throw new Exception("Error al buscar detalles de multas: " + e.getMessage());
+            throw new Exception("Error al buscar en detalle_devolucion: " + e.getMessage());
         }
     }
 
     /**
-     * Transacción de Pago:
-     * 1. Actualiza la tabla MULTA (Monto total, pagado=true, fecha actual).
-     * 2. Actualiza la tabla USUARIO (estado=true).
+     * Paga la multa registrando en la tabla MULTA y habilitando al usuario.
      */
-    public void realizarPago(int idPrestamo, int idUsuario, double montoTotal) throws Exception {
-        // 1. Actualizar la Multa a PAGADO
+    public void pagarMulta(int idPrestamo, int idUsuario, double montoTotal) throws Exception {
+        // 1. Actualizar/Insertar en tabla MULTA como PAGADO
+        // Usamos un UPDATE porque tu sistema ya genera la multa en estado FALSE previamente.
         String strUpdateMulta = "UPDATE multa "
                 + "SET pagado = TRUE, "
                 + "    monto = " + montoTotal + ", "
                 + "    fechagenerada = CURRENT_DATE "
                 + "WHERE idprestamo = " + idPrestamo;
 
-        // 2. Habilitar al Lector (Estado = TRUE)
+        // 2. Desbloquear al Usuario
         String strUpdateUsuario = "UPDATE usuario SET estado = TRUE WHERE idusuario = " + idUsuario;
 
         try {
-            // Ejecutar ambas consultas
             objConectar.ejecutarBD(strUpdateMulta);
             objConectar.ejecutarBD(strUpdateUsuario);
         } catch (Exception e) {

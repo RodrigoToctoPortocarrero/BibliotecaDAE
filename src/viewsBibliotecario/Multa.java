@@ -18,8 +18,9 @@ public class Multa extends javax.swing.JPanel {
 
     capaLogica.Multa objMulta = new capaLogica.Multa();
     DefaultTableModel modelo;
-    private int idPrestamoGlobal = -1;
-    private int idUsuarioGlobal = -1;
+    int idPrestamoActual = -1;
+    int idUsuarioActual = -1;
+
     /**
      * Creates new form Multa
      */
@@ -28,70 +29,14 @@ public class Multa extends javax.swing.JPanel {
         configurarTabla();
         lblTotal.setText("0.00");
     }
-    
+
     private void configurarTabla() {
         modelo = new DefaultTableModel();
-        modelo.addColumn("Nro Ejemplar"); // Muestra el código del libro físico
-        modelo.addColumn("Multa");
-        modelo.addColumn("Observación");
-        modelo.addColumn("Lector");
+        modelo.addColumn("Nro Ejemplar"); // Viene de DETALLE_DEVOLUCION -> EJEMPLAR
+        modelo.addColumn("Multa");        // Viene de DETALLE_DEVOLUCION
+        modelo.addColumn("Observación");  // Viene de DETALLE_DEVOLUCION
+        modelo.addColumn("Lector");       // Viene de USUARIO
         tblMultas.setModel(modelo);
-    }
-    
-    private void buscarYListar() {
-        // 1. Validaciones iniciales
-        if (txtFechaPrestamo.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Por favor seleccione la fecha de préstamo.");
-            return;
-        }
-        String nombreBuscado = txtLector.getText().trim();
-        if (nombreBuscado.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese el nombre del lector.");
-            return;
-        }
-
-        // Limpiar tabla y variables antes de buscar
-        modelo.setRowCount(0);
-        idPrestamoGlobal = -1;
-        idUsuarioGlobal = -1;
-        double totalAcumulado = 0.0;
-
-        try {
-            // Convertir fecha de JDateChooser a java.sql.Date
-            java.sql.Date fechaSql = new java.sql.Date(txtFechaPrestamo.getDate().getTime());
-
-            ResultSet rs = objMulta.buscarMultasDetalladas(fechaSql, nombreBuscado);
-
-            while (rs.next()) {
-                // Obtener datos visibles
-                String nroEjemplar = rs.getString("NroEjemplar");
-                double multa = rs.getDouble("multa");
-                String obs = rs.getString("observaciones");
-                String lector = rs.getString("lector_completo");
-
-                // Obtener datos ocultos (IDs) solo una vez (son los mismos para todo el préstamo)
-                if (idPrestamoGlobal == -1) {
-                    idPrestamoGlobal = rs.getInt("idprestamo");
-                    idUsuarioGlobal = rs.getInt("idusuario");
-                }
-
-                // Agregar fila visual
-                modelo.addRow(new Object[]{nroEjemplar, multa, obs, lector});
-
-                // Sumar al total
-                totalAcumulado += multa;
-            }
-
-            // Mostrar el total calculado
-            lblTotal.setText(String.format("%.2f", totalAcumulado));
-
-            if (modelo.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "No se encontraron multas pendientes con esos datos.");
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
-        }
     }
 
     /**
@@ -206,48 +151,87 @@ public class Multa extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPagarMultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarMultaActionPerformed
-        // 1. Validar que hay deuda cargada
-        double totalPagar = 0;
-        try {
-            totalPagar = Double.parseDouble(lblTotal.getText().replace(",", "."));
-        } catch (NumberFormatException e) {
-            totalPagar = 0;
-        }
-
-        if (idPrestamoGlobal == -1 || totalPagar <= 0) {
-            JOptionPane.showMessageDialog(this, "No hay multas cargadas para pagar. Realice una búsqueda primero.");
+        if (idPrestamoActual == -1 || modelo.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Busque primero una multa pendiente.");
             return;
         }
 
-        // 2. Confirmación
+        double total = Double.parseDouble(lblTotal.getText().replace(",", "."));
+
         int confirm = JOptionPane.showConfirmDialog(this,
-                "¿Confirmar pago total de S/ " + totalPagar + "?\n"
-                + "Esto habilitará al usuario nuevamente.",
-                "Procesar Pago", JOptionPane.YES_NO_OPTION);
+                "¿Pagar deuda total de S/ " + total + "?\nEsto habilitará al lector nuevamente.",
+                "Confirmar Pago", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                // 3. Llamar a la lógica transaccional
-                objMulta.realizarPago(idPrestamoGlobal, idUsuarioGlobal, totalPagar);
+                // Registrar pago usando los datos rescatados
+                objMulta.pagarMulta(idPrestamoActual, idUsuarioActual, total);
 
-                JOptionPane.showMessageDialog(this, "¡Pago exitoso! El lector ha sido habilitado.");
+                JOptionPane.showMessageDialog(this, "¡Pago registrado exitosamente!");
 
-                // 4. Limpiar la interfaz
+                // Limpiar todo
                 modelo.setRowCount(0);
                 lblTotal.setText("0.00");
                 txtLector.setText("");
                 txtFechaPrestamo.setDate(null);
-                idPrestamoGlobal = -1;
-                idUsuarioGlobal = -1;
+                idPrestamoActual = -1;
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al procesar el pago: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "Error al pagar: " + e.getMessage());
             }
         }
     }//GEN-LAST:event_btnPagarMultaActionPerformed
 
     private void btnBuscarPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPrestamoActionPerformed
-        buscarYListar();
+        // 1. Validar que se haya seleccionado fecha y escrito lector
+        if (txtFechaPrestamo.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione la fecha del préstamo en el calendario.");
+            return;
+        }
+        String lector = txtLector.getText().trim();
+        if (lector.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el nombre del lector.");
+            return;
+        }
+
+        try {
+            // 2. Preparar fecha SQL
+            java.sql.Date fechaSql = new java.sql.Date(txtFechaPrestamo.getDate().getTime());
+
+            // 3. Llamar a la lógica para rescatar datos de DETALLE_DEVOLUCION
+            ResultSet rs = objMulta.buscarDetallesDeuda(fechaSql, lector);
+
+            // 4. Llenar la tabla
+            modelo.setRowCount(0); // Limpiar tabla
+            double sumaTotal = 0.0;
+            idPrestamoActual = -1; // Resetear IDs
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("NroEjemplar"),
+                    rs.getDouble("multa"),
+                    rs.getString("observaciones"),
+                    rs.getString("nombre_completo")
+                });
+
+                // Sumar al total
+                sumaTotal += rs.getDouble("multa");
+
+                // Capturar IDs (serán los mismos para todas las filas de ese préstamo)
+                idPrestamoActual = rs.getInt("idprestamo");
+                idUsuarioActual = rs.getInt("idusuario");
+            }
+
+            // 5. Mostrar Total
+            lblTotal.setText(String.format("%.2f", sumaTotal));
+
+            if (modelo.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "No se encontraron multas pendientes para esa fecha y lector.");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnBuscarPrestamoActionPerformed
 
     private void tblMultasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMultasMouseClicked
