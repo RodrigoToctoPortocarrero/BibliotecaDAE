@@ -47,13 +47,13 @@ public class Integrantes extends javax.swing.JPanel {
         jLabel3.setText("Castañeda Coronel Percy Alexander");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel4.setText("Bernabe Villegas Edgar Giancarlo");
+        jLabel4.setText("Bernabe Villegas Edgar GianKarlo");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Carrasco Vera Fabian");
+        jLabel5.setText("Carrasco Vera Fabian Antonio");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Valentino Lopez");
+        jLabel6.setText("Lopez Barboza Valentino del Piero");
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/BIBLIOTECARIO (1) (1).png"))); // NOI18N
 
@@ -90,9 +90,9 @@ public class Integrantes extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(jLabel2)
-                        .addGap(36, 36, 36)
+                        .addGap(32, 32, 32)
                         .addComponent(jLabel3)
-                        .addGap(34, 34, 34)
+                        .addGap(38, 38, 38)
                         .addComponent(jLabel4)
                         .addGap(28, 28, 28)
                         .addComponent(jLabel5))

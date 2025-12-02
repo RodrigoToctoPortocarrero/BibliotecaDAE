@@ -353,7 +353,7 @@ public class frmPrincipalLector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPrincipalUsuarioActionPerformed
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        viewsBibliotecario.frmReporte pres = new viewsBibliotecario.frmReporte(content);
+        viewsUsuario.frmReporteB pres = new viewsUsuario.frmReporteB(content);
 
         // Configurar el tamaño
         pres.setSize(750, 430);

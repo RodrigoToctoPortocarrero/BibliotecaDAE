@@ -104,10 +104,9 @@
                                           <Component id="chkvigente" min="-2" pref="82" max="-2" attributes="0"/>
                                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
                                           <Component id="btnLimpiar" min="-2" pref="133" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -123,7 +122,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="txtId" min="-2" pref="78" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="btnBuscar" min="-2" pref="123" max="-2" attributes="0"/>
+                                          <Component id="btnBuscar" min="-2" pref="133" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Group type="103" groupAlignment="1" attributes="0">
@@ -234,14 +233,12 @@
                       </Group>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btnLimpiar" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                          <Component id="btnModificar" alignment="3" max="32767" attributes="0"/>
-                          <Component id="btnNuevo" alignment="3" max="32767" attributes="0"/>
-                          <Component id="btnDarbaja" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnEliminar" alignment="3" max="32767" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="3" max="-2" attributes="0">
+                      <Component id="btnModificar" alignment="3" max="32767" attributes="0"/>
+                      <Component id="btnNuevo" alignment="3" max="32767" attributes="0"/>
+                      <Component id="btnDarbaja" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnEliminar" alignment="3" max="32767" attributes="0"/>
+                      <Component id="btnLimpiar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="156" max="-2" attributes="0"/>

@@ -21,14 +21,7 @@
     (d.fechadevolucionreal::date - p.fechadevolucionestimada::date) AS dias_de_retraso,
 
     dd.observaciones AS motivo_multa,
-    dd.multa AS monto_multa,
-
-    CASE
-        WHEN m.pagado = TRUE THEN 'Sí'
-        ELSE 'No'
-    END AS multa_pagada,
-
-    m.fechagenerada::date AS fecha_multa_generada
+    dd.multa AS monto_multa
 
 FROM MULTA m
 INNER JOIN USUARIO u ON u.idusuario = m.idusuario
@@ -37,18 +30,15 @@ INNER JOIN DEVOLUCION d ON d.idprestamo = p.idprestamo
 INNER JOIN DETALLE_DEVOLUCION dd ON dd.iddevolucion = d.iddevolucion
 
 WHERE m.fechagenerada::date
-      BETWEEN $P{fechainicio}::date AND $P{fechafinal}::date
+      BETWEEN $P{fechainicio}::date AND $P{fechafinal}::date and dd.multa > 0
 
-ORDER BY m.fechagenerada::date;
-]]>
+ORDER BY m.fechagenerada::date;]]>
 	</queryString>
 	<field name="lector" class="java.lang.String"/>
 	<field name="detalle_fechas" class="java.lang.String"/>
 	<field name="dias_de_retraso" class="java.lang.Integer"/>
 	<field name="motivo_multa" class="java.lang.String"/>
 	<field name="monto_multa" class="java.math.BigDecimal"/>
-	<field name="multa_pagada" class="java.lang.String"/>
-	<field name="fecha_multa_generada" class="java.sql.Date"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -72,11 +62,15 @@ ORDER BY m.fechagenerada::date;
 			<textField>
 				<reportElement x="399" y="15" width="80" height="20" uuid="a461228a-1ba4-40d7-8371-44dcb6489582"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="479" y="15" width="40" height="20" uuid="0ea89da6-6d81-4040-be3e-5d0d6094bb83"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="277" y="11" width="100" height="20" uuid="c6dd0de6-8212-4a8d-ad47-3206248ded0c"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -98,12 +92,8 @@ ORDER BY m.fechagenerada::date;
 				<text><![CDATA[Motivo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="373" y="13" width="50" height="20" uuid="313d8ec2-8bf3-413f-a1f9-6ade49b88b7b"/>
+				<reportElement x="399" y="13" width="50" height="20" uuid="313d8ec2-8bf3-413f-a1f9-6ade49b88b7b"/>
 				<text><![CDATA[Monto]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="455" y="13" width="100" height="20" uuid="c8b9bc00-be23-410e-80f4-1b719a6e89bb"/>
-				<text><![CDATA[¿Multa Pagada?]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -122,12 +112,8 @@ ORDER BY m.fechagenerada::date;
 				<textFieldExpression><![CDATA[$F{motivo_multa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="373" y="17" width="50" height="20" uuid="8314d429-783a-4a32-ad6d-7bcf2f058671"/>
+				<reportElement x="399" y="17" width="50" height="20" uuid="8314d429-783a-4a32-ad6d-7bcf2f058671"/>
 				<textFieldExpression><![CDATA[$F{monto_multa}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="455" y="17" width="76" height="20" uuid="7549eb59-5c03-4ed3-a79a-92e4d1941ae1"/>
-				<textFieldExpression><![CDATA[$F{multa_pagada}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
