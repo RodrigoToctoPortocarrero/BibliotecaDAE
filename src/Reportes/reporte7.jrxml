@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte7" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb9ebd70-0f07-4703-a2b9-4899d11374ea">
-	<property name="ireport.zoom" value="1.6105100000000014"/>
+	<property name="ireport.zoom" value="1.610510000000014"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="165"/>
+	<property name="ireport.y" value="103"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="2fd13515-17d0-442f-81f3-2158187f456a"/>
 	<parameter name="p_nombreAutor" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -30,77 +51,80 @@ WHERE
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="133" y="15" width="318" height="42" uuid="50eedfd5-c725-4557-a298-d7766c0d1658"/>
-				<textElement textAlignment="Center">
-					<font size="24" isBold="true"/>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#0066FF" uuid="50eedfd5-c725-4557-a298-d7766c0d1658"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="20" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Libros Escritos por Autor]]></text>
 			</staticText>
+			<image isUsingCache="true">
+				<reportElement mode="Transparent" x="33" y="0" width="78" height="79" uuid="79eca089-f72e-4942-bde6-b9c521a67b18"/>
+				<imageExpression><![CDATA["C:\\Users\\VALENTINO\\Downloads\\1.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="49" splitType="Stretch">
+		<band height="68" splitType="Stretch">
 			<textField>
-				<reportElement x="33" y="15" width="164" height="20" uuid="a7e83c31-43f8-4a92-8d78-bbc0afb8482f"/>
+				<reportElement x="33" y="29" width="164" height="20" forecolor="#000000" uuid="a7e83c31-43f8-4a92-8d78-bbc0afb8482f"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Nombre Completo Autor}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="330" y="15" width="214" height="20" uuid="ffe2c9ab-646b-45f8-866c-2e13d7d3cc71"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch">
+		<band height="30" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="81" y="10" width="366" height="20" backcolor="#FF6666" uuid="3cdf0c2c-a1e5-4560-bc70-1cbd1d298fe4"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement x="81" y="22" width="100" height="20" uuid="6ad9f30b-d04a-4f4c-afc4-4fadbe98c374"/>
+				<reportElement x="252" y="10" width="67" height="20" forecolor="#FFFFFF" uuid="8f656651-55af-478d-a6f8-81157a005d10"/>
 				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Título del Libro]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="239" y="22" width="67" height="20" uuid="8f656651-55af-478d-a6f8-81157a005d10"/>
-				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Año]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="354" y="22" width="80" height="20" uuid="ce2a2603-cd52-4bb1-9d86-2932e73a5739"/>
+				<reportElement x="367" y="10" width="79" height="20" forecolor="#FFFFFF" uuid="ce2a2603-cd52-4bb1-9d86-2932e73a5739"/>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Categoría]]></text>
 			</staticText>
-			<line>
-				<reportElement x="81" y="42" width="353" height="1" uuid="cf5b6bff-e6bb-451d-a84b-0987b99cbd39"/>
-			</line>
+			<staticText>
+				<reportElement x="94" y="10" width="100" height="20" forecolor="#FFFFFF" uuid="6ad9f30b-d04a-4f4c-afc4-4fadbe98c374"/>
+				<textElement>
+					<font fontName="Arial Black" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título del Libro]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="78" splitType="Stretch">
+		<band height="30" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="81" y="14" width="366" height="14" backcolor="#0099FF" uuid="a7dcb1c3-058e-46ce-adf9-568ccde96597"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</rectangle>
 			<textField>
-				<reportElement x="81" y="29" width="100" height="20" uuid="4a79cb74-dda9-4d01-b58f-aa4bd138efbc"/>
+				<reportElement x="94" y="15" width="100" height="13" forecolor="#FFFFFF" uuid="4a79cb74-dda9-4d01-b58f-aa4bd138efbc"/>
 				<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="239" y="29" width="67" height="20" uuid="950c882c-5749-43c8-b2a4-bbc6933a8716"/>
+				<reportElement x="252" y="15" width="67" height="13" forecolor="#FFFFFF" uuid="950c882c-5749-43c8-b2a4-bbc6933a8716"/>
 				<textFieldExpression><![CDATA[$F{Año}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="354" y="29" width="80" height="20" uuid="a26bc9dc-5266-4375-bb19-82b0958dee8e"/>
+				<reportElement x="367" y="15" width="80" height="15" forecolor="#FFFFFF" uuid="a26bc9dc-5266-4375-bb19-82b0958dee8e"/>
 				<textFieldExpression><![CDATA[$F{Categoría}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="81" y="52" width="353" height="1" uuid="78866325-f146-4f26-b491-c911b679c006"/>
-			</line>
 		</band>
 	</detail>
 	<columnFooter>
@@ -126,6 +150,13 @@ WHERE
 				<reportElement x="33" y="34" width="169" height="20" uuid="021b9670-035b-457a-a781-c883ad1fd171"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="319" y="0" width="236" height="20" uuid="ffe2c9ab-646b-45f8-866c-2e13d7d3cc71"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>

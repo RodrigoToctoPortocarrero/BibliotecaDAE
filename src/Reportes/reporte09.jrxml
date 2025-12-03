@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte09" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9e32d7e4-e95d-464d-8555-d6d5d4f21354">
-	<property name="ireport.zoom" value="1.4641000000000017"/>
+	<property name="ireport.zoom" value="1.6105100000000023"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="25"/>
 	<style name="EstiloVencimiento">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[// Comparamos la fecha del campo (convertida a texto) con la fecha de hoy (convertida a texto)
@@ -38,71 +38,85 @@ ORDER BY p.fechadevolucionestimada ASC]]>
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="79" backcolor="#0066FF" uuid="3d6d44db-cfe1-4fe2-a30f-1db1644442e6"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="161" y="22" width="265" height="35" uuid="b40828cc-3ab0-49c7-a63b-618b511e2d1a"/>
+				<reportElement x="161" y="22" width="265" height="35" forecolor="#FFFFFF" uuid="b40828cc-3ab0-49c7-a63b-618b511e2d1a"/>
 				<textElement textAlignment="Center">
-					<font size="24" isBold="true"/>
+					<font fontName="Arial Black" size="20" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Préstamos Vigentes]]></text>
 			</staticText>
+			<image>
+				<reportElement x="53" y="0" width="76" height="79" uuid="473ae8a5-2a98-48c6-8eba-7d7f17ff1c5d"/>
+				<imageExpression><![CDATA["C:\\Users\\VALENTINO\\Downloads\\2.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch">
-			<staticText>
-				<reportElement x="341" y="15" width="214" height="20" uuid="86839ca0-5398-4da6-9d6f-4f30727864a8"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
-			</staticText>
-		</band>
+		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="97" y="24" width="412" height="21" backcolor="#FF6666" uuid="a8a2aca0-8325-4d14-9772-d25e94631deb"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement x="100" y="11" width="100" height="20" uuid="2f7f51b9-177c-457b-8f35-b7faeaf3b8d4"/>
-				<textElement>
-					<font isBold="true"/>
+				<reportElement x="113" y="24" width="100" height="20" forecolor="#FFFFFF" uuid="2f7f51b9-177c-457b-8f35-b7faeaf3b8d4"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nombre Lector]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="206" y="11" width="100" height="20" uuid="b1f8e146-3cd6-4fea-9fc6-b94bd3a085e1"/>
-				<textElement>
-					<font isBold="true"/>
+				<reportElement x="219" y="24" width="117" height="20" forecolor="#FFFFFF" uuid="b1f8e146-3cd6-4fea-9fc6-b94bd3a085e1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Título del Libro]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="323" y="11" width="100" height="20" uuid="02e52cd0-28b8-4f9a-8a26-726217ebb3ca"/>
-				<textElement>
-					<font isBold="true"/>
+				<reportElement x="336" y="24" width="173" height="20" forecolor="#FFFFFF" uuid="02e52cd0-28b8-4f9a-8a26-726217ebb3ca"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Vencimiento]]></text>
 			</staticText>
-			<line>
-				<reportElement x="87" y="44" width="336" height="1" uuid="b6f90fd4-d2e6-4bed-81a1-71d95512cb74"/>
-			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="69" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="97" y="11" width="412" height="20" backcolor="#0099FF" uuid="ffaae88b-3ffc-4dbe-ae4b-1e89e3adb048"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</rectangle>
 			<textField>
-				<reportElement x="100" y="22" width="100" height="20" uuid="16fb967c-6703-469b-9f2f-bb7ad8c627c3"/>
+				<reportElement x="119" y="11" width="100" height="20" forecolor="#FFFFFF" uuid="16fb967c-6703-469b-9f2f-bb7ad8c627c3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Nombre Lector}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="206" y="22" width="100" height="20" uuid="177333a0-c521-473b-8985-5a9a88dedf94"/>
+				<reportElement x="236" y="11" width="100" height="20" forecolor="#FFFFFF" uuid="177333a0-c521-473b-8985-5a9a88dedf94"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="323" y="22" width="113" height="20" uuid="91e3f230-15c0-4c0a-9e34-a78d3416faa2"/>
+				<reportElement x="383" y="11" width="113" height="20" forecolor="#FFFFFF" uuid="91e3f230-15c0-4c0a-9e34-a78d3416faa2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Fecha Vencimiento}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="87" y="54" width="336" height="1" uuid="930db229-142a-4b66-828a-698d9f52d8d0"/>
-			</line>
 		</band>
 	</detail>
 	<columnFooter>
@@ -128,6 +142,13 @@ ORDER BY p.fechadevolucionestimada ASC]]>
 				<reportElement x="10" y="34" width="144" height="20" uuid="a4d01df5-f941-44ee-93c8-873af925bc84"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="352" y="0" width="203" height="20" uuid="86839ca0-5398-4da6-9d6f-4f30727864a8"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>

@@ -23,70 +23,71 @@ ORDER BY nombre ASC]]>
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="47" y="18" width="478" height="32" uuid="f4e2e4b4-a534-433e-b5da-887b551489e0"/>
-				<textElement textAlignment="Center">
-					<font size="24" isBold="true"/>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#0066FF" uuid="f4e2e4b4-a534-433e-b5da-887b551489e0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="20" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Información de Contacto de Editoriales]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch">
-			<staticText>
-				<reportElement x="341" y="15" width="214" height="20" uuid="07baf80d-d8fd-40ad-88de-de020e7a4d95"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
-			</staticText>
-		</band>
+		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch">
+		<band height="57" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="62" y="25" width="415" height="25" backcolor="#FF6666" uuid="eabc92a1-25d1-4689-b9df-aceeb7e953c0"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement x="73" y="14" width="100" height="20" uuid="8f4746fc-cf82-4ecf-90ce-9d067ee51c86"/>
-				<textElement>
-					<font size="10" isBold="true"/>
+				<reportElement x="73" y="25" width="100" height="20" forecolor="#FFFFFF" uuid="8f4746fc-cf82-4ecf-90ce-9d067ee51c86"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nombre Editorial]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="222" y="14" width="100" height="20" uuid="3f0f401b-6529-40ef-85c4-09a3a8f03cb8"/>
-				<textElement>
-					<font size="10" isBold="true"/>
+				<reportElement x="222" y="25" width="100" height="20" forecolor="#FFFFFF" uuid="3f0f401b-6529-40ef-85c4-09a3a8f03cb8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Teléfono]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="377" y="14" width="100" height="20" uuid="8e72d596-33f7-497c-ba13-4c878bf3bc81"/>
-				<textElement>
-					<font size="10" isBold="true"/>
+				<reportElement x="377" y="25" width="100" height="20" forecolor="#FFFFFF" uuid="8e72d596-33f7-497c-ba13-4c878bf3bc81"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Correo Electrónico]]></text>
 			</staticText>
-			<line>
-				<reportElement x="62" y="44" width="440" height="1" uuid="7ebe2936-3a7b-485d-b909-e40e7118eea7"/>
-			</line>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="69" splitType="Stretch">
+		<band height="51" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="62" y="13" width="415" height="20" backcolor="#0099FF" uuid="102b2384-90b1-490a-bc9e-0abc9dda51d4"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</rectangle>
 			<textField>
-				<reportElement x="73" y="33" width="100" height="20" uuid="1f8e7547-1cd5-4cf8-af09-21ffd78532fa"/>
+				<reportElement x="73" y="13" width="100" height="20" forecolor="#FFFFFF" uuid="1f8e7547-1cd5-4cf8-af09-21ffd78532fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{Nombre Editorial}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="222" y="33" width="100" height="20" uuid="b8a56956-b7df-4957-87ee-07b43ae3e7d2"/>
+				<reportElement x="222" y="13" width="100" height="20" forecolor="#FFFFFF" uuid="b8a56956-b7df-4957-87ee-07b43ae3e7d2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{Teléfono}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="377" y="33" width="100" height="20" uuid="8104dd4b-728b-42ac-8383-92e43b6c571d"/>
+				<reportElement x="377" y="13" width="100" height="20" forecolor="#FFFFFF" uuid="8104dd4b-728b-42ac-8383-92e43b6c571d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{Correo Electrónico}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="62" y="54" width="440" height="1" uuid="c7e221ce-65d7-4c39-9a1a-32a240d4165d"/>
-			</line>
 		</band>
 	</detail>
 	<columnFooter>
@@ -112,6 +113,13 @@ ORDER BY nombre ASC]]>
 				<reportElement x="29" y="34" width="144" height="20" uuid="c386e6b3-50a1-4dd0-88c2-d8f3359f532e"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="351" y="0" width="204" height="20" uuid="07baf80d-d8fd-40ad-88de-de020e7a4d95"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creado por: Valentino del Piero López Barboza]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
