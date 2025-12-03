@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportePercy" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ee4e06b8-4761-4889-9791-5157d352f296">
-	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.zoom" value="1.9487171000000025"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="35"/>
+	<property name="ireport.y" value="32"/>
 	<parameter name="NOMBRE_EDITORIAL" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -28,27 +28,34 @@ ORDER BY
 	</background>
 	<title>
 		<band height="97" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="0" y="0" width="555" height="97" backcolor="#0066FF" uuid="bc547cdb-f228-4728-af24-a75a3b505907"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="131" y="15" width="294" height="52" uuid="cd699fdc-c3c8-4170-a49c-306d61e3fa75"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Black" size="16" isBold="true"/>
+				<reportElement x="0" y="0" width="549" height="77" forecolor="#FFFFFF" uuid="cd699fdc-c3c8-4170-a49c-306d61e3fa75"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="16" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Libros por nombre de editorial]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="254" y="77" width="134" height="20" uuid="a3449424-d41a-4d9e-82fb-95562549a725"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+				<reportElement x="271" y="77" width="134" height="20" forecolor="#FFFFFF" uuid="a3449424-d41a-4d9e-82fb-95562549a725"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NOMBRE_EDITORIAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="194" y="77" width="60" height="20" uuid="3ea74135-aeb1-4031-964f-6f249a08c180"/>
+				<reportElement x="211" y="77" width="60" height="20" forecolor="#FFFFFF" uuid="3ea74135-aeb1-4031-964f-6f249a08c180"/>
 				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Editorial:]]></text>
 			</staticText>
+			<image>
+				<reportElement x="444" y="33" width="65" height="64" uuid="ca89dcc2-8913-42a0-989e-3ba7e1f48481"/>
+				<imageExpression><![CDATA["C:\\Users\\Percy Alexander\\Desktop\\Reporte DAE\\estante-de-libros.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -56,43 +63,46 @@ ORDER BY
 	</pageHeader>
 	<columnHeader>
 		<band height="41" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="110" y="0" width="328" height="20" backcolor="#FF6666" uuid="3505e923-f605-44d0-85e5-6c26ac84bc5f"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="144" y="2" width="100" height="20" uuid="c8517899-c866-42ea-9ada-0fe4ad2156ce"/>
+				<reportElement x="144" y="2" width="100" height="20" forecolor="#FFFFFF" uuid="c8517899-c866-42ea-9ada-0fe4ad2156ce"/>
 				<textElement textAlignment="Center">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Título de libro]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="277" y="2" width="121" height="20" uuid="53a2d81f-6178-425a-a670-d717e4951180"/>
+				<reportElement x="277" y="2" width="121" height="20" forecolor="#FFFFFF" uuid="53a2d81f-6178-425a-a670-d717e4951180"/>
 				<textElement textAlignment="Center">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Año de publicación]]></text>
 			</staticText>
-			<line>
-				<reportElement x="131" y="22" width="296" height="1" uuid="7d205d37-3986-441d-918e-a5853f117c47"/>
-			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="30" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="125" y="0" width="296" height="20" backcolor="#0099FF" uuid="de42bc28-db8a-4a8e-bbe4-0360f524d13b"/>
+			</rectangle>
 			<textField>
-				<reportElement x="144" y="0" width="100" height="20" uuid="5f73f8ec-db00-4677-bd1b-b80530a24a37"/>
+				<reportElement x="138" y="0" width="133" height="20" forecolor="#FFFFFF" uuid="5f73f8ec-db00-4677-bd1b-b80530a24a37"/>
 				<textFieldExpression><![CDATA[$F{titulo_libro}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="131" y="19" width="296" height="1" uuid="94bc979e-1020-424d-9045-ee809d6aac32"/>
+				<reportElement x="125" y="19" width="296" height="1" uuid="94bc979e-1020-424d-9045-ee809d6aac32"/>
 			</line>
 			<textField>
-				<reportElement x="277" y="0" width="121" height="20" uuid="ae7b83a2-f1ca-4966-ab6b-b18f7e0acffe"/>
+				<reportElement x="271" y="0" width="121" height="20" forecolor="#FFFFFF" uuid="ae7b83a2-f1ca-4966-ab6b-b18f7e0acffe"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{anio_publicacion}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="12" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">

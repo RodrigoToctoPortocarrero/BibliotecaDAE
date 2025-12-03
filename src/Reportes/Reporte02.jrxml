@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte02" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a79979f8-c74b-41ad-82f8-4e4bddae2f30">
-	<property name="ireport.zoom" value="1.2100000000000006"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.6105100000000045"/>
+	<property name="ireport.x" value="67"/>
+	<property name="ireport.y" value="72"/>
+	<import value="java.text.DecimalFormat"/>
 	<parameter name="FECHA_INICIO" class="java.util.Date">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -29,7 +30,8 @@ GROUP BY
     L.idlibro,
     L.titulo
 ORDER BY
-    Total_Prestamos DESC, Titulo_Libro ASC;]]>
+    Total_Prestamos DESC, Titulo_Libro ASC
+LIMIT 10;]]>
 	</queryString>
 	<field name="id_libro" class="java.lang.Integer"/>
 	<field name="titulo_libro" class="java.lang.String"/>
@@ -39,80 +41,122 @@ ORDER BY
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
-			<staticText>
-				<reportElement x="130" y="15" width="294" height="32" uuid="9eaf8134-cdad-45e4-8c0d-d3d24a4bdf28"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial Black" size="16" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Libros más prestados]]></text>
-			</staticText>
+			<rectangle radius="5">
+				<reportElement x="0" y="0" width="555" height="79" backcolor="#0066FF" uuid="e2f81248-674c-46ad-a485-a49aa023cacc"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
 			<textField>
-				<reportElement x="149" y="59" width="100" height="20" uuid="0ff1f966-5b90-4b49-8bf8-eae45b5e0742"/>
+				<reportElement x="149" y="59" width="100" height="20" forecolor="#FFFFFF" uuid="0ff1f966-5b90-4b49-8bf8-eae45b5e0742"/>
+				<box>
+					<pen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<topPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<leftPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<bottomPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<rightPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+				</box>
 				<textFieldExpression><![CDATA[$P{FECHA_INICIO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="354" y="59" width="100" height="20" uuid="cd2c28af-a4a3-4253-9ccb-3c85f64ad9ed"/>
+				<reportElement x="354" y="59" width="100" height="20" forecolor="#FFFFFF" uuid="cd2c28af-a4a3-4253-9ccb-3c85f64ad9ed"/>
+				<box>
+					<pen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<topPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<leftPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<bottomPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<rightPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+				</box>
 				<textFieldExpression><![CDATA[$P{FECHA_FIN}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="49" y="59" width="100" height="20" uuid="0cc87982-12cb-4824-97df-ca6e97399601"/>
+				<reportElement mode="Transparent" x="49" y="59" width="100" height="20" forecolor="#FFFFFF" uuid="0cc87982-12cb-4824-97df-ca6e97399601"/>
+				<box>
+					<pen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<topPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<leftPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<bottomPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<rightPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+				</box>
 				<textElement textAlignment="Center">
-					<font size="10" isBold="true"/>
+					<font size="10" isBold="false" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Fecha inicio:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="254" y="59" width="100" height="20" uuid="950436e1-dcf3-40a8-a86b-e81e4e8a0781"/>
+				<reportElement x="254" y="59" width="100" height="20" forecolor="#FFFFFF" uuid="950436e1-dcf3-40a8-a86b-e81e4e8a0781"/>
+				<box>
+					<pen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<topPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<leftPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<bottomPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+					<rightPen lineWidth="0.75" lineStyle="Double" lineColor="#66FFFF"/>
+				</box>
 				<textElement textAlignment="Center">
-					<font size="10" isBold="true"/>
+					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Fecha fin:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="59" forecolor="#FFFFFF" uuid="9eaf8134-cdad-45e4-8c0d-d3d24a4bdf28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Libros más prestados]]></text>
+			</staticText>
+			<image>
+				<reportElement x="467" y="15" width="65" height="64" uuid="07204c06-5871-4948-aa77-99950dd74c46"/>
+				<imageExpression><![CDATA["C:\\Users\\Percy Alexander\\Desktop\\Reporte DAE\\estante-de-libros.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="9" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="41" splitType="Stretch">
+		<band height="33" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="97" y="0" width="338" height="20" backcolor="#FF6666" uuid="09ec03b4-1109-47cf-b284-2d2afac25a86"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="106" y="2" width="127" height="20" uuid="64e6f562-ff19-4289-96cf-64ff72106a37"/>
-				<textElement textAlignment="Center">
+				<reportElement x="124" y="0" width="127" height="20" forecolor="#FFFFFF" uuid="64e6f562-ff19-4289-96cf-64ff72106a37"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Título]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="249" y="2" width="127" height="20" uuid="df14b2b6-27ae-41e5-ae84-7bfd8847f0b6"/>
-				<textElement textAlignment="Center">
+				<reportElement x="260" y="0" width="151" height="20" forecolor="#FFFFFF" uuid="df14b2b6-27ae-41e5-ae84-7bfd8847f0b6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[N° de veces prestado]]></text>
 			</staticText>
-			<line>
-				<reportElement x="96" y="22" width="318" height="1" uuid="f265ca89-980c-439a-b05e-90d881c079f6"/>
-			</line>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="34" splitType="Stretch">
+		<band height="42" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="107" y="4" width="318" height="19" backcolor="#0099FF" uuid="8209354c-70eb-4f2a-bece-3b031f52ac0f"/>
+			</rectangle>
 			<textField>
-				<reportElement x="130" y="0" width="100" height="20" uuid="aac69bf7-8ccf-4268-b540-fa220ae66794"/>
-				<textElement textAlignment="Center"/>
+				<reportElement x="107" y="4" width="150" height="19" forecolor="#FFFFFF" uuid="aac69bf7-8ccf-4268-b540-fa220ae66794"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{titulo_libro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="266" y="0" width="100" height="20" uuid="05c2d2ad-d3c5-484e-a445-5d78dfc29f22"/>
-				<textElement textAlignment="Center"/>
+				<reportElement x="257" y="4" width="168" height="19" forecolor="#FFFFFF" uuid="05c2d2ad-d3c5-484e-a445-5d78dfc29f22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{total_prestamos}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="96" y="19" width="318" height="1" uuid="db0c6b9f-21cf-445f-9401-7238157f2b1d"/>
+				<reportElement x="107" y="23" width="318" height="1" uuid="db0c6b9f-21cf-445f-9401-7238157f2b1d"/>
 			</line>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="10" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
