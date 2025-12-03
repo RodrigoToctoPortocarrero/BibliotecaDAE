@@ -43,56 +43,72 @@ ORDER BY m.fechagenerada::date;]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="119" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="119" backcolor="#3399FF" uuid="1dce369f-1ef2-4d22-8b8a-f61bd203aa3d"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="137" y="20" width="300" height="20" uuid="412a6b81-3e15-43db-9f6b-98c7c278110a"/>
+				<reportElement x="137" y="20" width="300" height="20" forecolor="#FFFFFF" uuid="412a6b81-3e15-43db-9f6b-98c7c278110a"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Multas generadas por rango de fechas]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="53" y="68" width="100" height="20" forecolor="#FFFFFF" uuid="02f794e7-8c1d-46e4-a03a-c2239d1ef38d"/>
+				<text><![CDATA[Fecha Inicio:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="327" y="68" width="100" height="20" forecolor="#FFFFFF" uuid="a4bb9ae8-bb24-47dd-a274-8e6c2931c01d"/>
+				<text><![CDATA[Fecha Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="177" y="68" width="100" height="20" forecolor="#FFFFFF" uuid="c6cfa72e-6deb-46ab-b97d-1b320925c537"/>
+				<textFieldExpression><![CDATA[$P{fechainicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="449" y="68" width="100" height="20" forecolor="#FFFFFF" uuid="4b8fda35-2304-4b59-ad9d-ba40ff802b54"/>
+				<textFieldExpression><![CDATA[$P{fechafinal}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="48" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="15" width="239" height="20" uuid="1ec3ac27-acb5-412d-ad30-e21b24255716"/>
-				<text><![CDATA[Elaborado por : Tocto Portocarrero Rodrigo]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="399" y="15" width="80" height="20" uuid="a461228a-1ba4-40d7-8371-44dcb6489582"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement x="479" y="15" width="40" height="20" uuid="0ea89da6-6d81-4040-be3e-5d0d6094bb83"/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement x="277" y="11" width="100" height="20" uuid="c6dd0de6-8212-4a8d-ad47-3206248ded0c"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="48" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="43" backcolor="#FF6666" uuid="5e0da671-43e4-4770-8869-11204bd75029"/>
+			</rectangle>
 			<line>
 				<reportElement x="0" y="43" width="555" height="1" uuid="fe2267f4-92c3-4d9a-ad03-f0399a82e2e0"/>
 			</line>
 			<staticText>
-				<reportElement x="0" y="13" width="100" height="20" uuid="0c8f9d6e-f4b4-4697-b495-3a7facf35cbb"/>
+				<reportElement x="0" y="13" width="100" height="20" forecolor="#FFFFFF" uuid="0c8f9d6e-f4b4-4697-b495-3a7facf35cbb"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Lector]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="139" y="13" width="100" height="20" uuid="1725d786-a11f-4e23-ae46-2408e1c34097"/>
+				<reportElement x="139" y="13" width="100" height="20" forecolor="#FFFFFF" uuid="1725d786-a11f-4e23-ae46-2408e1c34097"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Detalle Fechas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="278" y="13" width="49" height="20" uuid="7ea358d1-1479-4ed1-ba6e-193f2e0278fd"/>
+				<reportElement x="278" y="13" width="49" height="20" forecolor="#FFFFFF" uuid="7ea358d1-1479-4ed1-ba6e-193f2e0278fd"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Motivo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="399" y="13" width="50" height="20" uuid="313d8ec2-8bf3-413f-a1f9-6ade49b88b7b"/>
+				<reportElement x="399" y="13" width="50" height="20" forecolor="#FFFFFF" uuid="313d8ec2-8bf3-413f-a1f9-6ade49b88b7b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Monto]]></text>
 			</staticText>
 		</band>
@@ -121,7 +137,25 @@ ORDER BY m.fechagenerada::date;]]>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="18" width="239" height="20" uuid="1ec3ac27-acb5-412d-ad30-e21b24255716"/>
+				<text><![CDATA[Elaborado por : Tocto Portocarrero Rodrigo]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="252" y="18" width="100" height="20" uuid="c6dd0de6-8212-4a8d-ad47-3206248ded0c"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="427" y="18" width="80" height="20" uuid="a461228a-1ba4-40d7-8371-44dcb6489582"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="507" y="18" width="40" height="20" uuid="0ea89da6-6d81-4040-be3e-5d0d6094bb83"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
 		<band height="42" splitType="Stretch"/>

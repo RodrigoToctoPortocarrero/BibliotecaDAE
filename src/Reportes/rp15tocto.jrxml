@@ -29,13 +29,19 @@ ORDER BY mes_numero;]]>
 	<field name="mes_nombre" class="java.lang.String"/>
 	<field name="cantidad_multas" class="java.lang.Long"/>
 	<field name="monto_total_generado" class="java.math.BigDecimal"/>
+	<variable name="monto_total_generado_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{monto_total_generado}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="79" backcolor="#3399FF" uuid="0e327e01-63e0-432d-a469-3ac8727553d5"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="0" y="26" width="568" height="20" uuid="e5308811-dbd0-4fbc-ba46-458b5b7eb35e"/>
+				<reportElement x="0" y="26" width="568" height="20" forecolor="#FFFFFF" uuid="e5308811-dbd0-4fbc-ba46-458b5b7eb35e"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -74,20 +80,35 @@ ORDER BY mes_numero;]]>
 	</pageHeader>
 	<columnHeader>
 		<band height="67" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="1" width="555" height="66" backcolor="#FF6666" uuid="7a2a2cc9-fed4-4f06-9ae1-411410265728"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="27" y="21" width="100" height="20" uuid="0904ecfd-2473-415a-9820-4f0abd1c839c"/>
+				<reportElement x="27" y="21" width="100" height="20" forecolor="#FFFFFF" uuid="0904ecfd-2473-415a-9820-4f0abd1c839c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Número de Mes]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="139" y="21" width="100" height="20" uuid="f695e866-ebd1-407e-8962-84264c3a61a6"/>
+				<reportElement x="139" y="21" width="100" height="20" forecolor="#FFFFFF" uuid="f695e866-ebd1-407e-8962-84264c3a61a6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Mes]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="284" y="21" width="100" height="20" uuid="e0dbc202-ca73-45f5-9640-567c463b4d8c"/>
+				<reportElement x="284" y="21" width="100" height="20" forecolor="#FFFFFF" uuid="e0dbc202-ca73-45f5-9640-567c463b4d8c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Cantidad de Multas]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="426" y="21" width="111" height="20" uuid="fc7ed01b-9f48-44f4-96ef-739419f2d016"/>
+				<reportElement x="426" y="21" width="111" height="20" forecolor="#FFFFFF" uuid="fc7ed01b-9f48-44f4-96ef-739419f2d016"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Monto total generado]]></text>
 			</staticText>
 			<line>
@@ -116,7 +137,16 @@ ORDER BY mes_numero;]]>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="30" splitType="Stretch"/>
+		<band height="90" splitType="Stretch">
+			<staticText>
+				<reportElement x="39" y="25" width="61" height="20" uuid="9ed0391d-cfb1-49d5-958f-d8dcdfac1fe1"/>
+				<text><![CDATA[Total Anual:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="139" y="25" width="196" height="20" uuid="28e84655-38aa-4ed6-950b-629699606424"/>
+				<textFieldExpression><![CDATA[$V{monto_total_generado_1}]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="17" splitType="Stretch"/>

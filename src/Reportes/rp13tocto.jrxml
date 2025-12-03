@@ -28,7 +28,7 @@ FROM (
 ) info
 INNER JOIN USUARIO u ON u.idusuario = info.idusuariolector
 GROUP BY u.idusuario, Lector
-ORDER BY cantidad_de_retrasos DESC
+ORDER BY mayor_cantidad_dias_retraso DESC
 LIMIT 3;]]>
 	</queryString>
 	<field name="lector" class="java.lang.String"/>
@@ -40,8 +40,11 @@ LIMIT 3;]]>
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
+			<rectangle>
+				<reportElement x="4" y="0" width="551" height="79" forecolor="#3399FF" backcolor="#3399FF" uuid="eadff4f0-07c4-4165-ba11-e60c558aa306"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="77" y="21" width="437" height="20" uuid="90f5c56a-f24a-493f-9ab5-9ddfb46ab47a"/>
+				<reportElement x="67" y="31" width="437" height="20" forecolor="#FFFFFF" uuid="ef83e218-bed1-4098-be8f-e8e307dfdcaf"/>
 				<textElement>
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -72,20 +75,35 @@ LIMIT 3;]]>
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="2" width="555" height="46" backcolor="#FF6666" uuid="c542661a-7400-4140-89bd-0670a97061e6"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="0" y="2" width="100" height="20" uuid="85c65138-6b21-4229-9755-28c34db92b17"/>
+				<reportElement x="0" y="2" width="100" height="20" forecolor="#FFFFFF" uuid="85c65138-6b21-4229-9755-28c34db92b17"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Lector]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="148" y="2" width="100" height="20" uuid="08d00f0a-d835-47f0-9833-722a59742293"/>
+				<reportElement x="148" y="2" width="100" height="20" forecolor="#FFFFFF" uuid="08d00f0a-d835-47f0-9833-722a59742293"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Cantidad de retrasos]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="260" y="2" width="124" height="20" uuid="9ee5eb0b-9f7c-4d50-96a7-0cb2e2e0a228"/>
+				<reportElement x="260" y="2" width="124" height="20" forecolor="#FFFFFF" uuid="9ee5eb0b-9f7c-4d50-96a7-0cb2e2e0a228"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Dias retrasados máximos]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="393" y="0" width="162" height="20" uuid="7ecc4d74-6f8c-4fef-9825-0134b028de98"/>
+				<reportElement x="393" y="0" width="162" height="20" forecolor="#FFFFFF" uuid="7ecc4d74-6f8c-4fef-9825-0134b028de98"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
 				<text><![CDATA[Detalle]]></text>
 			</staticText>
 			<line>
