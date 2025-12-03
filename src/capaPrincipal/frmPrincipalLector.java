@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 import viewsUsuario.DevolucionUsuario;
 import viewsUsuario.Integrantes;
 import viewsUsuario.PrestamosUsuarios;
@@ -47,6 +48,12 @@ public class frmPrincipalLector extends javax.swing.JFrame {
             System.err.println("Error al cargar el icono: " + e.getMessage());
             // Manejo básico de error si no se encuentra la imagen
         }
+
+        Locale.setDefault(new Locale("es", "ES"));
+        UIManager.put("OptionPane.okButtonText", "Aceptar");
+        UIManager.put("OptionPane.cancelButtonText", "Cancelar");
+        UIManager.put("OptionPane.yesButtonText", "Sí");
+        UIManager.put("OptionPane.noButtonText", "No");
     }
 
     /**

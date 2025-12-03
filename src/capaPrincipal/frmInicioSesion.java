@@ -10,9 +10,11 @@ import capaLogica.UsuarioSesion;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -38,7 +40,12 @@ public class frmInicioSesion extends javax.swing.JFrame {
             System.err.println("Error al cargar el icono: " + e.getMessage());
             // Manejo básico de error si no se encuentra la imagen
         }
-
+        
+        Locale.setDefault(new Locale("es", "ES"));
+        UIManager.put("OptionPane.okButtonText", "Aceptar");
+        UIManager.put("OptionPane.cancelButtonText", "Cancelar");
+        UIManager.put("OptionPane.yesButtonText", "Sí");
+        UIManager.put("OptionPane.noButtonText", "No");
     }
 
     /**

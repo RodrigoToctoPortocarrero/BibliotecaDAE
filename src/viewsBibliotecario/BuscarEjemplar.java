@@ -4,6 +4,7 @@ import capaLogica.Ejemplar;
 import java.awt.Frame;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,7 +18,7 @@ public class BuscarEjemplar extends javax.swing.JDialog {
     private Prestamos panelPrestamo;
 
     public BuscarEjemplar(Prestamos panelPrestamo) {
-        super((Frame) null, true); 
+        super((Frame) null, true);
         initComponents();
         this.panelPrestamo = panelPrestamo;
         listarEjemplares();

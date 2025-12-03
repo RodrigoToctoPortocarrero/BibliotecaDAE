@@ -6,6 +6,7 @@ import capaLogica.Usuarios;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -47,6 +48,14 @@ public class Prestamos extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Este ejemplar ya fue agregado.", "Duplicado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+        }
+
+        if (modelo.getRowCount() >= 3) {
+            JOptionPane.showMessageDialog(this,
+                    "Solo puede agregar un máximo de 3 ejemplares al préstamo.",
+                    "Límite alcanzado",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
         if (obs == null) {
@@ -348,10 +357,9 @@ public class Prestamos extends javax.swing.JPanel {
                     idPrestamo,
                     idLector,
                     idBibliotecario,
-                    fechaSQL, 
+                    fechaSQL,
                     tblDetallePrestamo
             );
-
 
             JOptionPane.showMessageDialog(this,
                     "✓ Préstamo registrado correctamente.\n\n"
@@ -361,7 +369,7 @@ public class Prestamos extends javax.swing.JPanel {
                     + "Ejemplares prestados: " + tblDetallePrestamo.getRowCount(),
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
-            
+
             limpiarFormulario();
 
         } catch (Exception e) {

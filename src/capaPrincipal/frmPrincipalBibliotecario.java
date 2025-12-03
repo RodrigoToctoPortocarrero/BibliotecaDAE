@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 import viewsBibliotecario.Devolucion;
 import viewsBibliotecario.ManAutor;
 import viewsBibliotecario.ManCategoria;
@@ -70,6 +71,11 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
             // Manejo básico de error si no se encuentra la imagen
         }
 
+        Locale.setDefault(new Locale("es", "ES"));
+        UIManager.put("OptionPane.okButtonText", "Aceptar");
+        UIManager.put("OptionPane.cancelButtonText", "Cancelar");
+        UIManager.put("OptionPane.yesButtonText", "Sí");
+        UIManager.put("OptionPane.noButtonText", "No");
     }
 
     /**
@@ -619,7 +625,7 @@ public class frmPrincipalBibliotecario extends javax.swing.JFrame {
     private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
         try {
             // 1. Instanciar el panel pasándole el panel 'content' como referencia
-            viewsBibliotecario.frmReporte pres = new viewsBibliotecario.frmReporte (content);
+            viewsBibliotecario.frmReporte pres = new viewsBibliotecario.frmReporte(content);
 
             // 2. IMPORTANTE: BorderLayout ignora setSize(), usa setPreferredSize
             // Esto fuerza al panel a tener el tamaño del contenedor padre

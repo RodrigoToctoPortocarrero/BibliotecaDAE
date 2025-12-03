@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp12_CarrascoVeraFabianAntonio" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4596d8f9-262e-41c1-b781-b7582fddae76">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="34"/>
 	<queryString>
 		<![CDATA[SELECT
     A.nombres || ' ' || A.apepaterno || ' ' || A.apematerno AS "Autor",
@@ -24,11 +24,11 @@ LIMIT 10;]]>
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
-			<rectangle>
-				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="103289e3-2af7-4747-83c6-c7be422c6aaa"/>
+			<rectangle radius="5">
+				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#0066FF" uuid="103289e3-2af7-4747-83c6-c7be422c6aaa"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="88" y="22" width="393" height="31" uuid="b4a1f6ca-270b-4add-8011-28b7fcb155c1"/>
+				<reportElement x="95" y="24" width="340" height="31" uuid="b4a1f6ca-270b-4add-8011-28b7fcb155c1"/>
 				<textElement>
 					<font fontName="Serif" size="18" isBold="false"/>
 				</textElement>
@@ -39,7 +39,7 @@ LIMIT 10;]]>
 	<pageHeader>
 		<band height="35" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="248" height="20" uuid="eb8b378c-0904-4aca-a9f2-099149016896"/>
+				<reportElement x="12" y="0" width="248" height="20" uuid="eb8b378c-0904-4aca-a9f2-099149016896"/>
 				<textElement>
 					<font fontName="Serif" size="10"/>
 				</textElement>
@@ -49,36 +49,39 @@ LIMIT 10;]]>
 	</pageHeader>
 	<columnHeader>
 		<band height="38" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="12" y="0" width="527" height="21" backcolor="#FF6666" uuid="c367314d-7c83-4037-bf62-a0e76202aa96"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="12" y="0" width="100" height="20" uuid="2a1d4245-42aa-4042-84ae-e2cae194c6a2"/>
+				<reportElement x="60" y="0" width="100" height="20" uuid="2a1d4245-42aa-4042-84ae-e2cae194c6a2"/>
 				<textElement>
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Autor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="239" y="0" width="202" height="20" uuid="5236d1f6-1770-443e-9c70-07a4f45c1c49"/>
+				<reportElement x="279" y="0" width="202" height="20" uuid="5236d1f6-1770-443e-9c70-07a4f45c1c49"/>
 				<textElement>
 					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Colección de Libros]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="20" width="515" height="1" uuid="365438d8-5d2f-4720-bb1b-d57a1e1a061f"/>
-			</line>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="49" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="12" y="0" width="527" height="20" backcolor="#0099FF" uuid="00db3721-da68-45c2-8672-e510d2ce25d5"/>
+			</rectangle>
 			<textField>
-				<reportElement x="12" y="0" width="210" height="20" uuid="5a0bfe51-6626-4f6b-8629-788df07957c6"/>
+				<reportElement x="60" y="0" width="210" height="20" uuid="5a0bfe51-6626-4f6b-8629-788df07957c6"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Autor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="239" y="0" width="202" height="35" uuid="9fd2de75-45f7-4cfc-8e06-5dd3a0f5731a"/>
+				<reportElement x="327" y="0" width="84" height="20" uuid="9fd2de75-45f7-4cfc-8e06-5dd3a0f5731a"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
@@ -92,7 +95,7 @@ LIMIT 10;]]>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="6d4b1906-dbcb-47d9-9179-95124e37b44f"/>
+				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#0066FF" uuid="6d4b1906-dbcb-47d9-9179-95124e37b44f"/>
 			</rectangle>
 			<textField>
 				<reportElement x="435" y="34" width="80" height="20" uuid="eaebb1a1-83fa-4834-a834-3b88860c781a"/>

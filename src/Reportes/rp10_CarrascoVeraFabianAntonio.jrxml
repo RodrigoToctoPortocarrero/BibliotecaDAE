@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rp10_CarrascoVeraFabianAntonio" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c313b92c-6527-42ca-9d80-2d5ce25efe5f">
-	<property name="ireport.zoom" value="1.1000000000000003"/>
+	<property name="ireport.zoom" value="0.9090909090909096"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nombrecategoria" class="java.lang.String">
@@ -35,6 +35,12 @@ ORDER BY
 		<groupExpression><![CDATA[$F{nombrecategoria}]]></groupExpression>
 		<groupHeader>
 			<band height="55">
+				<rectangle radius="5">
+					<reportElement x="0" y="0" width="234" height="20" backcolor="#0099FF" uuid="24f1c064-3cef-4c04-93c0-fd17b2f98954"/>
+				</rectangle>
+				<rectangle radius="5">
+					<reportElement x="40" y="34" width="466" height="21" backcolor="#FF6666" uuid="7314a20a-4ec5-4729-8d06-32525964c410"/>
+				</rectangle>
 				<textField>
 					<reportElement x="11" y="0" width="321" height="20" uuid="b34136be-d787-4f38-a530-81738511cd97"/>
 					<textElement>
@@ -42,11 +48,8 @@ ORDER BY
 					</textElement>
 					<textFieldExpression><![CDATA[$F{nombrecategoria}]]></textFieldExpression>
 				</textField>
-				<line>
-					<reportElement x="0" y="20" width="546" height="1" uuid="17bd67d3-4f0d-404e-8b5d-53e68e249060"/>
-				</line>
 				<staticText>
-					<reportElement x="11" y="35" width="100" height="20" uuid="a66ab587-4f20-4874-8597-10b078dfcf24"/>
+					<reportElement x="74" y="34" width="100" height="20" uuid="a66ab587-4f20-4874-8597-10b078dfcf24"/>
 					<textElement>
 						<font fontName="Serif" size="12" isBold="true"/>
 					</textElement>
@@ -70,8 +73,8 @@ ORDER BY
 	</background>
 	<title>
 		<band height="79" splitType="Stretch">
-			<rectangle>
-				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="59383c3a-7f4d-45e8-b48b-56f6a5d35490"/>
+			<rectangle radius="5">
+				<reportElement x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#0066FF" uuid="59383c3a-7f4d-45e8-b48b-56f6a5d35490"/>
 			</rectangle>
 			<staticText>
 				<reportElement x="140" y="17" width="299" height="31" uuid="3b8196bf-d180-427b-990b-3ea2d58e0457"/>
@@ -97,16 +100,19 @@ ORDER BY
 		<band height="12" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="61" splitType="Stretch">
+		<band height="43" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="40" y="10" width="466" height="24" backcolor="#0099FF" uuid="cc4614d6-47cd-4daa-aca6-9046858302ba"/>
+			</rectangle>
 			<textField>
-				<reportElement x="11" y="14" width="263" height="35" uuid="ce7404ab-3bbc-42e2-982c-d63e85d20584"/>
+				<reportElement x="74" y="14" width="226" height="20" uuid="ce7404ab-3bbc-42e2-982c-d63e85d20584"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="14" width="129" height="20" uuid="aa6f63a0-07d9-468a-8fed-97b858b4a2ff"/>
+				<reportElement x="348" y="14" width="116" height="20" uuid="aa6f63a0-07d9-468a-8fed-97b858b4a2ff"/>
 				<textElement>
 					<font fontName="Serif"/>
 				</textElement>
@@ -120,7 +126,7 @@ ORDER BY
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCFFFF" uuid="03b53083-207d-4c64-920e-b969d501c2ca"/>
+				<reportElement x="0" y="34" width="555" height="20" forecolor="#FFFFFF" backcolor="#0066FF" uuid="03b53083-207d-4c64-920e-b969d501c2ca"/>
 			</rectangle>
 			<textField>
 				<reportElement x="426" y="34" width="80" height="20" uuid="a72ab731-ac40-4920-a258-c6edec238b27"/>

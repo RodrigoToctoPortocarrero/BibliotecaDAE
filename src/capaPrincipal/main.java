@@ -23,6 +23,7 @@ public class main {
         frmInicioSesion obj = new frmInicioSesion();
         obj.setVisible(true);
         obj.setLocationRelativeTo(null);
+        
     }
     
 }
