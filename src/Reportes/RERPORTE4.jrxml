@@ -26,9 +26,9 @@ ORDER BY
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="117" y="24" width="341" height="31" uuid="cf17f376-79f5-4ece-9063-a183e07157dd"/>
-				<textElement>
-					<font size="18" isBold="false"/>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#0066FF" uuid="cf17f376-79f5-4ece-9063-a183e07157dd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="24" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Disponibilidad de Ejemplares por Libro]]></text>
 			</staticText>
@@ -39,24 +39,27 @@ ORDER BY
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="41" y="19" width="466" height="31" backcolor="#FF6666" uuid="6e038242-38dd-45ea-80e3-202f0a746b84"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="52" y="19" width="100" height="20" uuid="cc6497b7-3504-4c96-a0eb-d471f0770261"/>
+				<reportElement x="52" y="19" width="100" height="20" forecolor="#FFFFFF" uuid="cc6497b7-3504-4c96-a0eb-d471f0770261"/>
 				<textElement>
-					<font isBold="true" isUnderline="true"/>
+					<font size="12" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Título del Libro]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="207" y="19" width="100" height="20" uuid="065eaefe-8124-4e74-923a-29f911c73230"/>
+				<reportElement x="207" y="19" width="116" height="20" forecolor="#FFFFFF" uuid="065eaefe-8124-4e74-923a-29f911c73230"/>
 				<textElement>
-					<font isBold="true" isUnderline="true"/>
+					<font size="12" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Total de Ejemplares]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="368" y="19" width="128" height="20" uuid="bdfee993-86cd-4719-9a7d-56735d770ca7"/>
+				<reportElement x="357" y="19" width="139" height="20" forecolor="#FFFFFF" uuid="bdfee993-86cd-4719-9a7d-56735d770ca7"/>
 				<textElement>
-					<font isBold="true" isUnderline="true"/>
+					<font size="12" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Ejemplares Disponibles]]></text>
 			</staticText>
@@ -67,16 +70,28 @@ ORDER BY
 	</columnHeader>
 	<detail>
 		<band height="78" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement mode="Opaque" x="52" y="12" width="455" height="53" backcolor="#0099FF" uuid="f105f885-9851-407d-8e57-deca69344a92"/>
+			</rectangle>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="52" y="26" width="100" height="20" uuid="346d3d7f-b8d7-498c-996b-784a5c82476a"/>
+				<reportElement mode="Transparent" x="73" y="23" width="100" height="31" forecolor="#FFFFFF" uuid="346d3d7f-b8d7-498c-996b-784a5c82476a"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="256" y="26" width="51" height="20" uuid="db2d8d9b-fc04-4d70-b29b-9b69d84efe6d"/>
+				<reportElement mode="Transparent" x="241" y="23" width="66" height="26" forecolor="#FFFFFF" uuid="db2d8d9b-fc04-4d70-b29b-9b69d84efe6d"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Total de Ejemplares}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="425" y="26" width="71" height="20" uuid="05a5404b-f965-4ae9-bd1f-ad4b3ab53789"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="401" y="23" width="95" height="26" forecolor="#FFFFFF" uuid="05a5404b-f965-4ae9-bd1f-ad4b3ab53789"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Ejemplares Disponibles}]]></textFieldExpression>
 			</textField>
 		</band>

@@ -25,7 +25,10 @@ ORDER BY
 		<groupHeader>
 			<band height="41">
 				<textField isStretchWithOverflow="true">
-					<reportElement x="65" y="20" width="100" height="20" uuid="0101ebc6-db9d-4a0a-a05d-4614a9105632"/>
+					<reportElement x="65" y="20" width="200" height="20" uuid="0101ebc6-db9d-4a0a-a05d-4614a9105632"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{Título del Libro}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -41,9 +44,9 @@ ORDER BY
 	<title>
 		<band height="79" splitType="Stretch">
 			<staticText>
-				<reportElement x="146" y="20" width="263" height="36" uuid="f42231b5-5e63-4ff3-b021-052595f8e158"/>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="79" forecolor="#FFFFFF" backcolor="#0066FF" uuid="f42231b5-5e63-4ff3-b021-052595f8e158"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="25"/>
+					<font fontName="Arial Black" size="24"/>
 				</textElement>
 				<text><![CDATA[Libros y sus Autores]]></text>
 			</staticText>
@@ -54,26 +57,29 @@ ORDER BY
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="65" y="19" width="465" height="31" backcolor="#FF6666" uuid="011802c8-6044-4aac-bf5a-e6c17a4b73dd"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="65" y="19" width="100" height="20" uuid="d8933ef5-d752-4cbf-8625-1f3c6157c5df"/>
+				<reportElement x="65" y="19" width="100" height="20" forecolor="#FFFFFF" uuid="d8933ef5-d752-4cbf-8625-1f3c6157c5df"/>
 				<textElement>
-					<font isBold="true" isItalic="false" isUnderline="true"/>
+					<font size="12" isBold="true" isItalic="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Título del Libro]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="230" y="19" width="100" height="20" uuid="488921b5-680c-45bb-a55a-7283e11650a0"/>
+				<reportElement x="230" y="19" width="100" height="20" forecolor="#FFFFFF" uuid="488921b5-680c-45bb-a55a-7283e11650a0"/>
 				<textElement>
-					<font isBold="true" isUnderline="true"/>
+					<font size="12" isBold="true" isItalic="false" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Nombre Completo del Autor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="393" y="19" width="100" height="20" uuid="acd4621d-e4a3-4e1a-be3f-655e50437307"/>
+				<reportElement x="393" y="19" width="100" height="20" forecolor="#FFFFFF" uuid="acd4621d-e4a3-4e1a-be3f-655e50437307"/>
 				<textElement>
-					<font isBold="true" isUnderline="true"/>
+					<font size="12" isBold="true" isItalic="false" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[Rol / Descripción]]></text>
+				<text><![CDATA[ Descripción]]></text>
 			</staticText>
 			<line>
 				<reportElement x="65" y="49" width="428" height="1" uuid="e76f30fc-3598-4bba-8f67-594993b2af47"/>
@@ -81,13 +87,22 @@ ORDER BY
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="22" splitType="Stretch">
+		<band height="56" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="230" y="0" width="300" height="56" backcolor="#0099FF" uuid="aac90696-ae5d-43c1-9894-ca43770838d9"/>
+			</rectangle>
 			<textField>
-				<reportElement x="230" y="0" width="100" height="20" uuid="7f1fdd39-8f24-478a-ad33-4822ee97b8c0"/>
+				<reportElement x="248" y="0" width="100" height="20" forecolor="#FFFFFF" uuid="7f1fdd39-8f24-478a-ad33-4822ee97b8c0"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Nombre Completo del Autor}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="393" y="0" width="100" height="20" uuid="a32e05b1-e535-4adb-aa4f-59657e0d536a"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="393" y="0" width="124" height="20" forecolor="#FFFFFF" uuid="a32e05b1-e535-4adb-aa4f-59657e0d536a"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{Rol / Descripción}]]></textFieldExpression>
 			</textField>
 		</band>
